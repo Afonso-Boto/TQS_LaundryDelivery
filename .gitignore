@@ -83,3 +83,11 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# Ignore IDE specific files
+**/.idea
+**/.vscode/
+
+# Ignore Docker volumes
+/Quorier/volumes/mysql/db
+/Quorier/volumes/qourier
