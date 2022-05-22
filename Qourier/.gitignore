@@ -1,0 +1,6 @@
+# Ignore Docker volumes
+/volumes/mysql/db
+/volumes/qourier
+
+# .env file
+.env
