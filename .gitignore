@@ -83,3 +83,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# Ignore IDE specific files
+**/.idea
+**/.vscode/
