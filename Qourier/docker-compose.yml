@@ -38,7 +38,7 @@ services:
     ports:
       - $SPRING_QOURIER_LOCAL_PORT:$SPRING_DOCKER_PORT
     volumes:
-      - ./volumes/quorier/:/root/.m2
+      - ./volumes/qourier/:/root/.m2
     stdin_open: true
     tty: true
 
