@@ -14,7 +14,7 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="index.html" th:href="@{/index}">
+                    <a class="nav-link" href="index.html?role=admin" th:href="@{/index}">
                         <i class="fa fa-home"></i>
                         <strong>Home</strong>
                     </a>
@@ -65,7 +65,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile.html?role=rider" th:href="@{/profile}">
+                    <a class="nav-link" href="profile_rider.html?role=rider" th:href="@{/profile}">
                         Profile
                     </a>
                 </li>
@@ -81,7 +81,7 @@
     </nav>
 
     <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" id="navbar-customer" th:if="${role.equals('customer')}" th:replace="base :: navbar-customer">
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="collapse navbar-collapse">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
                     <a class="nav-link" href="index.html?role=customer" th:href="@{/index}">
@@ -95,7 +95,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile.html?role=customer" th:href="@{/profile}">
+                    <a class="nav-link" href="profile_rider.html?role=customer" th:href="@{/profile}">
                         Profile
                     </a>
                 </li>

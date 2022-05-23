@@ -11,39 +11,41 @@
 <body>
 
     <div class="container">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <div>
-                    <h2>Register as Customer</h2>
-                    <br>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <h2>Register as Customer</h2>
+                        <br>
 
-                    <form method="POST" action="index.html" th:action="@{/register_customer}" th:object="${customer}" class="login-register-form" id="login-register-form">
-                        <div class="form-group">
-                            <label for="email">Email: </label>
-                            <input type="text" th:field="*{name}" name="email" id="email" placeholder="Email"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password: </label>
-                            <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
-                        </div>
+                        <form method="POST" action="index.html" th:action="@{/register_customer}" th:object="${customer}" class="login-register-form" id="login-register-form">
+                            <div class="form-group">
+                                <label for="email">Email: </label>
+                                <input type="text" th:field="*{name}" name="email" id="email" placeholder="Email"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password: </label>
+                                <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
+                            </div>
 
-                        <div class="form-group">
-                            <label for="name">Name: </label>
-                            <input type="text" th:field="*{name}" name="name" id="name" placeholder="Name"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="service_type">Service type: </label>
-                            <input type="text" th:field="*{serviceType}" name="service_type" id="service_type" placeholder="Service type"/>
-                        </div>
+                            <div class="form-group">
+                                <label for="name">Name: </label>
+                                <input type="text" th:field="*{name}" name="name" id="name" placeholder="Name"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="service_type">Service type: </label>
+                                <input type="text" th:field="*{serviceType}" name="service_type" id="service_type" placeholder="Service type"/>
+                            </div>
 
-                        <div class="form-group form-button">
-                            <!-- TODO replace with comment -->
-                            <!--<input type="submit" name="register" id="register" class="form-submit" value="Register"/>-->
-                            <a href="index.html?role=rider">
-                                <button type="button" class="btn btn-primary" id="login-submit">Register</button>
-                            </a>
-                        </div>
-                    </form>
+                            <div class="form-group form-button">
+                                <!-- TODO replace with comment -->
+                                <!--<input type="submit" name="register" id="register" class="form-submit" value="Register"/>-->
+                                <a href="index.html?role=rider">
+                                    <button type="button" class="btn btn-primary" id="login-submit">Register</button>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

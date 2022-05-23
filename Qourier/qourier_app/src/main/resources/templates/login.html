@@ -11,47 +11,49 @@
 <body>
 
     <div class="container">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <div>
-                    <h2>Login</h2>
-                    <br>
-
-                    <form method="POST" action="index.html" th:action="@{/login}" th:object="${user}" class="login-register-form" id="login-form">
-                        <div class="form-group">
-                            <label for="email"><i class="fa-solid fa-envelope"></i></label>
-                            <input type="text" th:field="*{email}" name="email" id="email" placeholder="Email"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="password"><i class="fa-solid fa-lock"></i></label>
-                            <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
-                        </div>
-
-                        <label for="select-role">Log in as:</label>
-                        <select id="select-role">
-                            <option value="rider">Rider</option>
-                            <option value="customer">Customer</option>
-                            <option value="admin">Admin</option>
-                        </select>
-
-                        <div class="form-group form-button">
-                            <!-- TODO replace with comment -->
-                            <!--<input type="submit" name="login" id="login" class="form-submit" value="Log in"/>-->
-                            <a><button type="button" class="btn btn-primary" id="login-submit">Log in</button></a>
-                        </div>
-                    </form>
-
-                    <br>
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
                     <div>
-                        <a href="register_rider.html" th:href="@{/register_rider}">
-                            <button type="button" class="btn btn-primary">Register as Rider</button>
-                        </a>
-                    </div>
-                    <br>
-                    <div>
-                        <a href="register_customer.html" th:href="@{/register_customer}">
-                            <button type="button" class="btn btn-primary">Register as Customer</button>
-                        </a>
+                        <h2>Login</h2>
+                        <br>
+
+                        <form method="POST" action="index.html" th:action="@{/login}" th:object="${user}" class="login-register-form" id="login-form">
+                            <div class="form-group">
+                                <label for="email"><i class="fa fa-envelope"></i></label>
+                                <input type="text" th:field="*{email}" name="email" id="email" placeholder="Email"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="password"><i class="fa fa-lock"></i></label>
+                                <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
+                            </div>
+
+                            <label for="select-role">Log in as:</label>
+                            <select id="select-role">
+                                <option value="rider">Rider</option>
+                                <option value="customer">Customer</option>
+                                <option value="admin">Admin</option>
+                            </select>
+
+                            <div class="form-group form-button">
+                                <!-- TODO replace with comment -->
+                                <!--<input type="submit" name="login" id="login" class="form-submit" value="Log in"/>-->
+                                <a><button type="button" class="btn btn-primary" id="login-submit">Log in</button></a>
+                            </div>
+                        </form>
+
+                        <br>
+                        <div>
+                            <a href="register_rider.html" th:href="@{/register_rider}">
+                                <button type="button" class="btn btn-primary">Register as Rider</button>
+                            </a>
+                        </div>
+                        <br>
+                        <div>
+                            <a href="register_customer.html" th:href="@{/register_customer}">
+                                <button type="button" class="btn btn-primary">Register as Customer</button>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

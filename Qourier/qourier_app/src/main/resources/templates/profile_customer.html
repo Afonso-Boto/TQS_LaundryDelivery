@@ -6,11 +6,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/css/base.css}" href="../static/css/base.css" type="text/css">
 
-    <title>Profile - Qourier</title>
+    <title>Customer - Qourier</title>
 </head>
 <body>
-
-<!--  ADMIN  -->
 
     <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" id="navbar-admin" th:if="${role.equals('admin')}" th:replace="base :: navbar-admin">
         <div class="collapse navbar-collapse">
@@ -113,79 +111,21 @@
     </nav>
 
     <div class="container">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <div>
-                    <h2><span id="header-account-type" th:text="${accountType.substring(0, 1).toUpperCase() + accountType.substring(1)}">Rider</span> accounts</h2>
-                    <div>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <label for="filter-active">Active</label>
-                                <input type="checkbox" id="filter-active" name="filter-active" />
-                            </div>
-                            <div>
-                                <label for="filter-type">Type</label>
-                                <select id="filter-type">
-                                    <option value="rider" selected>Rider</option>
-                                    <option value="customer">Customer</option>
-                                </select>
-                            </div>
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-10" th:with="${rider}">
+                <h2 id="details-name">Cristina Laundry</h2>
+                <h4><i>Customer</i></h4>
 
-                            <button id="filter-riders-apply" type="button" class="btn btn-primary">Apply</button>
-                        </div>
-                    </div>
-                    <table id="table-riders" class="table table-hover" th:if="${accountType.equals('rider')}">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Active</th>
-                                <th scope="col">Profile</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="riderAcc : ${riderAccList}" th:with="${riderAcc}">
-                                <td th:text="${id}">0</td>
-                                <td th:text="${name}">Diego</td>
-                                <td th:text="${active}">No</td>
-                                <td>
-                                    <a href="profile_rider.html?role=admin" th:href="@{/profile(id=${id})}">
-                                        <button type="button" class="btn btn-primary">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <p>Active: <span id="details-state" th:text="${state.name().toLowerCase()}">active</span></p>
+                <p>Email: <span id="details-email" th:text="${email}">cristina@mail.com</span></p>
+                <p>Citizen ID: <span id="details-service-type" th:text="${serviceType}">Laundry</span></p>
 
-                    <table id="table-customers" class="table table-hover" style="display: none;">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Service type</th>
-                            <th scope="col">Active</th>
-                            <th scope="col">Profile</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="customerAcc : ${customerAccList}" th:with="${customerAcc}">
-                            <td th:text="${id}">1</td>
-                            <td th:text="${name}">Cristina Laundry</td>
-                            <td th:text="${serviceType}">Laundry</td>
-                            <td th:text="${active}">Yes</td>
-                            <td>
-                                <a href="profile_customer.html?role=admin" th:href="@{/profile(id=${id})}">
-                                    <button type="button" class="btn btn-primary">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <button id="toggle-account" type="button" class="btn btn-primary" th:text="${'Suspend account' ? state.name().equals('ACTIVE') : 'Activate account'}">
+                    Suspend account
+                </button>
+
+                <input id="attrs-state" type="hidden" value="ACTIVE" th:value="${state.name()}" />
             </div>
         </div>
     </div>
@@ -198,37 +138,30 @@
 
     <script>
 
-        let filterActive = $('#filter-active');
-        let filterType = $('#filter-type');
+        let activeAccount = $('#attrs-state').val() === 'ACTIVE';
+        let toggleAccountButton = $('#toggle-account');
+        let detailsState = $('#details-state');
 
-        $('#filter-riders-apply').click(function () {
-            let active = filterActive.prop('checked');
-            let type = filterType.val();
-            applyFilters(active, type);
+        toggleAccountButton.click(function () {
+            activeAccount = !activeAccount;
+            if (activeAccount) {
+                toggleAccountButton.text('Suspend account');
+                detailsState.text('active');
+                activateAccount();
+            }
+            else {
+                toggleAccountButton.text('Activate account');
+                detailsState.text('suspended');
+                suspendAccount();
+            }
         })
 
-        function applyFilters(active, type) {
-            // TODO prototype, fill with implementation
+        function activateAccount() {
+            // TODO fill with implementation
+        }
 
-            if (active) {
-                $('#table-riders > tbody > tr').hide();
-                $('#table-customers > tbody > tr').show();
-            }
-            else {
-                $('#table-riders > tbody > tr').show();
-                $('#table-customers > tbody > tr').hide();
-            }
-
-            if (type === 'rider') {
-                $('#table-riders').show();
-                $('#table-customers').hide();
-                $('#header-account-type').text('Rider');
-            }
-            else {
-                $('#table-riders').hide();
-                $('#table-customers').show();
-                $('#header-account-type').text('Customer');
-            }
+        function suspendAccount() {
+            // TODO fill with implementation
         }
 
     </script>
