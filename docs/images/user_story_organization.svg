@@ -11,19 +11,19 @@
 <!-- epic1 -->
 <g id="node1" class="node">
 <title>epic1</title>
-<image xlink:href="images/epic.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="342" y="-72"/>
+<image xlink:href="epic.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="342" y="-72"/>
 <text text-anchor="middle" x="366.5" y="-3.8" font-family="Helvetica,sans-Serif" font-size="14.00">Qourier WebApp</text>
 </g>
 <!-- epic2 -->
 <g id="node2" class="node">
 <title>epic2</title>
-<image xlink:href="images/epic.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="780" y="-72"/>
+<image xlink:href="epic.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="780" y="-72"/>
 <text text-anchor="middle" x="804.5" y="-3.8" font-family="Helvetica,sans-Serif" font-size="14.00">Qourier Service</text>
 </g>
 <!-- us1 -->
 <g id="node3" class="node">
 <title>us1</title>
-<image xlink:href="images/user_story.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="236" y="-180"/>
+<image xlink:href="user_story.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="236" y="-180"/>
 <text text-anchor="middle" x="260.5" y="-111.8" font-family="Helvetica,sans-Serif" font-size="14.00">Check Riders&#39; progress</text>
 </g>
 <!-- us1&#45;&gt;epic1 -->
@@ -35,7 +35,7 @@
 <!-- us2 -->
 <g id="node4" class="node">
 <title>us2</title>
-<image xlink:href="images/user_story.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="448" y="-180"/>
+<image xlink:href="user_story.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="448" y="-180"/>
 <text text-anchor="middle" x="472.5" y="-111.8" font-family="Helvetica,sans-Serif" font-size="14.00">Check delivery performance</text>
 </g>
 <!-- us2&#45;&gt;epic1 -->
@@ -47,7 +47,7 @@
 <!-- us3 -->
 <g id="node5" class="node">
 <title>us3</title>
-<image xlink:href="images/user_story.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="780" y="-180"/>
+<image xlink:href="user_story.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="780" y="-180"/>
 <text text-anchor="middle" x="804.5" y="-111.8" font-family="Helvetica,sans-Serif" font-size="14.00">Request a delivery</text>
 </g>
 <!-- us3&#45;&gt;epic2 -->
@@ -59,7 +59,7 @@
 <!-- t1 -->
 <g id="node6" class="node">
 <title>t1</title>
-<image xlink:href="images/task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="111" y="-288"/>
+<image xlink:href="task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="111" y="-288"/>
 <text text-anchor="middle" x="135.5" y="-219.8" font-family="Helvetica,sans-Serif" font-size="14.00">&quot;Rider progress report&quot; API endpoint</text>
 </g>
 <!-- t1&#45;&gt;us1 -->
@@ -71,7 +71,7 @@
 <!-- t2 -->
 <g id="node7" class="node">
 <title>t2</title>
-<image xlink:href="images/task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="348" y="-288"/>
+<image xlink:href="task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="348" y="-288"/>
 <text text-anchor="middle" x="372.5" y="-219.8" font-family="Helvetica,sans-Serif" font-size="14.00">Admin authentication</text>
 </g>
 <!-- t2&#45;&gt;us1 -->
@@ -89,7 +89,7 @@
 <!-- t3 -->
 <g id="node8" class="node">
 <title>t3</title>
-<image xlink:href="images/task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="548" y="-288"/>
+<image xlink:href="task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="548" y="-288"/>
 <text text-anchor="middle" x="572.5" y="-219.8" font-family="Helvetica,sans-Serif" font-size="14.00">Setup Grafana integration</text>
 </g>
 <!-- t3&#45;&gt;us2 -->
@@ -101,7 +101,7 @@
 <!-- t4 -->
 <g id="node9" class="node">
 <title>t4</title>
-<image xlink:href="images/task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="780" y="-288"/>
+<image xlink:href="task.svg" width="49px" height="49px" preserveAspectRatio="xMinYMin meet" x="780" y="-288"/>
 <text text-anchor="middle" x="804.5" y="-219.8" font-family="Helvetica,sans-Serif" font-size="14.00">&quot;Accept delivery&quot; API endpoint</text>
 </g>
 <!-- t4&#45;&gt;us3 -->
