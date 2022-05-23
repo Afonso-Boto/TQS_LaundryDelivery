@@ -6,7 +6,7 @@ Documents detailing the project's various aspects, including the development wor
 
 *Also detailed in the [QA Manual](qa_manual.pdf).*
 
-The development of the project's increments followed a defined conduct in order to maintain code quality throughout the development cycle. We use a Behaviour Driven Development (BDD) approach.
+The development of the project's increments followed a defined conduct in order to maintain code quality throughout the development cycle. We use a Behavior Driven Development (BDD) approach.
 Below are the main points that were defined:
 - Develop each feature (user story) on a separate branch, which will be later merged back into the development branch (`dev`)
     - The first commits to these feature branches should only contain tests, incorporating the acceptance criteria defined in the respective user story. At maximum, the necessary project classes to use in the tests should only include the basic interface, without any implementation. Therefore, **the necessary files in these commits are**:
