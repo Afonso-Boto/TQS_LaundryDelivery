@@ -111,6 +111,80 @@
         </div>
     </nav>
 
+    <div class="modal fade" id="rider-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rider-form-label">Application form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Name: <span id="rider-form-details-name"></span></p>
+                    <p>Email: <span id="rider-form-details-email"></span></p>
+                    <p>Citizen ID: <span id="rider-form-details-citizenId"></span></p>
+                    <p>Time: <span id="rider-form-details-time"></span></p>
+                    <p>State: <span id="rider-form-details-state"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <div id="rider-form-buttons-pending">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="#" th:href="@{/applications/refuse/${id}}">
+                            <button type="button" class="btn btn-danger">Refuse</button>
+                        </a>
+                        <a href="#" th:href="@{/applications/accept/${id}}">
+                            <button type="button" class="btn btn-success">Accept</button>
+                        </a>
+                    </div>
+                    <div id="rider-form-buttons-refused">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="#" th:href="@{/applications/reconsider/${id}}">
+                            <button type="button" class="btn btn-primary">Reconsider</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="customer-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customer-form-label">Application form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Name: <span id="customer-form-details-name"></span></p>
+                    <p>Email: <span id="customer-form-details-email"></span></p>
+                    <p>Service type: <span id="customer-form-details-serviceType"></span></p>
+                    <p>Time: <span id="customer-form-details-time"></span></p>
+                    <p>State: <span id="customer-form-details-state"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <div id="customer-form-buttons-pending" style="display: none">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="#" th:href="@{/applications/refuse/${id}}">
+                            <button type="button" class="btn btn-danger">Refuse</button>
+                        </a>
+                        <a href="#" th:href="@{/applications/accept/${id}}">
+                            <button type="button" class="btn btn-success">Accept</button>
+                        </a>
+                    </div>
+                    <div id="customer-form-buttons-refused" style="display: none">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="#" th:href="@{/applications/reconsider/${id}}">
+                            <button type="button" class="btn btn-primary">Reconsider</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="col-12">
             <div class="d-flex justify-content-center">
@@ -140,30 +214,28 @@
                             <th scope="col">Name</th>
                             <th scope="col">Citizen ID</th>
                             <th scope="col">Time</th>
-                            <th scope="col">Accept</th>
-                            <th scope="col">Refuse</th>
+                            <th scope="col">Form</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="riderApp : ${riderAppList}" th:with="${riderApp}">
-                            <td th:text="${id}">5</td>
-                            <td th:text="${name}">Manuel</td>
-                            <td th:text="${active}">987654321</td>
-                            <td th:text="${time}">2022/05/11 19:00:00</td>
+                        <tr th:each="riderApp : ${riderAppList}">
+                            <td th:text="${riderApp.getId()}">5</td>
+                            <td th:text="${riderApp.getName()}">Manuel</td>
+                            <td th:text="${riderApp.getCitizenId()}">987654321</td>
+                            <td th:text="${riderApp.getTime()}">2022/05/11 19:00:00</td>
                             <td>
-                                <a href="#" th:href="@{/applications/remove/${id}}">
-                                    <button type="button" class="btn btn-primary">
-                                        <i class="fa fa-check"></i>
-                                    </button>
-                                </a>
+                                <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${riderApp.getId()}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
+                                    <i class="fa fa-clipboard"></i>
+                                </button>
                             </td>
-                            <td>
-                                <a href="#" th:href="@{/applications/remove/${id}}">
-                                    <button type="button" class="btn btn-danger">
-                                        <strong>X</strong>
-                                    </button>
-                                </a>
-                            </td>
+
+                            <th:block th:with="baseId='attrs-rider-' + ${riderApp.getId()} + '-'">
+                                <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.getName().name()}" />
+                                <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.getEmail().name()}" />
+                                <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.getCitizenId().name()}" />
+                                <input id="attrs-rider-5-time" th:id="${baseId} + time" type="hidden" value="2022/05/11 19:00:00" th:value="${riderApp.getTime().name()}" />
+                                <input id="attrs-rider-5-state" th:id="${baseId} + state" type="hidden" value="PENDING" th:value="${riderApp.getState().name()}" />
+                            </th:block>
                         </tr>
                         </tbody>
                     </table>
@@ -175,30 +247,28 @@
                             <th scope="col">Name</th>
                             <th scope="col">Service type</th>
                             <th scope="col">Time</th>
-                            <th scope="col">Accept</th>
-                            <th scope="col">Refuse</th>
+                            <th scope="col">Form</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="customerAcc : ${customerAppList}" th:with="${customerApp}">
-                            <td th:text="${id}">3</td>
-                            <td th:text="${name}">Manuel Food Service</td>
-                            <td th:text="${serviceType}">Food</td>
-                            <td th:text="${time}">2021/01/23 11:30:01</td>
+                        <tr th:each="customerApp : ${customerAppList}">
+                            <td th:text="${customerApp.getId()}">3</td>
+                            <td th:text="${customerApp.getName()}">Manuel Food Service</td>
+                            <td th:text="${customerApp.getServiceType()}">Food</td>
+                            <td th:text="${customerApp.getTime()}">2021/01/23 11:30:01</td>
                             <td>
-                                <a href="#" th:href="@{/applications/remove/${id}}">
-                                    <button type="button" class="btn btn-primary">
-                                        <i class="fa fa-check"></i>
-                                    </button>
-                                </a>
+                                <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${customerApp.getId()}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
+                                    <i class="fa fa-clipboard"></i>
+                                </button>
                             </td>
-                            <td>
-                                <a href="#" th:href="@{/applications/remove/${id}}">
-                                    <button type="button" class="btn btn-danger">
-                                        <strong>X</strong>
-                                    </button>
-                                </a>
-                            </td>
+
+                            <th:block th:with="baseId='attrs-customer-' + ${customerApp.getId()} + '-'">
+                                <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.getName().name()}" />
+                                <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.getEmail().name()}" />
+                                <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.getServiceType().name()}" />
+                                <input id="attrs-customer-3-time" th:id="${baseId} + time" type="hidden" value="2021/01/23 11:30:01" th:value="${customerApp.getTime().name()}" />
+                                <input id="attrs-customer-3-state" th:id="${baseId} + state" type="hidden" value="REFUSED" th:value="${customerApp.getState().name()}" />
+                            </th:block>
                         </tr>
                         </tbody>
                     </table>
@@ -231,17 +301,64 @@
             if (type === 'rider') {
                 if (pending)
                     $('#table-riders').show();
+                else
+                    $('#table-riders').hide();
                 $('#table-customers').hide();
                 $('#header-account-type').text('Rider');
             }
             else {
                 $('#table-riders').hide();
-                if (pending)
+                if (!pending)
                     $('#table-customers').show();
+                else
+                    $('#table-customers').hide();
                 $('#header-account-type').text('Customer');
             }
 
         }
+
+        // Update modal with info from clicked row
+        let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
+        let customerDetails = ['name', 'email', 'serviceType', 'time', 'state'];
+        $('td > button').click(function (event) {
+            let clickedButton = event.delegateTarget;
+            let splitId = clickedButton.id.split('-');
+            let applicationType = splitId[splitId.length - 2];
+            let applicationId = splitId[splitId.length - 1];
+
+            console.log(event);
+            console.log(clickedButton);
+            console.log(splitId);
+
+            if (applicationType === 'rider') {
+                for (const detail of riderDetails)
+                    $('#rider-form-details-' + detail).text( $('#attrs-rider-' + applicationId + '-' + detail).val() );
+
+                let applicationState = $('#attrs-rider-' + applicationId + '-state').val();
+                if (applicationState === 'REFUSED') {
+                    $('#rider-form-buttons-pending').hide();
+                    $('#rider-form-buttons-refused').show();
+                }
+                else {
+                    $('#rider-form-buttons-pending').show();
+                    $('#rider-form-buttons-refused').hide();
+                }
+            }
+            else if (applicationType === 'customer') {
+                for (const detail of customerDetails)
+                    $('#customer-form-details-' + detail).text( $('#attrs-customer-' + applicationId + '-' + detail).val() );
+
+                let applicationState = $('#attrs-customer-' + applicationId + '-state').val();
+                if (applicationState === 'REFUSED') {
+                    $('#customer-form-buttons-pending').hide();
+                    $('#customer-form-buttons-refused').show();
+                }
+                else {
+                    $('#customer-form-buttons-pending').show();
+                    $('#customer-form-buttons-refused').hide();
+                }
+            }
+        })
 
     </script>
 

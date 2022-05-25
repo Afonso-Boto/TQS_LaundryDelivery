@@ -28,13 +28,6 @@
                                 <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
                             </div>
 
-                            <label for="select-role">Log in as:</label>
-                            <select id="select-role">
-                                <option value="rider">Rider</option>
-                                <option value="customer">Customer</option>
-                                <option value="admin">Admin</option>
-                            </select>
-
                             <div class="form-group form-button">
                                 <!-- TODO replace with comment -->
                                 <!--<input type="submit" name="login" id="login" class="form-submit" value="Log in"/>-->
@@ -69,7 +62,18 @@
     <script>
         // TODO remove
         $('#login-submit').click(function () {
-            window.location.href = 'index.html?role=' + $('#select-role').val();
+            switch ($('#email').val()) {
+                case 'diego@mail.com':
+                    window.location.href = 'index.html?role=rider';
+                    break;
+                case 'cristina@mail.com':
+                    window.location.href = 'index.html?role=customer';
+                    break;
+                case 'admin@mail.com':
+                    window.location.href = 'index.html?role=admin';
+                    break;
+                default:
+            }
         })
     </script>
 
