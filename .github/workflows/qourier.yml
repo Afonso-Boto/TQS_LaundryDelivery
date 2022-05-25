@@ -22,6 +22,7 @@ jobs:
         java-version: '17'
         distribution: 'zulu'
         cache: maven
+    - name: Build and analyze
       run: mvn -B verify
     - name: Test report
       uses: dorny/test-reporter@v1
