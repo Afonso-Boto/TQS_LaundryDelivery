@@ -95,7 +95,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile_rider.html?role=customer" th:href="@{/profile}">
+                    <a class="nav-link" href="profile_customer.html?role=customer" th:href="@{/profile}">
                         Profile
                     </a>
                 </li>
@@ -112,20 +112,52 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-2"></div>
-            <div class="col-10" th:with="${rider}">
+            <div class="col-12">
                 <h2 id="details-name">Cristina Laundry</h2>
                 <h4><i>Customer</i></h4>
 
-                <p>Active: <span id="details-state" th:text="${state.name().toLowerCase()}">active</span></p>
-                <p>Email: <span id="details-email" th:text="${email}">cristina@mail.com</span></p>
-                <p>Citizen ID: <span id="details-service-type" th:text="${serviceType}">Laundry</span></p>
+                <h3>Details</h3>
 
-                <button id="toggle-account" type="button" class="btn btn-primary" th:text="${'Suspend account' ? state.name().equals('ACTIVE') : 'Activate account'}">
-                    Suspend account
-                </button>
+                <p>State: <span id="details-state" th:text="${customer.getState().name().toLowerCase()}">active</span></p>
+                <p>Email: <span id="details-email" th:text="${customer.getEmail()}">cristina@mail.com</span></p>
+                <p>Service type: <span id="details-service-type" th:text="${customer.getServiceType()}">Laundry</span></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3>Statistics</h3>
 
-                <input id="attrs-state" type="hidden" value="ACTIVE" th:value="${state.name()}" />
+                <!-- TODO grafana -->
+                <h5>Rate of delivery requests</h5>
+                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for request rate" />
+
+                <!-- TODO grafana -->
+                <h5>Average time until delivery</h5>
+                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for time until delivery" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <h3>Other</h3>
+
+                <th:block id="admin-space" th:if="${role.equals('admin')}">
+                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${'Suspend account' ? customer.getState().name().equals('ACTIVE') : 'Activate account'}">
+                        Suspend account
+                    </button>
+                </th:block>
+
+                <th:block id="customer-space" th:if="${role.equals('customer')}">
+                    <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#api-key-spoiler" aria-expanded="false" aria-controls="api-key-spoiler">
+                        API Key
+                    </button>
+                    <div class="collapse" id="api-key-spoiler">
+                        <div class="card card-body">
+                            <span th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
+                        </div>
+                    </div>
+                </th:block>
+
+                <input id="attrs-state" type="hidden" value="ACTIVE" th:value="${customer.getState().name()}" />
             </div>
         </div>
     </div>
@@ -155,6 +187,12 @@
                 suspendAccount();
             }
         })
+
+        // TODO remove
+        if (accountRole !== 'admin')
+            $('#admin-space').hide();
+        if (accountRole !== 'customer')
+            $('#customer-space').hide();
 
         function activateAccount() {
             // TODO fill with implementation
