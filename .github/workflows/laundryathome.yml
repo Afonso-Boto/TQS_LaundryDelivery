@@ -31,4 +31,3 @@ jobs:
           path: LaundryAtHome/LaundryPlatform/target/surefire-reports/TEST-*.xml
           reporter: java-junit
           fail-on-error: true
-          
