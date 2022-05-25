@@ -186,93 +186,91 @@
     </div>
 
     <div class="container">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
+        <div class="row">
+            <div class="col-12">
+                <h2><span id="header-account-type" th:text="${accountType.substring(0, 1).toUpperCase() + accountType.substring(1)}">Rider</span> applications</h2>
                 <div>
-                    <h2><span id="header-account-type" th:text="${accountType.substring(0, 1).toUpperCase() + accountType.substring(1)}">Rider</span> applications</h2>
-                    <div>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <label for="filter-pending">Pending</label>
-                                <input type="checkbox" id="filter-pending" name="filter-pending" checked />
-                            </div>
-                            <div>
-                                <label for="filter-type">Type</label>
-                                <select id="filter-type">
-                                    <option value="rider" selected>Rider</option>
-                                    <option value="customer">Customer</option>
-                                </select>
-                            </div>
-
-                            <button id="filter-riders-apply" type="button" class="btn btn-primary">Apply</button>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label for="filter-pending">Pending</label>
+                            <input type="checkbox" id="filter-pending" name="filter-pending" checked />
                         </div>
+                        <div>
+                            <label for="filter-type">Type</label>
+                            <select id="filter-type">
+                                <option value="rider" selected>Rider</option>
+                                <option value="customer">Customer</option>
+                            </select>
+                        </div>
+
+                        <button id="filter-riders-apply" type="button" class="btn btn-primary">Apply</button>
                     </div>
-                    <table id="table-riders" class="table table-hover" th:if="${accountType.equals('rider')}">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Citizen ID</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Form</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="riderApp : ${riderAppList}">
-                            <td th:text="${riderApp.getId()}">5</td>
-                            <td th:text="${riderApp.getName()}">Manuel</td>
-                            <td th:text="${riderApp.getCitizenId()}">987654321</td>
-                            <td th:text="${riderApp.getTime()}">2022/05/11 19:00:00</td>
-                            <td>
-                                <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${riderApp.getId()}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
-                                    <i class="fa fa-clipboard"></i>
-                                </button>
-                            </td>
-
-                            <th:block th:with="baseId='attrs-rider-' + ${riderApp.getId()} + '-'">
-                                <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.getName().name()}" />
-                                <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.getEmail().name()}" />
-                                <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.getCitizenId().name()}" />
-                                <input id="attrs-rider-5-time" th:id="${baseId} + time" type="hidden" value="2022/05/11 19:00:00" th:value="${riderApp.getTime().name()}" />
-                                <input id="attrs-rider-5-state" th:id="${baseId} + state" type="hidden" value="PENDING" th:value="${riderApp.getState().name()}" />
-                            </th:block>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <table id="table-customers" class="table table-hover" th:unless="${accountType.equals('rider')}" style="display: none;">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Service type</th>
-                            <th scope="col">Time</th>
-                            <th scope="col">Form</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="customerApp : ${customerAppList}">
-                            <td th:text="${customerApp.getId()}">3</td>
-                            <td th:text="${customerApp.getName()}">Manuel Food Service</td>
-                            <td th:text="${customerApp.getServiceType()}">Food</td>
-                            <td th:text="${customerApp.getTime()}">2021/01/23 11:30:01</td>
-                            <td>
-                                <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${customerApp.getId()}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
-                                    <i class="fa fa-clipboard"></i>
-                                </button>
-                            </td>
-
-                            <th:block th:with="baseId='attrs-customer-' + ${customerApp.getId()} + '-'">
-                                <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.getName().name()}" />
-                                <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.getEmail().name()}" />
-                                <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.getServiceType().name()}" />
-                                <input id="attrs-customer-3-time" th:id="${baseId} + time" type="hidden" value="2021/01/23 11:30:01" th:value="${customerApp.getTime().name()}" />
-                                <input id="attrs-customer-3-state" th:id="${baseId} + state" type="hidden" value="REFUSED" th:value="${customerApp.getState().name()}" />
-                            </th:block>
-                        </tr>
-                        </tbody>
-                    </table>
                 </div>
+                <table id="table-riders" class="table table-hover" th:if="${accountType.equals('rider')}">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Citizen ID</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Form</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="riderApp : ${riderAppList}">
+                        <td th:text="${riderApp.getId()}">5</td>
+                        <td th:text="${riderApp.getName()}">Manuel</td>
+                        <td th:text="${riderApp.getCitizenId()}">987654321</td>
+                        <td th:text="${riderApp.getTime()}">2022/05/11 19:00:00</td>
+                        <td>
+                            <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${riderApp.getId()}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
+                        </td>
+
+                        <th:block th:with="baseId='attrs-rider-' + ${riderApp.getId()} + '-'">
+                            <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.getName().name()}" />
+                            <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.getEmail().name()}" />
+                            <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.getCitizenId().name()}" />
+                            <input id="attrs-rider-5-time" th:id="${baseId} + time" type="hidden" value="2022/05/11 19:00:00" th:value="${riderApp.getTime().name()}" />
+                            <input id="attrs-rider-5-state" th:id="${baseId} + state" type="hidden" value="PENDING" th:value="${riderApp.getState().name()}" />
+                        </th:block>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table id="table-customers" class="table table-hover" th:unless="${accountType.equals('rider')}" style="display: none;">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Service type</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Form</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customerApp : ${customerAppList}">
+                        <td th:text="${customerApp.getId()}">3</td>
+                        <td th:text="${customerApp.getName()}">Manuel Food Service</td>
+                        <td th:text="${customerApp.getServiceType()}">Food</td>
+                        <td th:text="${customerApp.getTime()}">2021/01/23 11:30:01</td>
+                        <td>
+                            <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${customerApp.getId()}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
+                        </td>
+
+                        <th:block th:with="baseId='attrs-customer-' + ${customerApp.getId()} + '-'">
+                            <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.getName().name()}" />
+                            <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.getEmail().name()}" />
+                            <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.getServiceType().name()}" />
+                            <input id="attrs-customer-3-time" th:id="${baseId} + time" type="hidden" value="2021/01/23 11:30:01" th:value="${customerApp.getTime().name()}" />
+                            <input id="attrs-customer-3-state" th:id="${baseId} + state" type="hidden" value="REFUSED" th:value="${customerApp.getState().name()}" />
+                        </th:block>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

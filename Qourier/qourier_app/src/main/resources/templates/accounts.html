@@ -113,79 +113,77 @@
     </nav>
 
     <div class="container">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
+        <div class="row">
+            <div class="col-12">
+                <h2><span id="header-account-type" th:text="${accountType.substring(0, 1).toUpperCase() + accountType.substring(1)}">Rider</span> accounts</h2>
                 <div>
-                    <h2><span id="header-account-type" th:text="${accountType.substring(0, 1).toUpperCase() + accountType.substring(1)}">Rider</span> accounts</h2>
-                    <div>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <label for="filter-active">Active</label>
-                                <input type="checkbox" id="filter-active" name="filter-active" />
-                            </div>
-                            <div>
-                                <label for="filter-type">Type</label>
-                                <select id="filter-type">
-                                    <option value="rider" selected>Rider</option>
-                                    <option value="customer">Customer</option>
-                                </select>
-                            </div>
-
-                            <button id="filter-riders-apply" type="button" class="btn btn-primary">Apply</button>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label for="filter-active">Active</label>
+                            <input type="checkbox" id="filter-active" name="filter-active" />
                         </div>
-                    </div>
-                    <table id="table-riders" class="table table-hover" th:if="${accountType.equals('rider')}">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Active</th>
-                                <th scope="col">Profile</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="riderAcc : ${riderAccList}" th:with="${riderAcc}">
-                                <td th:text="${id}">0</td>
-                                <td th:text="${name}">Diego</td>
-                                <td th:text="${active}">No</td>
-                                <td>
-                                    <a href="profile_rider.html?role=admin" th:href="@{/profile(id=${id})}">
-                                        <button type="button" class="btn btn-primary">
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <div>
+                            <label for="filter-type">Type</label>
+                            <select id="filter-type">
+                                <option value="rider" selected>Rider</option>
+                                <option value="customer">Customer</option>
+                            </select>
+                        </div>
 
-                    <table id="table-customers" class="table table-hover" style="display: none;">
-                        <thead>
+                        <button id="filter-riders-apply" type="button" class="btn btn-primary">Apply</button>
+                    </div>
+                </div>
+                <table id="table-riders" class="table table-hover" th:if="${accountType.equals('rider')}">
+                    <thead>
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Service type</th>
                             <th scope="col">Active</th>
                             <th scope="col">Profile</th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="customerAcc : ${customerAccList}" th:with="${customerAcc}">
-                            <td th:text="${id}">1</td>
-                            <td th:text="${name}">Cristina Laundry</td>
-                            <td th:text="${serviceType}">Laundry</td>
-                            <td th:text="${active}">Yes</td>
+                    </thead>
+                    <tbody>
+                        <tr th:each="riderAcc : ${riderAccList}" th:with="${riderAcc}">
+                            <td th:text="${id}">0</td>
+                            <td th:text="${name}">Diego</td>
+                            <td th:text="${active}">No</td>
                             <td>
-                                <a href="profile_customer.html?role=admin" th:href="@{/profile(id=${id})}">
+                                <a href="profile_rider.html?role=admin" th:href="@{/profile(id=${id})}">
                                     <button type="button" class="btn btn-primary">
                                         <i class="fa fa-eye"></i>
                                     </button>
                                 </a>
                             </td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
+
+                <table id="table-customers" class="table table-hover" style="display: none;">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Service type</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Profile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customerAcc : ${customerAccList}" th:with="${customerAcc}">
+                        <td th:text="${id}">1</td>
+                        <td th:text="${name}">Cristina Laundry</td>
+                        <td th:text="${serviceType}">Laundry</td>
+                        <td th:text="${active}">Yes</td>
+                        <td>
+                            <a href="profile_customer.html?role=admin" th:href="@{/profile(id=${id})}">
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
