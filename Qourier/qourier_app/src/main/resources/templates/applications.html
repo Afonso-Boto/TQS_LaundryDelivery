@@ -119,6 +119,10 @@
                     <div>
                         <div class="d-flex justify-content-between">
                             <div>
+                                <label for="filter-pending">Pending</label>
+                                <input type="checkbox" id="filter-pending" name="filter-pending" checked />
+                            </div>
+                            <div>
                                 <label for="filter-type">Type</label>
                                 <select id="filter-type">
                                     <option value="rider" selected>Rider</option>
@@ -211,6 +215,7 @@
 
     <script>
 
+        let filterPending = $('#filter-pending');
         let filterType = $('#filter-type');
 
         $('#filter-riders-apply').click(function () {
@@ -221,16 +226,21 @@
         function applyFilters(type) {
             // TODO prototype, fill with implementation
 
+            let pending = filterPending.prop('checked');
+
             if (type === 'rider') {
-                $('#table-riders').show();
+                if (pending)
+                    $('#table-riders').show();
                 $('#table-customers').hide();
                 $('#header-account-type').text('Rider');
             }
             else {
                 $('#table-riders').hide();
-                $('#table-customers').show();
+                if (pending)
+                    $('#table-customers').show();
                 $('#header-account-type').text('Customer');
             }
+
         }
 
     </script>
