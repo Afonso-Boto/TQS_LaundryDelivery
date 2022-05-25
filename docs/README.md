@@ -13,7 +13,7 @@ Below are the main points that were defined:
         - One Cucumber feature file incorporating the user story details in the project's test package directory, in a `cucumber` folder (e.g. `src/test/java/org/project/app/cucumber`)
         - Any Java unit and integration tests for the classes involved in the realization of the user story
     - The merges to the development branch are done using Pull Requests (PRs), which will run an automated QA analysis to determine whether the increment meets the quality requirements. In case the analysis fails, the code should be fixed to pass the quality gates defined. The code will also be manually reviewed by the Product Owner
-- [The commits' labels are not defined yet]
+- The commits should be prefixed with a label containing the Jira ID of the respective task being done (e.g. [TQS-22])
 - The end of every development iteration/sprint should have a Pull Request from the development branch (`dev`) into the main branch (`main`), which will also run a QA analysis
 
 These practices should be applied for each of the two sub-projects (Qourier and LaundyAtHome), which are developed in parallel and by pairs. The `dev` branches are distinct, but they should both successfully merge to the project's `main` branch.
