@@ -18,10 +18,12 @@ Below are the main points that were defined:
 
 These practices should be applied for each of the two sub-projects (Qourier and LaundyAtHome), which are developed in parallel and by pairs. The `dev` branches are distinct, but they should both successfully merge to the project's `main` branch.
 
+The release branch will be automatically created, which will merge both development branches and create a PR to the main branch 2 days before the end of the current sprint. The Product Owner is automatically assigned to this PR as a reviewer, and the final merge to the main branch should be manually applied by them.
+
 Because a branch will be created for each user story, there may be cases where multiple user stories, and therefore multiple branches, will have to develop the same functionality. This results in awkward organization of where (which branch) the functionality and the tests should be developed. Therefore, each user story is divided in tasks, which represent application functionality with greater granularity. With this in mind, we established that **user stories whose tasks intersect should not be done in parallel**. Below is an example of this user story organization:
 
 ![User Story organization](images/user_story_organization.svg)
 
 Both the Qourier WebApp's user stories are dependent on the `Admin authentication` task. As a result, they should not be developed in parallel, but each of them can be developed in parallel with the `Request a delivery` user story.
 
-**\[TODO\]** Therefore, the development approach is iterative at the user story level, and incremental at the task level.
+Therefore, the development approach is iterative at the user story level, and incremental at the task level.
