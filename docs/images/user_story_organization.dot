@@ -5,7 +5,7 @@ digraph {
         height="0.8"
         labelloc=b
         shape=none
-        fontname = "Helvetica"
+        fontname="Helvetica"
     ]
 
     epic1 [image="epic.svg", label="Qourier WebApp"]
@@ -17,7 +17,7 @@ digraph {
 
     t1 [image="task.svg", label="\"Rider progress report\" API endpoint"]
     t2 [image="task.svg", label="Admin authentication"]
-    t3 [image="task.svg", label="Setup Grafana integration"]
+    t3 [image="task.svg", label="Set up Grafana integration"]
     t4 [image="task.svg", label="\"Accept delivery\" API endpoint"]
 
     {t1, t2} -> us1
