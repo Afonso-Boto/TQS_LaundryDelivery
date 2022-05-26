@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    platform: linux/x86_64
+    image: mysql
+    env_file: ./.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    volumes:
+      - ./volumes/mysql/db:/var/lib/mysql
+      - ./volumes/mysql/scripts:/docker-entrypoint-initdb.d
+
+  laundry_app:
+    depends_on:
+      - mysqldb
+    build: ./LaundryPlatform
+    env_file: ./.env
+    ports:
+      - $SPRING_LAUNDRY_LOCAL_PORT:$SPRING_DOCKER_PORT
+    volumes:
+      - ./volumes/laundry/:/root/.m2
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:
