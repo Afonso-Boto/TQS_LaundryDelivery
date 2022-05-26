@@ -22,7 +22,7 @@ The release branch will be automatically created, which will merge both developm
 
 Because a branch will be created for each user story, there may be cases where multiple user stories, and therefore multiple branches, will have to develop the same functionality. This results in awkward organization of where (which branch) the functionality and the tests should be developed. Therefore, each user story is divided in tasks, which represent application functionality with greater granularity. With this in mind, we established that **user stories whose tasks intersect should not be done in parallel**. Below is an example of this user story organization:
 
-![User Story organization](images/user_story_organization.svg)
+![User Story organization](images/user_story_organization.png)
 
 Both the Qourier WebApp's user stories are dependent on the `Admin authentication` task. As a result, they should not be developed in parallel, but each of them can be developed in parallel with the `Request a delivery` user story.
 

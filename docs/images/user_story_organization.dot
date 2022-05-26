@@ -2,7 +2,7 @@ digraph {
 
     node [
         imagepos="tc"
-        height="1"
+        height="0.8"
         labelloc=b
         shape=none
         fontname = "Helvetica"
