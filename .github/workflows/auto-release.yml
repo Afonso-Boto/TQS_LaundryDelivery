@@ -1,0 +1,33 @@
+name: Auto release
+
+on:
+  schedule:
+    - cron: '0 0 * * 2'
+  
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: release
+    - name: Merge the Qourier development branch
+      uses: devmasx/merge-branch@master
+      with:
+        type: now
+        from_branch: qourier_dev
+        target_branch: release
+        github_token: ${{ github.token }}
+    - name: Merge the LaundryAtHome development branch
+      uses: devmasx/merge-branch@master
+      with:
+        type: now
+        from_branch: laundryathome_dev
+        target_branch: release
+        github_token: ${{ github.token }}
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        branch: main
+        reviewers: tomascandeias
