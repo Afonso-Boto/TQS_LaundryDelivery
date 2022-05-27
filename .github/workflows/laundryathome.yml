@@ -32,3 +32,7 @@ jobs:
           path: LaundryAtHome/LaundryPlatform/target/surefire-reports/TEST-*.xml
           reporter: java-junit
           fail-on-error: true
+    - name: Auto assign all devs as reviewers
+      uses: kentaro-m/auto-assign-action@v1.2.1
+      with:
+        configuration-path: '.github/auto_assign_laundryathome.yml'
