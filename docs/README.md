@@ -9,6 +9,7 @@ Documents detailing the project's various aspects, including the development wor
 The development of the project's increments follows a defined conduct in order to maintain code quality throughout the development cycle. We use a Behavior Driven Development (BDD) approach with the Gitflow workflow.
 Below are the main points that were defined:
 - Develop each feature (user story) on a separate branch, which will be later merged back into the respective development branch (`dev`)
+    - The branch name should be TQS-{Jira ID}-{user story title}, e.g. TQS-61-rider-profile-stats
     - The first commits to these feature branches should only contain tests, incorporating the acceptance criteria defined in the respective user story. At maximum, the necessary project classes to use in the tests should only include the basic interface, without any implementation. Therefore, **the necessary files in these commits are**:
         - One Cucumber feature file incorporating the user story details in the project's test package directory, in a `cucumber` folder (e.g. `src/test/resources/org/project/app/cucumber`)
         - Any Java unit and integration tests for the classes involved in the realization of the user story
