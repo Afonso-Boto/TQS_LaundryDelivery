@@ -12,7 +12,16 @@ services:
     volumes:
       - ./volumes/mysql/db:/var/lib/mysql
       - ./volumes/mysql/scripts:/docker-entrypoint-initdb.d
-  
+
+  prometheus:
+    image: prom/prometheus:v2.30.3
+    ports:
+      - 9090:9090
+    volumes:
+      #- ../volumes/prometheus:/etc/prometheus
+      - prometheus-data:/prometheus
+    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
+
   grafana:
     image: grafana/grafana
     env_file: .env
@@ -21,8 +30,8 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=$GF_USERS_ALLOW_SIGN_UP
       - GF_AUTH_ANONYMOUS_ENABLED=$GF_AUTH_ANONYMOUS_ENABLED
     user: "472"
-    #depends_on:
-    #  - 
+    depends_on:
+      - prometheus
     ports:
       - $GF_LOCAL_PORT:$GF_DOCKER_PORT
     volumes:
@@ -44,3 +53,4 @@ services:
 
 volumes:
   db:
+  prometheus-data:
