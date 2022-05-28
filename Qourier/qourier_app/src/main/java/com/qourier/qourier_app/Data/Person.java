@@ -2,7 +2,6 @@ package com.qourier.qourier_app.Data;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import javax.management.relation.Role;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
