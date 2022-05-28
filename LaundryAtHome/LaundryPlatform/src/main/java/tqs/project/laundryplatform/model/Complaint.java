@@ -16,6 +16,10 @@ public class Complaint {
     @Column(name = "description")
     private String description;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    Order order;
+
     public Complaint(String title, String description) {
         this.title = title;
         this.description = description;

@@ -1,6 +1,7 @@
 package tqs.project.laundryplatform.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "User")
@@ -24,6 +25,10 @@ public class User {
 
     @Column(name = "phone_number")
     private int phoneNumber;
+
+    @OneToMany(mappedBy = "user")
+    Set<Order> orders;
+
 
     public User(String username, String email, String password, String fullName, int phoneNumber) {
         this.username = username;

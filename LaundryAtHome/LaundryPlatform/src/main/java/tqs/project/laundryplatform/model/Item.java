@@ -16,6 +16,14 @@ public class Item {
     @Column(name = "is_dark")
     private boolean isDark;
 
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "item_type_id")
+    ItemType itemType;
+
     public Item(int number, boolean isDark) {
         this.number = number;
         this.isDark = isDark;

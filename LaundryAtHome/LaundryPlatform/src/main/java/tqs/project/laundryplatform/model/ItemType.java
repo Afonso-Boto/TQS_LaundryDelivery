@@ -1,6 +1,7 @@
 package tqs.project.laundryplatform.model;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "ItemType")
@@ -15,6 +16,9 @@ public class ItemType {
 
     @Column(name = "price")
     private double price;
+
+    @OneToMany(mappedBy = "itemType")
+    Set<Item> items;
 
     public ItemType(String name, double price) {
         this.name = name;
