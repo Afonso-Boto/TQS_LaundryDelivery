@@ -1,6 +1,7 @@
 package com.qourier.qourier_app.Data;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -18,7 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Testcontainers
 @SpringBootTest
 public class PersonRepositoryTest {
-    Person customer, rider, admin;
+    Customer customer;
+    Rider rider;
+    Admin admin;
 
     @Container
     public static MySQLContainer container = new MySQLContainer("mysql:8.0.29")
@@ -27,7 +30,11 @@ public class PersonRepositoryTest {
             .withDatabaseName("test_db");
 
     @Autowired
-    private PersonRepository personRepository;
+    private CustomerRepository customerRepository;
+    @Autowired
+    private AdminRepository adminRepository;
+    @Autowired
+    private RiderRepository riderRepository;
 
     // read configuration from running db
     @DynamicPropertySource
@@ -39,21 +46,26 @@ public class PersonRepositoryTest {
 
     @Test
     public void  whenMultiplePeopleAdded_thenAllPeoplePersisted() {
-        rider = new Person("Name0", "email0@mail.com", "Password0", 0, "0123456789");
-        customer = new Person("Name1", "email1@mail.com", "Password1", 1, "Laundry stuff");
-        admin = new Person("Name2", "email2@mail.com", "Password2");
+        // Rider
+        rider = new Rider("Name0", "email0@mail.com", "Password0", "0123456789");
+        riderRepository.save(rider);
+        List<Rider> riderPersisted = riderRepository.findAll();
+        assertThat(riderPersisted).hasSize(1);
+        assertThat(riderPersisted.get(0).getName()).isEqualTo("Name0");
 
-        List<Person> people = List.of(
-            rider,
-            customer,
-            admin
-        );
+        // Customer
+        customer = new Customer("Name1", "email1@mail.com", "Password1", "Laundry stuff");
+        customerRepository.save(customer);
+        List<Customer> customerPersisted = customerRepository.findAll();
+        assertThat(customerPersisted).hasSize(1);
+        assertThat(customerPersisted.get(0).getName()).isEqualTo("Name1");
 
-        personRepository.saveAll(people);
-
-        List<Person> peoplePersisted = personRepository.findAll();
-        assertThat(peoplePersisted).hasSize(people.size());
-        assertThat(peoplePersisted).containsExactlyElementsOf(people);
+        // Admin
+        admin = new Admin("Name2", "email2@mail.com", "Password2");
+        adminRepository.save(admin);
+        List<Admin> adminPersisted = adminRepository.findAll();
+        assertThat(adminPersisted).hasSize(1);
+        assertThat(adminPersisted.get(0).getName()).isEqualTo("Name2");
     }
 
 }
