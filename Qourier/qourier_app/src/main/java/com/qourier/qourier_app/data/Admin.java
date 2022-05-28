@@ -21,6 +21,7 @@ public class Admin {
 
     public Admin(Account account) {
         account.setState(AccountState.ACTIVE);
+        account.setRole(AccountRole.ADMIN);
         this.account = account;
     }
 

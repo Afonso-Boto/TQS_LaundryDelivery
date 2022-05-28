@@ -1,8 +1,6 @@
 package com.qourier.qourier_app.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -24,6 +22,8 @@ public class Customer {
     private String servType;
 
     public Customer(Account account, String servType) {
+        account.setState(AccountState.PENDING);
+        account.setRole(AccountRole.CUSTOMER);
         this.account = account;
         this.servType = servType;
     }

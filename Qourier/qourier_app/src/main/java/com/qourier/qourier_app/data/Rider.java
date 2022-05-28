@@ -1,10 +1,7 @@
 package com.qourier.qourier_app.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.persistence.*;
 
@@ -25,6 +22,8 @@ public class Rider {
     private String citizenId;
 
     public Rider(Account account, String citizenId){
+        account.setState(AccountState.PENDING);
+        account.setRole(AccountRole.RIDER);
         this.account = account;
         this.citizenId = citizenId;
     }
