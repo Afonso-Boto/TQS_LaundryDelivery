@@ -34,40 +34,34 @@ public class AccountManager {
                 : Optional.empty();
     }
 
-    public boolean registerAdmin(AdminRegisterRequest request) {
+    public Admin registerAdmin(AdminRegisterRequest request) {
         if (accountRepository.existsById(request.getEmail()))
-            return false;
+            throw new AccountAlreadyRegisteredException();
 
         Account account = generateAccount(request);
         Admin admin = new Admin(account);
 
-        adminRepository.save(admin);
-
-        return true;
+        return adminRepository.save(admin);
     }
 
-    public boolean registerRider(RiderRegisterRequest request) {
+    public Rider registerRider(RiderRegisterRequest request) {
         if (accountRepository.existsById(request.getEmail()))
-            return false;
+            throw new AccountAlreadyRegisteredException();
 
         Account account = generateAccount(request);
         Rider rider = new Rider(account, request.getCitizenId());
 
-        riderRepository.save(rider);
-
-        return true;
+        return riderRepository.save(rider);
     }
 
-    public boolean registerCustomer(CustomerRegisterRequest request) {
+    public Customer registerCustomer(CustomerRegisterRequest request) {
         if (accountRepository.existsById(request.getEmail()))
-            return false;
+            throw new AccountAlreadyRegisteredException();
 
         Account account = generateAccount(request);
         Customer customer = new Customer(account, request.getServType());
 
-        customerRepository.save(customer);
-
-        return true;
+        return customerRepository.save(customer);
     }
 
     private Account generateAccount(RegisterRequest registerRequest) {
