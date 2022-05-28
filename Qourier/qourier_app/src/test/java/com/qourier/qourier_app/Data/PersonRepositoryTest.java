@@ -1,6 +1,9 @@
 package com.qourier.qourier_app.Data;
 
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -43,29 +46,73 @@ public class PersonRepositoryTest {
         registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.username", container::getUsername);
     }
-
-    @Test
-    public void  whenMultiplePeopleAdded_thenAllPeoplePersisted() {
+    @BeforeEach
+    public void setUp() {
         // Rider
         rider = new Rider("Name0", "email0@mail.com", "Password0", "0123456789");
         riderRepository.save(rider);
+
+        // Customer
+        customer = new Customer("Name1", "email1@mail.com", "Password1", "Laundry stuff");
+        customerRepository.save(customer);
+
+        // Admin
+        admin = new Admin("Name2", "email2@mail.com", "Password2");
+        adminRepository.save(admin);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        riderRepository.deleteAll();
+        customerRepository.deleteAll();
+        adminRepository.deleteAll();
+    }
+
+    @Test
+    public void  whenFindPeopleName_thenReturnPerson() {
+        // Rider
+        Rider riderPersisted = riderRepository.findByName("Name0");
+        assertThat(riderPersisted.getEmail()).isEqualTo(rider.getEmail());
+
+        // Customer
+        Customer customerPersisted = customerRepository.findByName("Name1");
+        assertThat(customerPersisted.getEmail()).isEqualTo(customer.getEmail());
+
+        // Admin
+        Admin adminPersisted = adminRepository.findByName("Name2");
+        assertThat(adminPersisted.getEmail()).isEqualTo(admin.getEmail());
+    }
+
+    @Test
+    public void  whenInvalidPersonName_thenReturnNull() {
+        // Customer
+        Customer fromRepo0 = customerRepository.findByName("notName");
+        assertThat( fromRepo0 ).isNull();
+
+        // Admin
+        Admin fromRepo1 = adminRepository.findByName("notName");
+        assertThat( fromRepo1 ).isNull();
+
+        // Rider
+        Rider fromRepo2 = riderRepository.findByName("notName");
+        assertThat( fromRepo2 ).isNull();
+    }
+
+    @Test
+    public void  whenMultiplePersonAdded_thenAllPeoplePersisted() {
+        // Rider
         List<Rider> riderPersisted = riderRepository.findAll();
         assertThat(riderPersisted).hasSize(1);
         assertThat(riderPersisted.get(0).getName()).isEqualTo("Name0");
 
         // Customer
-        customer = new Customer("Name1", "email1@mail.com", "Password1", "Laundry stuff");
-        customerRepository.save(customer);
         List<Customer> customerPersisted = customerRepository.findAll();
         assertThat(customerPersisted).hasSize(1);
         assertThat(customerPersisted.get(0).getName()).isEqualTo("Name1");
 
         // Admin
-        admin = new Admin("Name2", "email2@mail.com", "Password2");
-        adminRepository.save(admin);
         List<Admin> adminPersisted = adminRepository.findAll();
         assertThat(adminPersisted).hasSize(1);
         assertThat(adminPersisted.get(0).getName()).isEqualTo("Name2");
     }
-
 }
