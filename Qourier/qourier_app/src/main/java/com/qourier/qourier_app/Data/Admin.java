@@ -6,6 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "admin")
 public class Admin extends Person{
     @Id
