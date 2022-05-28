@@ -1,6 +1,9 @@
-package com.qourier.qourier_app.Data;
+package com.qourier.qourier_app.data;
 
 
+import com.qourier.qourier_app.repository.AdminRepository;
+import com.qourier.qourier_app.repository.CustomerRepository;
+import com.qourier.qourier_app.repository.RiderRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-public class PersonRepositoryTest {
+class PersonRepositoryTest {
     Customer customer;
     Rider rider;
     Admin admin;
@@ -48,15 +51,17 @@ public class PersonRepositoryTest {
     @BeforeEach
     public void setUp() {
         // Rider
-        rider = new Rider("Name0", "email0@mail.com", "Password0", "0123456789");
+        rider = new Rider(new Account("Name0", "email0@mail.com", "Password0"),
+                "0123456789");
         riderRepository.save(rider);
 
         // Customer
-        customer = new Customer("Name1", "email1@mail.com", "Password1", "Laundry stuff");
+        customer = new Customer(new Account("Name1", "email1@mail.com", "Password1"),
+                "Laundry stuff");
         customerRepository.save(customer);
 
         // Admin
-        admin = new Admin("Name2", "email2@mail.com", "Password2");
+        admin = new Admin(new Account("Name2", "email2@mail.com", "Password2"));
         adminRepository.save(admin);
     }
 
@@ -68,50 +73,53 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void  whenFindPeopleName_thenReturnPerson() {
+    void  whenFindPeopleName_thenReturnPerson() {
         // Rider
-        Rider riderPersisted = riderRepository.findByName("Name0");
-        assertThat(riderPersisted.getEmail()).isEqualTo(rider.getEmail());
+        List<Rider> riderPersisted = riderRepository.findByAccount_Name("Name0");
+        assertThat(riderPersisted).hasSize(1);
+        assertThat(riderPersisted.get(0).getEmail()).isEqualTo(rider.getEmail());
 
         // Customer
-        Customer customerPersisted = customerRepository.findByName("Name1");
-        assertThat(customerPersisted.getEmail()).isEqualTo(customer.getEmail());
+        List<Customer> customerPersisted = customerRepository.findByAccount_Name("Name1");
+        assertThat(customerPersisted).hasSize(1);
+        assertThat(customerPersisted.get(0).getEmail()).isEqualTo(customer.getEmail());
 
         // Admin
-        Admin adminPersisted = adminRepository.findByName("Name2");
-        assertThat(adminPersisted.getEmail()).isEqualTo(admin.getEmail());
+        List<Admin> adminPersisted = adminRepository.findByAccount_Name("Name2");
+        assertThat(adminPersisted).hasSize(1);
+        assertThat(adminPersisted.get(0).getEmail()).isEqualTo(admin.getEmail());
     }
 
     @Test
-    public void  whenInvalidPersonName_thenReturnNull() {
+    void  whenInvalidPersonName_thenReturnNull() {
         // Customer
-        Customer fromRepo0 = customerRepository.findByName("notName");
-        assertThat( fromRepo0 ).isNull();
+        List<Customer> fromRepo0 = customerRepository.findByAccount_Name("notName");
+        assertThat( fromRepo0 ).isEmpty();
 
         // Admin
-        Admin fromRepo1 = adminRepository.findByName("notName");
-        assertThat( fromRepo1 ).isNull();
+        List<Admin> fromRepo1 = adminRepository.findByAccount_Name("notName");
+        assertThat( fromRepo1 ).isEmpty();
 
         // Rider
-        Rider fromRepo2 = riderRepository.findByName("notName");
-        assertThat( fromRepo2 ).isNull();
+        List<Rider> fromRepo2 = riderRepository.findByAccount_Name("notName");
+        assertThat( fromRepo2 ).isEmpty();
     }
 
     @Test
-    public void  whenMultiplePersonAdded_thenAllPeoplePersisted() {
+    void  whenMultiplePersonAdded_thenAllPeoplePersisted() {
         // Rider
         List<Rider> riderPersisted = riderRepository.findAll();
         assertThat(riderPersisted).hasSize(1);
-        assertThat(riderPersisted.get(0).getName()).isEqualTo("Name0");
+        assertThat(riderPersisted.get(0).getAccount().getName()).isEqualTo("Name0");
 
         // Customer
         List<Customer> customerPersisted = customerRepository.findAll();
         assertThat(customerPersisted).hasSize(1);
-        assertThat(customerPersisted.get(0).getName()).isEqualTo("Name1");
+        assertThat(customerPersisted.get(0).getAccount().getName()).isEqualTo("Name1");
 
         // Admin
         List<Admin> adminPersisted = adminRepository.findAll();
         assertThat(adminPersisted).hasSize(1);
-        assertThat(adminPersisted.get(0).getName()).isEqualTo("Name2");
+        assertThat(adminPersisted.get(0).getAccount().getName()).isEqualTo("Name2");
     }
 }
