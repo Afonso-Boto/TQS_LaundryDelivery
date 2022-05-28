@@ -40,15 +40,17 @@ public class PersonRepositoryTest {
 
     @Test
     public void  whenMultiplePeopleAdded_thenAllPeoplePersisted() {
-        rider = personRepository.save(new Person("Name0", "email0@mail.com", "Password0", 0, "0123456789"));
-        customer = personRepository.save(new Person("Name1", "email1@mail.com", "Password1", 1, "Laundry stuff"));
-        admin = personRepository.save(new Person("Name2", "email2@mail.com", "Password2"));
+        rider = new Person("Name0", "email0@mail.com", "Password0", 0, "0123456789");
+        customer = new Person("Name1", "email1@mail.com", "Password1", 1, "Laundry stuff");
+        admin = new Person("Name2", "email2@mail.com", "Password2");
 
         List<Person> people = List.of(
             rider,
             customer,
             admin
         );
+
+        personRepository.saveAll(people);
 
         List<Person> peoplePersisted = personRepository.findAll();
         assertThat(peoplePersisted).hasSize(people.size());
