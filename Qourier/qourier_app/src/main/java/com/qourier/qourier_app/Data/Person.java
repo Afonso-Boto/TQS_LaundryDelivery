@@ -33,46 +33,30 @@ public class Person {
     private String CID;
     private String servType;
 
-    public Person() {
-    }
+    private AccountStates accountState;
 
     public Person(String name, String email, String password, Integer role, String roleInf) {
         this.name = name;
         this.email = email;
         this.password = DigestUtils.sha256Hex(password);
         /* Set roles
-            0 - admin
-            1 - rider
+            0 - rider
             2 - customer
          */
         switch (role) {
-            case 3 -> this.role = Roles.ADMIN;
-            case 1 -> {
-                this.role = Roles.Rider;
+            case 0 -> {
+                this.role = Roles.RIDER;
                 this.CID = roleInf;
             }
-            case 2 -> {
-                this.role = Roles.Customer;
+            case 1 -> {
+                this.role = Roles.CUSTOMER;
                 this.servType = roleInf;
             }
             default -> {
                 // Throw error?
             }
         }
-    }
-
-    public Person(String name, String email, String password, Roles role, String roleInf) {
-        this.name = name;
-        this.email = email;
-        this.password = DigestUtils.sha256Hex(password);
-        this.role = role;
-
-        // Set role info
-        if (this.role == Roles.Rider){
-            this.CID = roleInf;
-        }else{
-            this.servType = roleInf;
-        }
+        this.accountState = AccountStates.PENDING;
     }
 
     public Person(String name, String email, String password) {
@@ -80,7 +64,10 @@ public class Person {
         this.email = email;
         this.password = DigestUtils.sha256Hex(password);
         this.role = Roles.ADMIN;
+        this.accountState = AccountStates.ACTIVE;
     }
+
+    public Person() {}
 
     public Long getId() {
         return id;
