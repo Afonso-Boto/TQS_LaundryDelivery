@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PersonRepositoryTest {
     Person customer, rider, admin;
 
-    // instantiate the container passing selected config
     @Container
     public static MySQLContainer container = new MySQLContainer("mysql:8.0.29")
             .withUsername("demo")
