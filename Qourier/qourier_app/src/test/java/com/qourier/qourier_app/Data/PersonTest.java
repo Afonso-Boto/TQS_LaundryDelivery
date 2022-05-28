@@ -38,4 +38,12 @@ public class PersonTest {
         assertThat( admin.getCID() == null ).isEqualTo(true);
         assertThat( admin.getServType() == null ).isEqualTo(true);
     }
+
+    @Test
+    void whenRegisteringUserAssignsRightAccountState() {
+        // Test that roles where rightly assigned
+        assertThat( rider.getAccountState() ).isEqualTo( AccountStates.PENDING );
+        assertThat( customer.getAccountState() ).isEqualTo( AccountStates.PENDING );
+        assertThat( admin.getAccountState() ).isEqualTo( AccountStates.ACTIVE );
+    }
 }

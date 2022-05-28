@@ -124,5 +124,13 @@ public class Person {
     public void setServType(String servType) {
         this.servType = servType;
     }
+
+    public AccountStates getAccountState() {
+        return accountState;
+    }
+
+    public void setAccountState(AccountStates accountState) {
+        this.accountState = accountState;
+    }
 }
 
