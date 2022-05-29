@@ -100,7 +100,7 @@ public class AccountManager {
     }
 
     private Account generateAccount(RegisterRequest registerRequest) {
-        return new Account(registerRequest.getEmail(), hashPassword(registerRequest.getPassword()), registerRequest.getName());
+        return new Account(registerRequest.getName(), registerRequest.getEmail(), hashPassword(registerRequest.getPassword()));
     }
 
     private String hashPassword(String password) {
