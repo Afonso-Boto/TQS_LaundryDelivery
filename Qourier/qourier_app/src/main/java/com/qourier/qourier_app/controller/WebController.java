@@ -1,22 +1,20 @@
 package com.qourier.qourier_app.controller;
 
 import com.qourier.qourier_app.account.*;
-import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.AccountRole;
-import com.qourier.qourier_app.data.Customer;
-import com.qourier.qourier_app.data.Rider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
+
+import java.util.Locale;
+
+import static com.qourier.qourier_app.data.AccountRole.*;
 
 @Controller
 public class WebController {
@@ -52,6 +50,23 @@ public class WebController {
             if (cookie.getName().equals("role") && !cookie.getValue().isEmpty())
                 return true;
         return false;
+    }
+
+    // Get role
+    public AccountRole getRoleFromCookie(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+        for (Cookie cookie : cookies)
+            if (cookie.getName().equals("role"))
+                switch (cookie.getValue()) {
+                    case "ADMIN":
+                        return ADMIN;
+                    case "RIDER":
+                        return RIDER;
+                    case "CUSTOMER":
+                        return CUSTOMER;
+                }
+        return null;
     }
 
     private final AccountManager accountManager;
@@ -99,9 +114,8 @@ public class WebController {
             return "register_customer";
 
         // Set cookie for customer
-        setCookie(response, AccountRole.CUSTOMER);
+        setCookie(response, CUSTOMER);
 
-        // TODO redirection
         return "redirect:/index";
     }
 
@@ -111,9 +125,8 @@ public class WebController {
             return "register_rider";
 
         // Set cookie for rider
-        setCookie(response, AccountRole.RIDER);
+        setCookie(response, RIDER);
 
-        // TODO redirection
         return "redirect:/index";
     }
 
@@ -124,22 +137,19 @@ public class WebController {
 
     @GetMapping("/index")
     public String index(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
 
-        // TODO redirection
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
+        if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
             return "redirect:/login";
 
-        model.addAttribute("role", role);
+        model.addAttribute("role", getRoleFromCookie(request));
         return "index";
     }
 
     @GetMapping("/progress")
     public String progress(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
+        AccountRole role = ADMIN;
 
-        // TODO redirection
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
@@ -150,9 +160,8 @@ public class WebController {
 
     @GetMapping("/accounts")
     public String accounts(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
+        AccountRole role = ADMIN;
 
-        // TODO redirection
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
@@ -163,9 +172,8 @@ public class WebController {
 
     @GetMapping("/applications")
     public String applications(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
+        AccountRole role = ADMIN;
 
-        // TODO redirection
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
@@ -176,9 +184,8 @@ public class WebController {
 
     @GetMapping("/monitor")
     public String monitor(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
+        AccountRole role = ADMIN;
 
-        // TODO redirection
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
@@ -189,23 +196,19 @@ public class WebController {
 
     @GetMapping("/login")
     public String loginGet(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
 
-        // TODO redirection
         // Verify if logged in already
-        if (verifyCookie(request, role))
+        if (getRoleFromCookie(request) != null)
             return "redirect:/index";
 
-        model.addAttribute("role", role);
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
     }
 
     @GetMapping("/deliveries")
     public String deliveries(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
+        AccountRole role = RIDER;
 
-        // TODO redirection
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
@@ -216,22 +219,19 @@ public class WebController {
 
     @GetMapping("/profile")
     public String profile(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
 
-        // TODO redirection
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
+        if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
             return "redirect:/login";
 
-        model.addAttribute("role", role);
+        model.addAttribute("role", getRoleFromCookie(request));
         return "profile";
     }
 
     @GetMapping("/delivery_management")
     public String deliveryManagement(Model model, HttpServletRequest request) {
-        AccountRole role = AccountRole.ADMIN;
+        AccountRole role = CUSTOMER;
 
-        // TODO redirection
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
@@ -242,24 +242,12 @@ public class WebController {
 
     @GetMapping("/register_rider")
     public String registerRiderGet(Model model, HttpServletRequest request) {
-        AccountRole role;
-
-        // TODO redirection
-        role = AccountRole.ADMIN;
-
-        model.addAttribute("role", role);
         model.addAttribute("riderRegisterRequest", new RiderRegisterRequest());
         return "register_rider";
     }
 
     @GetMapping("/register_customer")
     public String registerCustomerGet(Model model, HttpServletRequest request) {
-        AccountRole role;
-
-        // TODO redirection
-        role = AccountRole.ADMIN;
-
-        model.addAttribute("role", role);
         model.addAttribute("customerRegisterRequest", new CustomerRegisterRequest());
         return "register_customer";
     }
