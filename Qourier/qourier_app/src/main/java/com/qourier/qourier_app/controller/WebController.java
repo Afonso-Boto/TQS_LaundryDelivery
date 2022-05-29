@@ -80,17 +80,15 @@ public class WebController {
     }
 
     @PostMapping("/login")
-    public String loginPost(LoginRequest user) {
+    public String loginPost(LoginRequest user, HttpServletResponse response) {
         LoginToken token = accountManager.login(user);
         if (token.getLoginResult().equals(LoginResult.WRONG_CREDENTIALS) || token.getLoginResult().equals(LoginResult.NON_EXISTENT_ACCOUNT))
             return "login";
 
-        // TODO redirection
-        return switch (token.getRole()) {
-            case ADMIN -> "index";
-            case RIDER -> "index";
-            case CUSTOMER -> "index";
-        };
+        // Set cookie for customer
+        setCookie(response, user.getEmail());
+
+        return "redirect:/index";
     }
 
     @GetMapping(value="/logout")
