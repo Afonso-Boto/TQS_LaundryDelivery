@@ -24,14 +24,12 @@ public class WebController {
 
     @PostMapping("/login")
     public String loginPost(@RequestBody LoginRequest user) {
-        Optional<Account> loggedInAccount = accountManager.login(user);
-        if (loggedInAccount.isEmpty())
+        LoginToken token = accountManager.login(user);
+        if (token.getLoginResult().equals(LoginResult.WRONG_CREDENTIALS) || token.getLoginResult().equals(LoginResult.NON_EXISTENT_ACCOUNT))
             return "login";
 
-        Account account = loggedInAccount.get();
-
         // TODO redirection
-        return switch (account.getRole()) {
+        return switch (token.getRole()) {
             case ADMIN -> "index";
             case RIDER -> "index";
             case CUSTOMER -> "index";
@@ -40,12 +38,8 @@ public class WebController {
 
     @PostMapping("/register_customer")
     public String registerCustomerPost(@RequestBody CustomerRegisterRequest request) {
-        Customer registeredCustomer;
-        try {
-            registeredCustomer = accountManager.registerCustomer(request);
-        } catch (AccountAlreadyRegisteredException ex) {
+        if (!accountManager.registerCustomer(request))
             return "register_customer";
-        }
 
         // TODO redirection
         return "index";
@@ -53,12 +47,8 @@ public class WebController {
 
     @PostMapping("/register_rider")
     public String registerRiderPost(@RequestBody RiderRegisterRequest request) {
-        Rider registeredRider;
-        try {
-            registeredRider = accountManager.registerRider(request);
-        } catch (AccountAlreadyRegisteredException ex) {
+        if (!accountManager.registerRider(request))
             return "register_rider";
-        }
 
         // TODO redirection
         return "index";

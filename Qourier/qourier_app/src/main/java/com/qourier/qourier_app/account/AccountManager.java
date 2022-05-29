@@ -26,42 +26,77 @@ public class AccountManager {
         this.customerRepository = customerRepository;
     }
 
-    public Optional<Account> login(LoginRequest request) {
-        Optional<Account> account = accountRepository.findById(request.getEmail());
+    public LoginToken login(LoginRequest request) {
+        Optional<Account> accountOptional = accountRepository.findById(request.getEmail());
 
-        return account.isPresent() && account.get().getPassword().equals(hashPassword(request.getPassword()))
-                ? account
-                : Optional.empty();
+        LoginToken token;
+        if (accountOptional.isEmpty())
+            token = new NullLoginToken(LoginResult.NON_EXISTENT_ACCOUNT);
+        else {
+            Account account = accountOptional.get();
+            if (!account.getPassword().equals(hashPassword(request.getPassword())))
+                token = new NullLoginToken(LoginResult.WRONG_CREDENTIALS);
+            else
+                token = new LoginToken(
+                        account.getEmail(),
+                        account.getRole(),
+                        LoginResult.LOGGED_IN
+                );
+        }
+
+        return token;
     }
 
-    public Admin registerAdmin(AdminRegisterRequest request) {
+    public boolean registerAdmin(AdminRegisterRequest request) {
         if (accountRepository.existsById(request.getEmail()))
-            throw new AccountAlreadyRegisteredException();
+            return false;
 
         Account account = generateAccount(request);
         Admin admin = new Admin(account);
 
-        return adminRepository.save(admin);
+        adminRepository.save(admin);
+
+        return true;
     }
 
-    public Rider registerRider(RiderRegisterRequest request) {
+    public boolean registerRider(RiderRegisterRequest request) {
         if (accountRepository.existsById(request.getEmail()))
-            throw new AccountAlreadyRegisteredException();
+            return false;
 
         Account account = generateAccount(request);
         Rider rider = new Rider(account, request.getCitizenId());
 
-        return riderRepository.save(rider);
+        riderRepository.save(rider);
+
+        return true;
     }
 
-    public Customer registerCustomer(CustomerRegisterRequest request) {
+    public boolean registerCustomer(CustomerRegisterRequest request) {
         if (accountRepository.existsById(request.getEmail()))
-            throw new AccountAlreadyRegisteredException();
+            return false;
 
         Account account = generateAccount(request);
         Customer customer = new Customer(account, request.getServType());
 
-        return customerRepository.save(customer);
+        customerRepository.save(customer);
+
+        return true;
+    }
+
+    public void acceptApplication(String email) {
+        // TODO
+    }
+
+    public void refuseApplication(String email) {
+        // TODO
+    }
+
+    public void suspendAccount(String email) {
+        // TODO
+    }
+
+    public void activateAccount(String email) {
+        // TODO
     }
 
     private Account generateAccount(RegisterRequest registerRequest) {
