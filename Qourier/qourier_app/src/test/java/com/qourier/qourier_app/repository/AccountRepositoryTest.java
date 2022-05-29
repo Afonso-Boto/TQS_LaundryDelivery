@@ -1,6 +1,10 @@
-package com.qourier.qourier_app.data;
+package com.qourier.qourier_app.repository;
 
 
+import com.qourier.qourier_app.data.Account;
+import com.qourier.qourier_app.data.Admin;
+import com.qourier.qourier_app.data.Customer;
+import com.qourier.qourier_app.data.Rider;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
@@ -23,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-class PersonRepositoryTest {
+class AccountRepositoryTest {
     Customer customer;
     Rider rider;
     Admin admin;
