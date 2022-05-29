@@ -20,9 +20,9 @@ import static com.qourier.qourier_app.data.AccountRole.*;
 public class WebController {
 
     // setCookie to user
-    public void setCookie(HttpServletResponse response, AccountRole role) {
+    public void setCookie(HttpServletResponse response, String email) {
         // Create cookie
-        Cookie jwtTokenCookie = new Cookie("role", role.toString());
+        Cookie jwtTokenCookie = new Cookie("id", email);
 
         jwtTokenCookie.setMaxAge(86400);
         jwtTokenCookie.setSecure(false);
@@ -37,7 +37,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("role") && cookie.getValue().equals(role.toString()))
+            if (cookie.getName().equals("id") && cookie.getValue().equals(role.toString()))
                 return true;
         return false;
     }
@@ -47,7 +47,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("role") && !cookie.getValue().isEmpty())
+            if (cookie.getName().equals("id") && !cookie.getValue().isEmpty())
                 return true;
         return false;
     }
@@ -57,8 +57,10 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("role"))
-                switch (cookie.getValue()) {
+            if (cookie.getName().equals("id")){
+                // TODO add method to get role from email
+                String email = "";
+                switch (email) {
                     case "ADMIN":
                         return ADMIN;
                     case "RIDER":
@@ -66,6 +68,7 @@ public class WebController {
                     case "CUSTOMER":
                         return CUSTOMER;
                 }
+            }
         return null;
     }
 
@@ -114,7 +117,7 @@ public class WebController {
             return "register_customer";
 
         // Set cookie for customer
-        setCookie(response, CUSTOMER);
+        setCookie(response, request.getEmail());
 
         return "redirect:/index";
     }
@@ -125,7 +128,7 @@ public class WebController {
             return "register_rider";
 
         // Set cookie for rider
-        setCookie(response, RIDER);
+        setCookie(response, request.getEmail());
 
         return "redirect:/index";
     }
