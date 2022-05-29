@@ -192,6 +192,7 @@ public class WebController {
 
         ModelAndView modelAndView = new ModelAndView(viewName);
         modelAndView.addObject("role", role);
+        modelAndView.addObject("loginRequest", new LoginRequest());
         return modelAndView;
     }
 
@@ -234,6 +235,36 @@ public class WebController {
 
         ModelAndView modelAndView = new ModelAndView(viewName);
         modelAndView.addObject("role", role);
+        return modelAndView;
+    }
+
+    @GetMapping("/register_rider")
+    public ModelAndView registerRiderGet() {
+        AccountRole role;
+        String viewName;
+
+        // TODO redirection
+        role = AccountRole.ADMIN;
+        viewName = "register_rider";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        modelAndView.addObject("riderRegisterRequest", new RiderRegisterRequest());
+        return modelAndView;
+    }
+
+    @GetMapping("/register_customer")
+    public ModelAndView registerCustomerGet() {
+        AccountRole role;
+        String viewName;
+
+        // TODO redirection
+        role = AccountRole.ADMIN;
+        viewName = "register_customer";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        modelAndView.addObject("customerRegisterRequest", new CustomerRegisterRequest());
         return modelAndView;
     }
 

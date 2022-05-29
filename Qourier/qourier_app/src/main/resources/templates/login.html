@@ -15,7 +15,7 @@
                         <h2>Login</h2>
                         <br>
 
-                        <form method="POST" action="index.html" th:action="@{/login}" th:object="${user}" class="login-register-form" id="login-form">
+                        <form method="POST" action="index.html" th:action="@{/login}" th:object="${loginRequest}" class="login-register-form" id="login-form">
                             <div class="form-group">
                                 <label for="email"><i class="fa fa-envelope"></i></label>
                                 <input type="text" th:field="*{email}" name="email" id="email" placeholder="Email"/>
