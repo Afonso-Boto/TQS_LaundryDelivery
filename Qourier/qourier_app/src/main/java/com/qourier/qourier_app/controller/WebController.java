@@ -44,7 +44,7 @@ public class WebController {
         return false;
     }
 
-    // Verefy cookie presence
+    // Verify cookie presence
     public Boolean HasCookie(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         if(cookies == null) return false;
@@ -94,147 +94,144 @@ public class WebController {
     }
 
     @PostMapping("/register_customer")
-    public String registerCustomerPost(@RequestBody CustomerRegisterRequest request) {
+    public String registerCustomerPost(@RequestBody CustomerRegisterRequest request, HttpServletResponse response) {
         if (!accountManager.registerCustomer(request))
             return "register_customer";
 
+        // Set cookie for customer
+        setCookie(response, AccountRole.CUSTOMER);
+
         // TODO redirection
-        return "index";
+        return "redirect:/index";
     }
 
     @PostMapping("/register_rider")
-    public String registerRiderPost(@RequestBody RiderRegisterRequest request) {
+    public String registerRiderPost(@RequestBody RiderRegisterRequest request, HttpServletResponse response) {
         if (!accountManager.registerRider(request))
             return "register_rider";
 
+        // Set cookie for rider
+        setCookie(response, AccountRole.RIDER);
+
         // TODO redirection
-        return "index";
+        return "redirect:/index";
     }
 
     @GetMapping("/")
-    public ModelAndView index() {
-        AccountRole role;
-        String viewName;
+    public String index(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "index";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "index";
     }
 
     @GetMapping("/progress")
-    public ModelAndView progress() {
-        AccountRole role;
-        String viewName;
+    public String progress(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "progress";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "progress";
     }
 
     @GetMapping("/accounts")
-    public ModelAndView accounts() {
-        AccountRole role;
-        String viewName;
+    public String accounts(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "accounts";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "accounts";
     }
 
     @GetMapping("/applications")
-    public ModelAndView applications() {
-        AccountRole role;
-        String viewName;
+    public String applications(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "applications";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "applications";
     }
 
     @GetMapping("/monitor")
-    public ModelAndView monitor() {
-        AccountRole role;
-        String viewName;
+    public String monitor(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "monitor";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "monitor";
     }
 
     @GetMapping("/login")
-    public ModelAndView loginGet() {
-        AccountRole role;
-        String viewName;
+    public String loginGet(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "login";
+        // Verify if logged in already
+        if (VerifyCookie(request, role))
+            return "redirect:/index";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "login";
     }
 
     @GetMapping("/deliveries")
-    public ModelAndView deliveries() {
-        AccountRole role;
-        String viewName;
+    public String deliveries(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "deliveries";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "deliveries";
     }
 
     @GetMapping("/profile")
-    public ModelAndView profile() {
-        AccountRole role;
-        String viewName;
+    public String profile(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "profile";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "profile";
     }
 
     @GetMapping("/delivery_management")
-    public ModelAndView deliveryManagement() {
-        AccountRole role;
-        String viewName;
+    public String deliveryManagement(Model model, HttpServletRequest request) {
+        AccountRole role = AccountRole.ADMIN;
 
         // TODO redirection
-        role = AccountRole.ADMIN;
-        viewName = "delivery_management";
+        // Verify if cookie role is right or not
+        if (!VerifyCookie(request, role))
+            return "redirect:/login";
 
-        ModelAndView modelAndView = new ModelAndView(viewName);
-        modelAndView.addObject("role", role);
-        return modelAndView;
+        model.addAttribute("role", role);
+        return "delivery_management";
     }
 
 }
