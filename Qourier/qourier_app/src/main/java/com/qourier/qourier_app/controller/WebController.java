@@ -7,9 +7,11 @@ import com.qourier.qourier_app.data.Customer;
 import com.qourier.qourier_app.data.Rider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -109,64 +111,130 @@ public class WebController {
         return "index";
     }
 
-    @GetMapping("/index")
-    public String index() {
+    @GetMapping("/")
+    public ModelAndView index() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "index";
+        role = AccountRole.ADMIN;
+        viewName = "index";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/progress")
-    public String progress() {
+    public ModelAndView progress() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "progress";
+        role = AccountRole.ADMIN;
+        viewName = "progress";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/accounts")
-    public String accounts() {
+    public ModelAndView accounts() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "accounts";
+        role = AccountRole.ADMIN;
+        viewName = "accounts";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/applications")
-    public String applications() {
+    public ModelAndView applications() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "applications";
+        role = AccountRole.ADMIN;
+        viewName = "applications";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/monitor")
-    public String monitor() {
+    public ModelAndView monitor() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "monitor";
+        role = AccountRole.ADMIN;
+        viewName = "monitor";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/login")
-    public String loginGet() {
+    public ModelAndView loginGet() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "login";
+        role = AccountRole.ADMIN;
+        viewName = "login";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/deliveries")
-    public String deliveries() {
+    public ModelAndView deliveries() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "deliveries";
+        role = AccountRole.ADMIN;
+        viewName = "deliveries";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/profile")
-    public String profile() {
+    public ModelAndView profile() {
+        AccountRole role;
+        String viewName;
+
         // TODO redirection
-        return "profile";
+        role = AccountRole.ADMIN;
+        viewName = "profile";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
     @GetMapping("/delivery_management")
-    public String deliveryManagement() {
-        // TODO redirection
-        return "delivery_management";
-    }
+    public ModelAndView deliveryManagement() {
+        AccountRole role;
+        String viewName;
 
-    @GetMapping("/logout")
-    public String logout() {
         // TODO redirection
-        return "login";
+        role = AccountRole.ADMIN;
+        viewName = "delivery_management";
+
+        ModelAndView modelAndView = new ModelAndView(viewName);
+        modelAndView.addObject("role", role);
+        return modelAndView;
     }
 
 }
