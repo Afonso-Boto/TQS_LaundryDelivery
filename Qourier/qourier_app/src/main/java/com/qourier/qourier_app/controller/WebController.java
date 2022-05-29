@@ -58,16 +58,8 @@ public class WebController {
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
             if (cookie.getName().equals("id")){
-                // TODO add method to get role from email
                 String email = "";
-                switch (email) {
-                    case "ADMIN":
-                        return ADMIN;
-                    case "RIDER":
-                        return RIDER;
-                    case "CUSTOMER":
-                        return CUSTOMER;
-                }
+                return accountManager.getAccountRole(email);
             }
         return null;
     }

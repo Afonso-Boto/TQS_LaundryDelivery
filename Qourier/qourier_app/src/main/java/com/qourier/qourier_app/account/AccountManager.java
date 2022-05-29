@@ -99,6 +99,16 @@ public class AccountManager {
         // TODO
     }
 
+    public AccountRole getAccountRole(String email) {
+        return accountRepository.findById(email).map(Account::getRole)
+                .orElseThrow(AccountDoesNotExistException::new);
+    }
+
+    public AccountState getAccountState(String email) {
+        return accountRepository.findById(email).map(Account::getState)
+                .orElseThrow(AccountDoesNotExistException::new);
+    }
+
     private Account generateAccount(RegisterRequest registerRequest) {
         return new Account(registerRequest.getName(), registerRequest.getEmail(), hashPassword(registerRequest.getPassword()));
     }
