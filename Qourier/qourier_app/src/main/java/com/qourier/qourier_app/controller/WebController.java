@@ -224,8 +224,7 @@ public class WebController {
         if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
             return "redirect:/login";
 
-        model.addAttribute("role", getRoleFromCookie(request));
-        return "profile";
+        return (getRoleFromCookie(request) == RIDER) ? "profile_rider" : "profile_customer";
     }
 
     @GetMapping("/delivery_management")
