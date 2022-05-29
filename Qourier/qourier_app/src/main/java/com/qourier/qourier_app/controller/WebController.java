@@ -58,7 +58,7 @@ public class WebController {
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
             if (cookie.getName().equals("id")){
-                String email = "";
+                String email = cookie.getValue();
                 return accountManager.getAccountRole(email);
             }
         return null;
@@ -73,8 +73,8 @@ public class WebController {
 
     @PostMapping("/login")
     public String loginPost(LoginRequest user, HttpServletResponse response) {
-        LoginToken token = accountManager.login(user);
-        if (token.getLoginResult().equals(LoginResult.WRONG_CREDENTIALS) || token.getLoginResult().equals(LoginResult.NON_EXISTENT_ACCOUNT))
+        LoginResult result = accountManager.login(user);
+        if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
             return "login";
 
         // Set cookie for customer
@@ -83,7 +83,7 @@ public class WebController {
         return "redirect:/index";
     }
 
-    @GetMapping(value="/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         // See if we are logged in or not
         if(hasCookie(request)){
@@ -124,7 +124,7 @@ public class WebController {
     }
 
     @GetMapping("/")
-    public String indexToRoot() {
+    public String rootToIndex() {
         return "redirect:/index";
     }
 

@@ -26,25 +26,15 @@ public class AccountManager {
         this.customerRepository = customerRepository;
     }
 
-    public LoginToken login(LoginRequest request) {
-        Optional<Account> accountOptional = accountRepository.findById(request.getEmail());
+    public LoginResult login(LoginRequest request) {
+        Optional<Account> account = accountRepository.findById(request.getEmail());
 
-        LoginToken token;
-        if (accountOptional.isEmpty())
-            token = new NullLoginToken(LoginResult.NON_EXISTENT_ACCOUNT);
-        else {
-            Account account = accountOptional.get();
-            if (!account.getPassword().equals(hashPassword(request.getPassword())))
-                token = new NullLoginToken(LoginResult.WRONG_CREDENTIALS);
-            else
-                token = new LoginToken(
-                        account.getEmail(),
-                        account.getRole(),
-                        LoginResult.LOGGED_IN
-                );
+        if (account.isEmpty())
+            return LoginResult.NON_EXISTENT_ACCOUNT;
+        else if (!account.get().getPassword().equals(hashPassword(request.getPassword()))) {
+            return LoginResult.WRONG_CREDENTIALS;
         }
-
-        return token;
+        return LoginResult.LOGGED_IN;
     }
 
     public boolean registerAdmin(AdminRegisterRequest request) {
@@ -107,6 +97,10 @@ public class AccountManager {
     public AccountState getAccountState(String email) {
         return accountRepository.findById(email).map(Account::getState)
                 .orElseThrow(AccountDoesNotExistException::new);
+    }
+
+    public boolean accountExists(String email) {
+        return accountRepository.existsById(email);
     }
 
     private Account generateAccount(RegisterRequest registerRequest) {
