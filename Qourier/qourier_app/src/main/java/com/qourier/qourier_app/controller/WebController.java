@@ -6,6 +6,7 @@ import com.qourier.qourier_app.data.Customer;
 import com.qourier.qourier_app.data.Rider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -22,7 +23,7 @@ public class WebController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest user) {
+    public String loginPost(@RequestBody LoginRequest user) {
         Optional<Account> loggedInAccount = accountManager.login(user);
         if (loggedInAccount.isEmpty())
             return "login";
@@ -37,8 +38,8 @@ public class WebController {
         };
     }
 
-    @PostMapping("register_customer")
-    public String registerCustomer(@RequestBody CustomerRegisterRequest request) {
+    @PostMapping("/register_customer")
+    public String registerCustomerPost(@RequestBody CustomerRegisterRequest request) {
         Customer registeredCustomer;
         try {
             registeredCustomer = accountManager.registerCustomer(request);
@@ -50,8 +51,8 @@ public class WebController {
         return "index";
     }
 
-    @PostMapping("register_rider")
-    public String registerRider(@RequestBody RiderRegisterRequest request) {
+    @PostMapping("/register_rider")
+    public String registerRiderPost(@RequestBody RiderRegisterRequest request) {
         Rider registeredRider;
         try {
             registeredRider = accountManager.registerRider(request);
@@ -61,6 +62,66 @@ public class WebController {
 
         // TODO redirection
         return "index";
+    }
+
+    @GetMapping("/index")
+    public String index() {
+        // TODO redirection
+        return "index";
+    }
+
+    @GetMapping("/progress")
+    public String progress() {
+        // TODO redirection
+        return "progress";
+    }
+
+    @GetMapping("/accounts")
+    public String accounts() {
+        // TODO redirection
+        return "accounts";
+    }
+
+    @GetMapping("/applications")
+    public String applications() {
+        // TODO redirection
+        return "applications";
+    }
+
+    @GetMapping("/monitor")
+    public String monitor() {
+        // TODO redirection
+        return "monitor";
+    }
+
+    @GetMapping("/login")
+    public String loginGet() {
+        // TODO redirection
+        return "login";
+    }
+
+    @GetMapping("/deliveries")
+    public String deliveries() {
+        // TODO redirection
+        return "deliveries";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        // TODO redirection
+        return "profile";
+    }
+
+    @GetMapping("/delivery_management")
+    public String deliveryManagement() {
+        // TODO redirection
+        return "delivery_management";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        // TODO redirection
+        return "login";
     }
 
 }

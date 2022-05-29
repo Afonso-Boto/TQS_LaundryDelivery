@@ -49,7 +49,7 @@
                     </li>
                 </ul>
             </th:block>
-            <th:block th:if="role.name() == 'RIDER'">
+            <th:block th:if="${role.name() == 'RIDER'}">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="index.html" th:href="@{/index}">
@@ -76,7 +76,7 @@
                     </li>
                 </ul>
             </th:block>
-            <th:block th:if="role.name() == 'CUSTOMER'">
+            <th:block th:if="${role.name() == 'CUSTOMER'}">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
                         <a class="nav-link" href="index.html" th:href="@{/index}">
