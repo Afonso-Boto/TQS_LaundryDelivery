@@ -28,7 +28,7 @@ services:
           "spring.datasource.password" : "$MYSQLDB_ROOT_PASSWORD",
           "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.MySQL5InnoDBDialect",
           "spring.jpa.generate-ddl" : "true",
-          "spring.jpa.hibernate.ddl-auto" : "create-drop"}'
+          "spring.jpa.hibernate.ddl-auto" : "update"}'
     volumes:
       - ./volumes/laundry/:/root/.m2
     stdin_open: true
