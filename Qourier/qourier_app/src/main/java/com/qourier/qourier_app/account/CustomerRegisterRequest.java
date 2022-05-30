@@ -1,6 +1,5 @@
 package com.qourier.qourier_app.account;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class CustomerRegisterRequest extends RegisterRequest {
+
+    public CustomerRegisterRequest(String email, String password, String name, String servType) {
+        super(email, password, name);
+        this.servType = servType;
+    }
 
     private String servType;
 

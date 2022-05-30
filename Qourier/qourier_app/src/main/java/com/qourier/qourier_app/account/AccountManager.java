@@ -38,7 +38,7 @@ public class AccountManager {
     }
 
     public boolean registerAdmin(AdminRegisterRequest request) {
-        if (accountRepository.existsById(request.getEmail()))
+        if (accountExists(request.getEmail()))
             return false;
 
         Account account = generateAccount(request);
@@ -50,7 +50,7 @@ public class AccountManager {
     }
 
     public boolean registerRider(RiderRegisterRequest request) {
-        if (accountRepository.existsById(request.getEmail()))
+        if (accountExists(request.getEmail()))
             return false;
 
         Account account = generateAccount(request);
@@ -62,7 +62,7 @@ public class AccountManager {
     }
 
     public boolean registerCustomer(CustomerRegisterRequest request) {
-        if (accountRepository.existsById(request.getEmail()))
+        if (accountExists(request.getEmail()))
             return false;
 
         Account account = generateAccount(request);
@@ -73,20 +73,29 @@ public class AccountManager {
         return true;
     }
 
-    public void acceptApplication(String email) {
+    public boolean acceptApplication(String email) {
         // TODO
+        return false;
     }
 
-    public void refuseApplication(String email) {
+    public boolean refuseApplication(String email) {
         // TODO
+        return false;
     }
 
-    public void suspendAccount(String email) {
+    public boolean reconsiderApplication(String email) {
         // TODO
+        return false;
     }
 
-    public void activateAccount(String email) {
+    public boolean suspendAccount(String email) {
         // TODO
+        return false;
+    }
+
+    public boolean activateAccount(String email) {
+        // TODO
+        return false;
     }
 
     public AccountRole getAccountRole(String email) {
