@@ -5,6 +5,22 @@ on:
     branches: [ main ]
 
 jobs:
+  code-style:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Google Java Format enforcer, without imports
+      uses: axel-op/googlejavaformat-action@v3
+      with:
+        skipCommit: true
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
+    - name: Google Java Format import structure fixer
+      uses: axel-op/googlejavaformat-action@v3
+      if: always()
+      with:
+        commitMessage: Google Java Format import ordering
+        args: "--fix-imports-only --replace"
+
   verify-qourier:
     runs-on: ubuntu-latest
 
@@ -15,7 +31,15 @@ jobs:
     - name: Google Java Format enforcer
       uses: axel-op/googlejavaformat-action@v3
       with:
-        args: "--dry-run --set-exit-if-changed"
+        files: "Qourier/TestMe.java"
+        skipCommit: true
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
+    - name: Google Java Format import structure enforcer
+      uses: axel-op/googlejavaformat-action@v3
+      with:
+        files: "**/TestMe.java"
+        commitMessage: Google Java Format import ordering
+        args: "--fix-imports-only --replace"
     - name: Set up OpenJDK 17
       uses: actions/setup-java@v3
       with:
