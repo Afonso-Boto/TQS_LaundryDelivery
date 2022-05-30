@@ -1,0 +1,22 @@
+name: Test
+
+on:
+  push:
+    branches: [ ci-setup ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: Qourier/qourier_app
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+          fetch-depth: 0    # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Google Java Format enforcer
+      uses: axel-op/googlejavaformat-action@v3
+      with:
+        args: "--dry-run --set-exit-if-changed"
