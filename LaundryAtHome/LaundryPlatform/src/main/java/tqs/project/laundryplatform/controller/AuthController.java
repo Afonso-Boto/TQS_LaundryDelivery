@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
+import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.service.AuthenticationService;
 
 
@@ -22,28 +23,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public HttpStatus signUp(@RequestBody String userData) {
-        JSONObject userInfo = new JSONObject(userData);
-        String username;
-        String fullName;
-        String password;
-        int phoneNumber;
-        String email;
+    public HttpStatus signUp(User user) {
 
-        System.err.println(userInfo);
-
-        try {
-            username = userInfo.getString("username");
-            fullName = userInfo.getString("full_name");
-            password = userInfo.getString("password");
-            phoneNumber = userInfo.getInt("phone_number");
-            email = userInfo.getString("email");
-        } catch (Exception e) {
-            log.error("Error parsing JSON: " + e.getMessage());
-            return HttpStatus.BAD_REQUEST;
-        }
-
-        if (service.register(username, fullName, password, phoneNumber, email)){
+        if (service.register(user)){
             return HttpStatus.OK;
         } else {
             return HttpStatus.CONFLICT;
@@ -51,8 +33,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public HttpStatus logIn(@RequestParam("username") String username, @RequestParam("password") String password){
-        if(service.logIn(username, password))
+    public HttpStatus logIn(User user){
+        if(service.logIn(user.getUsername(), user.getPassword()))
             return HttpStatus.OK;
 
 

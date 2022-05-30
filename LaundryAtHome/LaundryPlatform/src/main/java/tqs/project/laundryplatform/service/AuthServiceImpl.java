@@ -10,11 +10,10 @@ public class AuthServiceImpl implements AuthenticationService {
     @Autowired
     UserRepository userRepository;
     @Override
-    public boolean register(String username, String fullName, String password, int phoneNumber, String email) {
-        if(userRepository.existsByUsername(username))
+    public boolean register(User user) {
+        if(userRepository.existsByUsername(user.getUsername()))
             return false;
 
-        User user = new User(username, fullName, password, email, phoneNumber);
         userRepository.save(user);
         return true;
     }
