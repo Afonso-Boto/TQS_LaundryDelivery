@@ -19,4 +19,5 @@ jobs:
     - name: Google Java Format enforcer
       uses: axel-op/googlejavaformat-action@v3
       with:
-        args: "--set-exit-if-changed"
+        files: "**/TestMe.java"
+        args: "--replace"
