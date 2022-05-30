@@ -12,6 +12,7 @@ public class TestMe {
         if (true) {
             String oa = "";
         }
+        String b;
         Map<String, String> a = of("s", "s");
     }
 }
