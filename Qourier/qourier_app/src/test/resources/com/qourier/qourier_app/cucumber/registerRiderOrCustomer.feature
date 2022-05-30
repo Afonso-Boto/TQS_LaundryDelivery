@@ -8,7 +8,7 @@ Feature: Register non admin account
     And I set the Name as "John Smith"
     And I set the Citizen ID as "0123456789"
     And I click Register
-    Then I should see in the page body the pattern "Account permition to access resource pending"
+    Then I should see in the page body the pattern "Account permission to access resource pending"
     And The admin should have a regestry pending
 
   Scenario: Register Customer
@@ -19,5 +19,5 @@ Feature: Register non admin account
     And I set the Name as "Cristina Ferreira"
     And I set the Service Type as "Laundry"
     And I click Register
-    Then I should see in the page body the pattern "Account permition to access resource pending"
+    Then I should see in the page body the pattern "Account permission to access resource pending"
     And The admin should have a regestry pending

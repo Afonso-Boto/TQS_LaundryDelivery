@@ -37,11 +37,10 @@ public class AccountManager {
         return LoginResult.LOGGED_IN;
     }
 
-    public boolean registerAdmin(AdminRegisterRequest request) {
-        if (accountRepository.existsById(request.getEmail()))
+    public boolean registerAdmin(Account account) {
+        if (accountRepository.existsById(account.getEmail()))
             return false;
 
-        Account account = generateAccount(request);
         Admin admin = new Admin(account);
 
         adminRepository.save(admin);

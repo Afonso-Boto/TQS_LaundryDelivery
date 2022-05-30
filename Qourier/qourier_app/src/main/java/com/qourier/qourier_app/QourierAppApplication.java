@@ -9,5 +9,4 @@ public class QourierAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(QourierAppApplication.class, args);
 	}
-
 }
