@@ -1,6 +1,8 @@
 package tqs.project.laundryplatform.controller;
 
+import lombok.extern.log4j.Log4j2;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import tqs.project.laundryplatform.service.AuthenticationService;
 
 @RestController
 @RequestMapping("/auth")
+@Log4j2
 public class AuthController {
 
     private final AuthenticationService service;
@@ -19,25 +22,40 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public HttpStatus signUp(@RequestBody JSONObject userInfo) {
+    public HttpStatus signUp(@RequestBody String userData) {
+        JSONObject userInfo = new JSONObject(userData);
+        String username;
+        String fullName;
+        String password;
+        int phoneNumber;
+        String email;
 
-        if(service.register(userInfo.getString("username"),
-                userInfo.getString("full_name"),
-                userInfo.getString("password"),
-                userInfo.getInt("phone_number"),
-                userInfo.getString("email")))
-            return HttpStatus.CREATED;
+        System.err.println(userInfo);
 
-        return HttpStatus.PRECONDITION_FAILED;
+        try {
+            username = userInfo.getString("username");
+            fullName = userInfo.getString("full_name");
+            password = userInfo.getString("password");
+            phoneNumber = userInfo.getInt("phone_number");
+            email = userInfo.getString("email");
+        } catch (Exception e) {
+            log.error("Error parsing JSON: " + e.getMessage());
+            return HttpStatus.BAD_REQUEST;
+        }
 
+        if (service.register(username, fullName, password, phoneNumber, email)){
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.CONFLICT;
+        }
     }
 
-    @GetMapping
-    public HttpStatus logIn(@RequestParam String username, @RequestParam String password){
+    @GetMapping("/login")
+    public HttpStatus logIn(@RequestParam("username") String username, @RequestParam("password") String password){
         if(service.logIn(username, password))
-            return HttpStatus.ACCEPTED;
+            return HttpStatus.OK;
 
 
-        return HttpStatus.UNAUTHORIZED;
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }
