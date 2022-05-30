@@ -12,6 +12,6 @@ public interface LaundryService {
     List<Item> getOrderItems(int orderID);
     List<Item> getItemTypes();
 
-    boolean placeOrder(String deliveryLocation, List<Item> items);
+    boolean makeOrder(List<Item> items);
 
 }
