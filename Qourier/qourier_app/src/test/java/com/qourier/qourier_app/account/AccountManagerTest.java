@@ -172,6 +172,24 @@ class AccountManagerTest {
     }
 
     @Test
+    void givenAccountDoesNotExist_whenChangeState_thenThrow() {
+        String accountEmail = "the.email@mail.com";
+
+        when(accountRepository.findById(accountEmail)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountManager.acceptApplication(accountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+        assertThatThrownBy(() -> accountManager.refuseApplication(accountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+        assertThatThrownBy(() -> accountManager.reconsiderApplication(accountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+        assertThatThrownBy(() -> accountManager.activateAccount(accountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+        assertThatThrownBy(() -> accountManager.suspendAccount(accountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+    }
+
+    @Test
     void whenGetAccountDetails_thenGetCorrectDetails() {
         String accountEmail = "the.email@mail.com";
         Account account = new Account("the name", accountEmail, "the_password");
@@ -204,8 +222,9 @@ class AccountManagerTest {
 
     private void assertCorrectStateFlow(AccountState startState, AccountState endState, Function<String, Boolean> accountOperation) {
         String accountEmail = "email@email.com";
-        Account account = Mockito.spy(new Account("name", accountEmail, "password"));
+        Account account = new Account("name", accountEmail, "password");
         account.setState(startState);
+        account = Mockito.spy(account);
 
         when(accountRepository.findById(accountEmail)).thenReturn(Optional.of(account));
 
@@ -221,8 +240,12 @@ class AccountManagerTest {
                 .toList();
 
         List<Account> accounts = new ArrayList<>();
-        for (AccountState state : prohibitedStates)
-            accounts.add( Mockito.spy(new Account("name", "email@email.com" + state.name(), "password")) );
+        for (AccountState state : prohibitedStates) {
+            Account account = new Account("name", "email@email.com" + state.name(), "password");
+            account.setState(state);
+            account = Mockito.spy(account);
+            accounts.add(account);
+        }
 
         for (Account account : accounts)
             when(accountRepository.findById(account.getEmail())).thenReturn(Optional.of(account));

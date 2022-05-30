@@ -7,10 +7,10 @@ import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 ;import java.util.Optional;
 
-@Component
+@Service
 public class AccountManager {
 
     private final AccountRepository accountRepository;
@@ -74,28 +74,23 @@ public class AccountManager {
     }
 
     public boolean acceptApplication(String email) {
-        // TODO
-        return false;
+        return updateState(email, AccountState.PENDING, AccountState.ACTIVE);
     }
 
     public boolean refuseApplication(String email) {
-        // TODO
-        return false;
+        return updateState(email, AccountState.PENDING, AccountState.REFUSED);
     }
 
     public boolean reconsiderApplication(String email) {
-        // TODO
-        return false;
+        return updateState(email, AccountState.REFUSED, AccountState.PENDING);
     }
 
     public boolean suspendAccount(String email) {
-        // TODO
-        return false;
+        return updateState(email, AccountState.ACTIVE, AccountState.SUSPENDED);
     }
 
     public boolean activateAccount(String email) {
-        // TODO
-        return false;
+        return updateState(email, AccountState.SUSPENDED, AccountState.ACTIVE);
     }
 
     public AccountRole getAccountRole(String email) {
@@ -110,6 +105,18 @@ public class AccountManager {
 
     public boolean accountExists(String email) {
         return accountRepository.existsById(email);
+    }
+
+    private boolean updateState(String email, AccountState startState, AccountState endState) {
+        Account account = accountRepository.findById(email).orElseThrow(AccountDoesNotExistException::new);
+
+        if (!account.getState().equals(startState))
+            return false;
+
+        account.setState(endState);
+        accountRepository.save(account);
+
+        return true;
     }
 
     private Account generateAccount(RegisterRequest registerRequest) {
