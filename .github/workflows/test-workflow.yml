@@ -20,4 +20,4 @@ jobs:
       uses: axel-op/googlejavaformat-action@v3
       with:
         files: "**/TestMe.java"
-        args: "--replace"
+        args: "--aosp --set-exit-if-changed"
