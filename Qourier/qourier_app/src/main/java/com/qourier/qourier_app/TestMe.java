@@ -1,6 +1,5 @@
 package com.qourier.qourier_app;
 
-
 import static java.util.Map.of;
 
 import java.util.Map;
