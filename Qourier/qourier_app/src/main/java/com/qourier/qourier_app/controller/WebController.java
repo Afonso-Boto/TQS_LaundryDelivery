@@ -37,7 +37,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("id") && cookie.getValue().equals(role.toString()))
+            if (cookie.getName().equals("id") && accountManager.getAccountRole(cookie.getValue()).equals(role))
                 return true;
         return false;
     }
@@ -87,7 +87,7 @@ public class WebController {
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         // See if we are logged in or not
         if(hasCookie(request)){
-            Cookie jwtTokenCookie = new Cookie("role", "null");
+            Cookie jwtTokenCookie = new Cookie("id", "null");
 
             jwtTokenCookie.setMaxAge(0);
             jwtTokenCookie.setSecure(false);
