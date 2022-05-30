@@ -50,7 +50,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public HttpStatus logIn(@RequestParam("username") String username, @RequestParam("password") String password){
         if(service.logIn(username, password))
             return HttpStatus.OK;
