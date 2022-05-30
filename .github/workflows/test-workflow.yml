@@ -19,4 +19,4 @@ jobs:
     - name: Google Java Format enforcer
       uses: axel-op/googlejavaformat-action@v3
       with:
-        args: "--dry-run --set-exit-if-changed"
+        args: "--set-exit-if-changed"
