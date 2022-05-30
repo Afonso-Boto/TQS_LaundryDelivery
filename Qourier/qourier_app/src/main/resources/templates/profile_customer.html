@@ -17,9 +17,9 @@
 
                 <h3>Details</h3>
 
-                <p>State: <span id="details-state" th:text="${customer.getState().name().toLowerCase()}">active</span></p>
-                <p>Email: <span id="details-email" th:text="${customer.getEmail()}">cristina@mail.com</span></p>
-                <p>Service type: <span id="details-service-type" th:text="${customer.getServiceType()}">Laundry</span></p>
+                <p>State: <span id="details-state" th:text="${customer.account.state.name().toLowerCase()}">active</span></p>
+                <p>Email: <span id="details-email" th:text="${customer.account.email}">cristina@mail.com</span></p>
+                <p>Service type: <span id="details-service-type" th:text="${customer.servType}">Laundry</span></p>
             </div>
         </div>
         <div class="row">
@@ -39,13 +39,13 @@
             <div class="col-12">
                 <h3>Other</h3>
 
-                <th:block id="admin-space" th:if="${role.equals('admin')}">
-                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${'Suspend account' ? customer.getState().name().equals('ACTIVE') : 'Activate account'}">
+                <th:block id="admin-space" th:if="${role.name() == 'ADMIN'}">
+                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${customer.getState().name().equals('ACTIVE') ? 'Suspend account' : 'Activate account'}">
                         Suspend account
                     </button>
                 </th:block>
 
-                <th:block id="customer-space" th:if="${role.equals('customer')}">
+                <th:block id="customer-space" th:if="${role.name() == 'CUSTOMER'}">
                     <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#api-key-spoiler" aria-expanded="false" aria-controls="api-key-spoiler">
                         API Key
                     </button>
@@ -56,7 +56,7 @@
                     </div>
                 </th:block>
 
-                <input id="attrs-state" type="hidden" value="ACTIVE" th:value="${customer.getState().name()}" />
+                <input id="attrs-state" type="hidden" value="ACTIVE" th:value="${customer.account.state.name()}" />
             </div>
         </div>
     </div>

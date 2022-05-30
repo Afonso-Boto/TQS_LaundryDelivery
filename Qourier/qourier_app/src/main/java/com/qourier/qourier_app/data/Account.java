@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -31,12 +32,17 @@ public class Account {
     @NotNull
     private AccountRole role;
 
+    private LocalDateTime registrationTime;
+
     public Account(String name, String email, String password) {
+        this();
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public Account() {}
+    public Account() {
+        registrationTime = LocalDateTime.now();
+    }
 
 }

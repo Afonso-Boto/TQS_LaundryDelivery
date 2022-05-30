@@ -30,16 +30,16 @@
                 <div class="modal-footer">
                     <div id="rider-form-buttons-pending">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a href="#" th:href="@{/applications/refuse/${id}}">
+                        <a id="rider-form-link-refuse" href="#">
                             <button type="button" class="btn btn-danger">Refuse</button>
                         </a>
-                        <a href="#" th:href="@{/applications/accept/${id}}">
+                        <a id="rider-form-link-accept" href="#">
                             <button type="button" class="btn btn-success">Accept</button>
                         </a>
                     </div>
                     <div id="rider-form-buttons-refused">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a href="#" th:href="@{/applications/reconsider/${id}}">
+                        <a id="rider-form-link-reconsider" href="#">
                             <button type="button" class="btn btn-primary">Reconsider</button>
                         </a>
                     </div>
@@ -67,16 +67,16 @@
                 <div class="modal-footer">
                     <div id="customer-form-buttons-pending" style="display: none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a href="#" th:href="@{/applications/refuse/${id}}">
+                        <a id="customer-form-link-refuse" href="#">
                             <button type="button" class="btn btn-danger">Refuse</button>
                         </a>
-                        <a href="#" th:href="@{/applications/accept/${id}}">
+                        <a id="customer-form-link-accept" href="#">
                             <button type="button" class="btn btn-success">Accept</button>
                         </a>
                     </div>
                     <div id="customer-form-buttons-refused" style="display: none">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a href="#" th:href="@{/applications/reconsider/${id}}">
+                        <a id="customer-form-link-reconsider" href="#">
                             <button type="button" class="btn btn-primary">Reconsider</button>
                         </a>
                     </div>
@@ -88,25 +88,29 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2><span id="header-account-type" th:text="${accountType.substring(0, 1).toUpperCase() + accountType.substring(1)}">Rider</span> applications</h2>
-                <div>
+                <h2><span id="header-account-type" th:text="${filterType.substring(0, 1) + filterType.substring(1).toLowerCase()}">Rider</span> applications</h2>
+                <form method="GET" action="#" th:action="@{/applications}">
                     <div class="d-flex justify-content-between">
                         <div>
                             <label for="filter-pending">Pending</label>
-                            <input type="checkbox" id="filter-pending" name="filter-pending" checked />
+                            <input type="checkbox" id="filter-pending" name="pending" checked th:value="${filterPending}" />
                         </div>
                         <div>
                             <label for="filter-type">Type</label>
-                            <select id="filter-type">
-                                <option value="rider" selected>Rider</option>
-                                <option value="customer">Customer</option>
+                            <select id="filter-type" name="type" th:value="${filterType}">
+                                <option value="RIDER" selected>Rider</option>
+                                <option value="CUSTOMER">Customer</option>
                             </select>
                         </div>
+                        <div>
+                            <label for="filter-page">Page</label>
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax}" />
+                        </div>
 
-                        <button id="filter-riders-apply" type="button" class="btn btn-primary">Apply</button>
+                        <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>
                     </div>
-                </div>
-                <table id="table-riders" class="table table-hover" th:if="${accountType.equals('rider')}">
+                </form>
+                <table id="table-riders" class="table table-hover" th:if="${filterType == 'RIDER'}">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -118,28 +122,28 @@
                     </thead>
                     <tbody>
                     <tr th:each="riderApp : ${riderAppList}">
-                        <td th:text="${riderApp.getId()}">5</td>
-                        <td th:text="${riderApp.getName()}">Manuel</td>
-                        <td th:text="${riderApp.getCitizenId()}">987654321</td>
-                        <td th:text="${riderApp.getTime()}">2022/05/11 19:00:00</td>
+                        <td th:text="${riderApp.account.email}">5</td>
+                        <td th:text="${riderApp.account.name}">Manuel</td>
+                        <td th:text="${riderApp.citizenId}">987654321</td>
+                        <td th:text="${riderApp.account.registrationTime}">2022/05/11 19:00:00</td>
                         <td>
-                            <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${riderApp.getId()}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
+                            <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${riderApp.account.email}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
                                 <i class="fa fa-clipboard"></i>
                             </button>
                         </td>
 
-                        <th:block th:with="baseId='attrs-rider-' + ${riderApp.getId()} + '-'">
-                            <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.getName().name()}" />
-                            <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.getEmail().name()}" />
-                            <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.getCitizenId().name()}" />
-                            <input id="attrs-rider-5-time" th:id="${baseId} + time" type="hidden" value="2022/05/11 19:00:00" th:value="${riderApp.getTime().name()}" />
-                            <input id="attrs-rider-5-state" th:id="${baseId} + state" type="hidden" value="PENDING" th:value="${riderApp.getState().name()}" />
+                        <th:block th:with="baseId='attrs-rider-' + ${riderApp.account.email} + '-'">
+                            <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.account.name}" />
+                            <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.account.email}" />
+                            <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.citizenId}" />
+                            <input id="attrs-rider-5-time" th:id="${baseId} + time" type="hidden" value="2022/05/11 19:00:00" th:value="${riderApp.account.registrationTime}" />
+                            <input id="attrs-rider-5-state" th:id="${baseId} + state" type="hidden" value="PENDING" th:value="${riderApp.account.state.name()}" />
                         </th:block>
                     </tr>
                     </tbody>
                 </table>
 
-                <table id="table-customers" class="table table-hover" th:unless="${accountType.equals('rider')}" style="display: none;">
+                <table id="table-customers" class="table table-hover" th:unless="${filterType == 'CUSTOMER'}">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -151,22 +155,22 @@
                     </thead>
                     <tbody>
                     <tr th:each="customerApp : ${customerAppList}">
-                        <td th:text="${customerApp.getId()}">3</td>
-                        <td th:text="${customerApp.getName()}">Manuel Food Service</td>
-                        <td th:text="${customerApp.getServiceType()}">Food</td>
-                        <td th:text="${customerApp.getTime()}">2021/01/23 11:30:01</td>
+                        <td th:text="${customerApp.account.email}">3</td>
+                        <td th:text="${customerApp.account.name}">Manuel Food Service</td>
+                        <td th:text="${customerApp.servType}">Food</td>
+                        <td th:text="${customerApp.account.registrationTime}">2021/01/23 11:30:01</td>
                         <td>
-                            <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${customerApp.getId()}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.getState().name().equals('PENDING')}? 'btn btn-primary' : 'btn btn-secondary'">
+                            <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${customerApp.account.email}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
                                 <i class="fa fa-clipboard"></i>
                             </button>
                         </td>
 
-                        <th:block th:with="baseId='attrs-customer-' + ${customerApp.getId()} + '-'">
-                            <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.getName().name()}" />
-                            <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.getEmail().name()}" />
-                            <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.getServiceType().name()}" />
-                            <input id="attrs-customer-3-time" th:id="${baseId} + time" type="hidden" value="2021/01/23 11:30:01" th:value="${customerApp.getTime().name()}" />
-                            <input id="attrs-customer-3-state" th:id="${baseId} + state" type="hidden" value="REFUSED" th:value="${customerApp.getState().name()}" />
+                        <th:block th:with="baseId='attrs-customer-' + ${customerApp.account.email} + '-'">
+                            <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.account.name}" />
+                            <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.account.email}" />
+                            <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.servType}" />
+                            <input id="attrs-customer-3-time" th:id="${baseId} + time" type="hidden" value="2021/01/23 11:30:01" th:value="${customerApp.account.registrationTime}" />
+                            <input id="attrs-customer-3-state" th:id="${baseId} + state" type="hidden" value="REFUSED" th:value="${customerApp.account.state.name()}" />
                         </th:block>
                     </tr>
                     </tbody>
@@ -180,13 +184,17 @@
 
     <script>
 
+        let baseApplicationAcceptLink = '/applications/accept/';
+        let baseApplicationRefuseLink = '/applications/refuse/';
+        let baseApplicationReconsiderLink = '/applications/reconsider/';
+
         let filterPending = $('#filter-pending');
         let filterType = $('#filter-type');
 
-        $('#filter-riders-apply').click(function () {
-            let type = filterType.val();
-            applyFilters(type);
-        })
+        // $('#filter-riders-apply').click(function () {
+        //     let type = filterType.val();
+        //     applyFilters(type);
+        // })
 
         function applyFilters(type) {
             // TODO prototype, fill with implementation
@@ -213,8 +221,10 @@
         }
 
         // Update modal with info from clicked row
-        let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
-        let customerDetails = ['name', 'email', 'serviceType', 'time', 'state'];
+        // let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
+        // let customerDetails = ['name', 'email', 'serviceType', 'time', 'state'];
+        let riderDetails = ['name', 'email', 'citizenId', 'state'];
+        let customerDetails = ['name', 'email', 'serviceType', 'state'];
         $('td > button').click(function (event) {
             let clickedButton = event.delegateTarget;
             let splitId = clickedButton.id.split('-');
@@ -238,6 +248,10 @@
                     $('#rider-form-buttons-pending').show();
                     $('#rider-form-buttons-refused').hide();
                 }
+
+                $('#rider-form-link-refuse').attr('href', baseApplicationRefuseLink + applicationId);
+                $('#rider-form-link-accept').attr('href', baseApplicationAcceptLink + applicationId);
+                $('#rider-form-link-reconsider').attr('href', baseApplicationReconsiderLink + applicationId);
             }
             else if (applicationType === 'customer') {
                 for (const detail of customerDetails)
@@ -252,6 +266,10 @@
                     $('#customer-form-buttons-pending').show();
                     $('#customer-form-buttons-refused').hide();
                 }
+
+                $('#customer-form-link-refuse').attr('href', baseApplicationRefuseLink + applicationId);
+                $('#customer-form-link-accept').attr('href', baseApplicationAcceptLink + applicationId);
+                $('#customer-form-link-reconsider').attr('href', baseApplicationReconsiderLink + applicationId);
             }
         })
 

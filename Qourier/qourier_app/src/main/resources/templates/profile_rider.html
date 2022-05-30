@@ -15,9 +15,9 @@
                 <h2 id="details-name">Diego</h2>
                 <h4><i>Rider</i></h4>
 
-                <p>State: <span id="details-state" th:text="${rider.getState().name().toLowercase()}">suspended</span></p>
-                <p>Email: <span id="details-email" th:text="${rider.getEmail()}">diego@mail.com</span></p>
-                <p>Citizen ID: <span id="details-citizen-id" th:text="${rider.getCitizenId()}">123456789</span></p>
+                <p>State: <span id="details-state" th:text="${rider.account.state.name().toLowerCase()}">suspended</span></p>
+                <p>Email: <span id="details-email" th:text="${rider.account.email}">diego@mail.com</span></p>
+                <p>Citizen ID: <span id="details-citizen-id" th:text="${rider.citizenId}">123456789</span></p>
             </div>
         </div>
         <div class="row">
@@ -35,13 +35,13 @@
             <div class="col-12">
                 <h3>Other</h3>
 
-                <th:block id='admin-space' th:if="${role.equals('admin')}">
-                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${'Suspend account' ? rider.getState().name().equals('ACTIVE') : 'Activate account'}">
+                <th:block id='admin-space' th:if="${role.name() == 'ADMIN'}">
+                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${rider.account.state.name().equals('ACTIVE') ? 'Suspend account' : 'Activate account'}">
                         Activate account
                     </button>
                 </th:block>
 
-                <input id="attrs-state" type="hidden" value="SUSPENDED" th:value="${rider.getState().name()}" />
+                <input id="attrs-state" type="hidden" value="SUSPENDED" th:value="${rider.account.state.name()}" />
             </div>
         </div>
     </div>

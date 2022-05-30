@@ -1,14 +1,20 @@
 package com.qourier.qourier_app.account;
 
 import com.qourier.qourier_app.data.*;
+import com.qourier.qourier_app.data.dto.AccountDTO;
+import com.qourier.qourier_app.data.dto.AdminDTO;
+import com.qourier.qourier_app.data.dto.CustomerDTO;
+import com.qourier.qourier_app.data.dto.RiderDTO;
 import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-;import java.util.Optional;
+;import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AccountManager {
@@ -25,6 +31,8 @@ public class AccountManager {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
     }
+
+
 
     public LoginResult login(LoginRequest request) {
         Optional<Account> account = accountRepository.findById(request.getEmail());
@@ -93,22 +101,74 @@ public class AccountManager {
         return updateState(email, AccountState.SUSPENDED, AccountState.ACTIVE);
     }
 
-    public AccountRole getAccountRole(String email) {
-        return accountRepository.findById(email).map(Account::getRole)
-                .orElseThrow(AccountDoesNotExistException::new);
+    public AdminDTO getAdminAccount(String email) {
+        return adminRepository.findById(email).map(AdminDTO::fromEntity)
+                .orElseThrow(() -> new AccountDoesNotExistException(email, AccountRole.ADMIN));
     }
 
-    public AccountState getAccountState(String email) {
-        return accountRepository.findById(email).map(Account::getState)
-                .orElseThrow(AccountDoesNotExistException::new);
+    public RiderDTO getRiderAccount(String email) {
+        return riderRepository.findById(email).map(RiderDTO::fromEntity)
+                .orElseThrow(() -> new AccountDoesNotExistException(email, AccountRole.RIDER));
+    }
+
+    public CustomerDTO getCustomerAccount(String email) {
+        return customerRepository.findById(email).map(CustomerDTO::fromEntity)
+                .orElseThrow(() -> new AccountDoesNotExistException(email, AccountRole.CUSTOMER));
+    }
+
+    public AccountDTO getAccount(String email) {
+        return accountRepository.findById(email).map(AccountDTO::fromEntity)
+                .orElseThrow(() -> new AccountDoesNotExistException(email));
+    }
+
+    public List<RiderDTO> queryRiderAcceptedAccounts(Pageable pageable) {
+        return riderRepository.findByAccount_StateIn(List.of(AccountState.ACTIVE, AccountState.SUSPENDED), pageable)
+                .map(RiderDTO::fromEntity).toList();
+    }
+
+    public int queryRiderAcceptedAccountsTotal(Pageable pageable) {
+        return riderRepository.findByAccount_StateIn(List.of(AccountState.ACTIVE, AccountState.SUSPENDED), pageable)
+                .getTotalPages();
+    }
+
+    public List<RiderDTO> queryRiderApplications(Pageable pageable) {
+        return riderRepository.findByAccount_StateIn(List.of(AccountState.PENDING, AccountState.REFUSED), pageable)
+                .map(RiderDTO::fromEntity).toList();
+    }
+
+    public int queryRiderApplicationsTotal(Pageable pageable) {
+        return riderRepository.findByAccount_StateIn(List.of(AccountState.PENDING, AccountState.REFUSED), pageable)
+                .getTotalPages();
+    }
+
+    public List<CustomerDTO> queryCustomerAcceptedAccounts(Pageable pageable) {
+        return customerRepository.findByAccount_StateIn(List.of(AccountState.ACTIVE, AccountState.SUSPENDED), pageable)
+                .map(CustomerDTO::fromEntity).toList();
+    }
+
+    public int queryCustomerAcceptedAccountsTotal(Pageable pageable) {
+        return customerRepository.findByAccount_StateIn(List.of(AccountState.ACTIVE, AccountState.SUSPENDED), pageable)
+                .getTotalPages();
+    }
+
+    public List<CustomerDTO> queryCustomerApplications(Pageable pageable) {
+        return customerRepository.findByAccount_StateIn(List.of(AccountState.PENDING, AccountState.REFUSED), pageable)
+                .map(CustomerDTO::fromEntity).toList();
+    }
+
+    public int queryCustomerApplicationsTotal(Pageable pageable) {
+        return customerRepository.findByAccount_StateIn(List.of(AccountState.PENDING, AccountState.REFUSED), pageable)
+                .getTotalPages();
     }
 
     public boolean accountExists(String email) {
         return accountRepository.existsById(email);
     }
 
+
+
     private boolean updateState(String email, AccountState startState, AccountState endState) {
-        Account account = accountRepository.findById(email).orElseThrow(AccountDoesNotExistException::new);
+        Account account = accountRepository.findById(email).orElseThrow(() -> new AccountDoesNotExistException(email));
 
         if (!account.getState().equals(startState))
             return false;
