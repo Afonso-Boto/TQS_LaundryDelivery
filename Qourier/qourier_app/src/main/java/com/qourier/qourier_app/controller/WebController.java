@@ -2,6 +2,7 @@ package com.qourier.qourier_app.controller;
 
 import com.qourier.qourier_app.account.*;
 import com.qourier.qourier_app.data.AccountRole;
+import com.qourier.qourier_app.data.AccountState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.Locale;
 
 import static com.qourier.qourier_app.data.AccountRole.*;
 
@@ -60,6 +59,17 @@ public class WebController {
             if (cookie.getName().equals("id")){
                 String email = cookie.getValue();
                 return accountManager.getAccountRole(email);
+            }
+        return null;
+    }
+
+    // Get ID
+    public String getIdFromCookie(HttpServletRequest request){
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+        for (Cookie cookie : cookies)
+            if (cookie.getName().equals("id")){
+                return cookie.getValue();
             }
         return null;
     }
@@ -206,6 +216,24 @@ public class WebController {
         if (!verifyCookie(request, role))
             return "redirect:/login";
 
+        // TODO pass right message to show
+        AccountState state = accountManager.getAccountState(getIdFromCookie(request));
+
+        switch(state) {
+            case PENDING:
+                model.addAttribute("msg", "Account permission to access resource pending");
+                break;
+            case REFUSED:
+                model.addAttribute("msg", "Account was refused to access the pretended resource");
+                break;
+            case SUSPENDED:
+                model.addAttribute("msg", "Account suspended");
+                break;
+            case ACTIVE:
+                break;
+            default:
+                model.addAttribute("msg", "An error has occurred");
+        }
         model.addAttribute("role", role);
         return "deliveries";
     }
@@ -217,6 +245,7 @@ public class WebController {
         if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
             return "redirect:/login";
 
+        // TODO pass right id
         return (getRoleFromCookie(request) == RIDER) ? "profile_rider" : "profile_customer";
     }
 
@@ -227,6 +256,25 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return "redirect:/login";
+
+        // TODO pass right message to show
+        AccountState state = accountManager.getAccountState(getIdFromCookie(request));
+
+        switch(state) {
+            case PENDING:
+                model.addAttribute("msg", "Account permission to access resource pending");
+                break;
+            case REFUSED:
+                model.addAttribute("msg", "Account was refused to access the pretended resource");
+                break;
+            case SUSPENDED:
+                model.addAttribute("msg", "Account suspended");
+                break;
+            case ACTIVE:
+                break;
+            default:
+                model.addAttribute("msg", "An error has occurred");
+        }
 
         model.addAttribute("role", role);
         return "delivery_management";
