@@ -20,10 +20,10 @@ jobs:
       uses: axel-op/googlejavaformat-action@v3
       with:
         files: "**/TestMe.java"
-        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --set-exit-if-changed"
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
     - name: Google Java Format enforcer
       uses: axel-op/googlejavaformat-action@v3
       with:
         commitMessage: Google Java Format import ordering
         files: "**/TestMe.java"
-        args: "--fix-imports-only"
+        args: "--fix-imports-only --replace"
