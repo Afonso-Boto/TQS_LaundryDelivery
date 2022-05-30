@@ -1,9 +1,16 @@
 package com.qourier.qourier_app.controller;
 
 import com.qourier.qourier_app.account.*;
+import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
+import lombok.extern.java.Log;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +22,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.qourier.qourier_app.data.AccountRole.*;
 
+@Log
 @Controller
 public class WebController {
+    @Value("${spring.datasource.adminemail}")
+    private String adminEmail;
+
+    @Value("${spring.datasource.adminpass}")
+    private String adminPass;
+
+
+    @Bean
+    SmartInitializingSingleton smartInitializingSingleton(ApplicationContext context) {
+        return () -> {
+            accountManager.registerAdmin(new AdminRegisterRequest("admin", adminEmail, adminPass));
+            log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            log.info("ADMIN ACCOUNT REGISTERED");
+            log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        };
+    }
 
     // setCookie to user
     public void setCookie(HttpServletResponse response, String email) {
@@ -84,8 +108,10 @@ public class WebController {
     @PostMapping("/login")
     public String loginPost(LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
-        if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
+        if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)){
+            log.warning("WRONG CREDS");
             return "login";
+        }
 
         // Set cookie for customer
         setCookie(response, user.getEmail());
