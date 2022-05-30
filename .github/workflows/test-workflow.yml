@@ -19,10 +19,12 @@ jobs:
     - name: Google Java Format enforcer
       uses: axel-op/googlejavaformat-action@v3
       with:
+        files: "**/TestMe.java"
         skipCommit: true
         args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
-    - name: Google Java Format enforcer
+    - name: Google Java Format import structure enforcer
       uses: axel-op/googlejavaformat-action@v3
       with:
+        files: "**/TestMe.java"
         commitMessage: Google Java Format import ordering
         args: "--fix-imports-only --replace"
