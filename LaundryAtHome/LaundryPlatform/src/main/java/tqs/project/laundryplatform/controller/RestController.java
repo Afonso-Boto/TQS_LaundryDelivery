@@ -1,23 +1,33 @@
 package tqs.project.laundryplatform.controller;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import tqs.project.laundryplatform.model.User;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/api/laundry")
 public class RestController {
 
-   @PostMapping("/make-order")
-   public HttpStatus makeOrder(@RequestParam long userId,
-                               @RequestBody JSONArray items){
+    @GetMapping("/")
+    public ModelAndView index() {
+        return new ModelAndView("index");
+    }
 
-       return HttpStatus.OK;
-   }
+    @GetMapping("/login")
+    public ModelAndView showLoginForm(User user) {
+        System.err.println("get login");
 
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login_form");
+        return modelAndView;
+    }
 
+    @GetMapping("/register")
+    public ModelAndView showRegisterForm(User user) {
+        System.err.println("register");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("register_form");
+        return modelAndView;
+    }
 }
