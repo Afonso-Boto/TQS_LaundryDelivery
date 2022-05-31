@@ -37,9 +37,9 @@ jobs:
       uses: devops-infra/action-pull-request@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        title: ${{ github.event.commits[0].message }}
-        target_branch: main
-        reviewer: tomascandeia
+        title: AUTO RELEASE
+        target_branch: origin/main
+        reviewer: tomascandeias
     # - name: Create Pull Request
     #   uses: peter-evans/create-pull-request@v4
     #   with:
