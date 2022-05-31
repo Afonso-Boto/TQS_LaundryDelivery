@@ -40,4 +40,40 @@ public class MainController {
         modelAndView.setViewName("register_form");
         return modelAndView;
     }
+
+    @GetMapping("/services")
+    public ModelAndView showServices() {
+        System.err.println("service");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("service");
+        return modelAndView;
+    }
+
+    @GetMapping("/pricing")
+    public ModelAndView showPricing() {
+        System.err.println("pricing");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("pricing");
+        return modelAndView;
+    }
+
+    @GetMapping("/orders")
+    public ModelAndView showOrders() {
+        System.err.println("orders");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("orders");
+        return modelAndView;
+    }
+
+    @GetMapping("/neworder")
+    public ModelAndView showNewOrder() {
+        System.err.println("neworder");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("neworder");
+        return modelAndView;
+    }
 }
