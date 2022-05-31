@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import tqs.project.laundryplatform.account.AccountManager;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.LoginResult;
+import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.UserRepository;
 
@@ -72,6 +73,30 @@ class AccountManagerTest {
 
         LoginResult result = accountManager.login(loginRequest);
         assertThat(result).isEqualTo(LoginResult.WRONG_CREDENTIALS);
+    }
+
+    @Test
+    void whenRegisterWithoutConflict_thenSuccess() {
+        String loginUsername = "test";
+        String loginEmail = "test@ua.pt";
+        String loginPassword = "123";
+        RegisterRequest registerRequest = new RegisterRequest(loginUsername, loginEmail, loginPassword, "test", 123);
+
+        when(userRepository.existsByUsername(registerRequest.getUsername())).thenReturn(false);
+
+        assertThat(accountManager.register(registerRequest)).isTrue();
+    }
+
+    @Test
+    void whenRegisterWithConflict_thenFail() {
+        String loginUsername = "test";
+        String loginEmail = "test@ua.pt";
+        String loginPassword = "123";
+        RegisterRequest registerRequest = new RegisterRequest(loginUsername, loginEmail, loginPassword, "test", 123);
+
+        when(userRepository.existsByUsername(registerRequest.getUsername())).thenReturn(true);
+
+        assertThat(accountManager.register(registerRequest)).isFalse();
     }
 }
 
