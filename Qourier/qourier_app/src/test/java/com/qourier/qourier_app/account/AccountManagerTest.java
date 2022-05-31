@@ -200,8 +200,8 @@ class AccountManagerTest {
 
         when(accountRepository.findById(accountEmail)).thenReturn(Optional.of(account));
 
-        assertThat(accountManager.getAccountRole(accountEmail)).isEqualTo(accountRole);
-        assertThat(accountManager.getAccountState(accountEmail)).isEqualTo(accountState);
+        assertThat(accountManager.getAccount(accountEmail).getRole()).isEqualTo(accountRole);
+        assertThat(accountManager.getAccount(accountEmail).getState()).isEqualTo(accountState);
     }
 
     @Test
@@ -210,9 +210,9 @@ class AccountManagerTest {
 
         when(accountRepository.findById(accountEmail)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> accountManager.getAccountRole(accountEmail))
+        assertThatThrownBy(() -> accountManager.getAccount(accountEmail).getRole())
                 .isInstanceOf(AccountDoesNotExistException.class);
-        assertThatThrownBy(() -> accountManager.getAccountState(accountEmail))
+        assertThatThrownBy(() -> accountManager.getAccount(accountEmail).getState())
                 .isInstanceOf(AccountDoesNotExistException.class);
     }
 
