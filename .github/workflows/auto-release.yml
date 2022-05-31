@@ -3,8 +3,6 @@ name: Auto release
 on:
   schedule:
     - cron: '0 0 * * 2'
-  push:
-    branches: [ ci-setup ]
   
 jobs:
   update-release:
