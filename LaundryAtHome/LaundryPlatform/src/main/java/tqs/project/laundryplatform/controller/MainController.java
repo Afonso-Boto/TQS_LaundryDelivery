@@ -1,11 +1,18 @@
 package tqs.project.laundryplatform.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tqs.project.laundryplatform.model.User;
+import tqs.project.laundryplatform.account.LoginRequest;
+import tqs.project.laundryplatform.account.RegisterRequest;
 
-@RestController
+import javax.servlet.http.HttpServletRequest;
+
+import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
+
+@Controller
 public class MainController {
 
     @GetMapping("/")
@@ -24,20 +31,22 @@ public class MainController {
 
 
     @GetMapping("/login")
-    public ModelAndView showLoginForm(User user) {
+    public String showLoginForm(Model model, HttpServletRequest request) {
         System.err.println("get login");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login_form");
-        return modelAndView;
+        if (getIdFromCookie(request) != null)
+            return "index";
+
+
+        model.addAttribute("loginRequest", new LoginRequest());
+        return "login_form";
     }
 
     @GetMapping("/register")
-    public ModelAndView showRegisterForm(User user) {
+    public String showRegisterForm(Model model, HttpServletRequest request) {
         System.err.println("register");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("register_form");
-        return modelAndView;
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "register_form";
     }
 }

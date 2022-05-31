@@ -19,7 +19,7 @@
                 <div class="signin-content">
                     <div class="signin-form">
                         <h2 class="form-title">Register</h2>
-                        <form method="POST" th:action="@{/auth/register}" th:object="${user}" class="register-form" id="register-form">
+                        <form method="POST" th:action="@{/auth/register}" th:object="${registerRequest}" class="register-form" id="register-form">
                             <div class="form-group">
                                 <label for="fullName"><i class="zmdi zmdi-account material-icons-name"></i></label>
                                 <input type="text" th:field="*{fullName}" name="fullName" id="fullName" placeholder="Your Name"/>
@@ -42,7 +42,7 @@
                             </div>
 
                             <div class="form-group form-button">
-                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
+                                <input type="submit" name="register" id="register" class="form-submit" value="Register"/>
                             </div>
                         </form>
                     </div>
