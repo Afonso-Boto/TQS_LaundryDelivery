@@ -11,22 +11,28 @@ import tqs.project.laundryplatform.account.RegisterRequest;
 import javax.servlet.http.HttpServletRequest;
 
 import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
+import static tqs.project.laundryplatform.controller.AuthController.verifyCookie;
 
 @Controller
 public class MainController {
 
+    private static final String REDIRECT_REGISTER = "register_form";
+    private static final String REDIRECT_LOGIN = "login_form";
+    private static final String REDIRECT_INDEX = "index";
+
     @GetMapping("/")
-    public ModelAndView mainPage() {
-        return new ModelAndView("login_form");
+    public String mainPage() {
+        return REDIRECT_INDEX;
     }
 
     @GetMapping("/index")
-    public ModelAndView showIndex() {
+    public String showIndex(Model model, HttpServletRequest request) {
         System.err.println("index");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        return modelAndView;
+        if(verifyCookie(request))
+            return REDIRECT_LOGIN;
+
+        return REDIRECT_INDEX;
     }
 
 
@@ -35,11 +41,11 @@ public class MainController {
         System.err.println("get login");
 
         if (getIdFromCookie(request) != null)
-            return "index";
+            return REDIRECT_INDEX;
 
 
         model.addAttribute("loginRequest", new LoginRequest());
-        return "login_form";
+        return REDIRECT_LOGIN;
     }
 
     @GetMapping("/register")
@@ -47,6 +53,6 @@ public class MainController {
         System.err.println("register");
 
         model.addAttribute("registerRequest", new RegisterRequest());
-        return "register_form";
+        return REDIRECT_REGISTER;
     }
 }
