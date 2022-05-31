@@ -9,9 +9,19 @@ import tqs.project.laundryplatform.model.User;
 public class MainController {
 
     @GetMapping("/")
-    public ModelAndView index() {
-        return new ModelAndView("index");
+    public ModelAndView mainPage() {
+        return new ModelAndView("login_form");
     }
+
+    @GetMapping("/index")
+    public ModelAndView showIndex() {
+        System.err.println("index");
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("index");
+        return modelAndView;
+    }
+
 
     @GetMapping("/login")
     public ModelAndView showLoginForm(User user) {

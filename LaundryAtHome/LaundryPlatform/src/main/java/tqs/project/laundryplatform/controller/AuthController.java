@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.service.AuthenticationService;
 
@@ -23,21 +24,18 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public HttpStatus signUp(User user) {
+    public RedirectView signUp(User user) {
+        if (service.register(user))
+            return new RedirectView("/index");
 
-        if (service.register(user)){
-            return HttpStatus.OK;
-        } else {
-            return HttpStatus.CONFLICT;
-        }
+        return new RedirectView("/register");
     }
 
     @PostMapping("/login")
-    public HttpStatus logIn(User user){
+    public RedirectView logIn(User user){
         if(service.logIn(user.getUsername(), user.getPassword()))
-            return HttpStatus.OK;
+            return new RedirectView("/index");
 
-
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        return new RedirectView("/login");
     }
 }
