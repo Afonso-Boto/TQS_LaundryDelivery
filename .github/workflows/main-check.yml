@@ -28,18 +28,6 @@ jobs:
     - uses: actions/checkout@v3
       with:
           fetch-depth: 0    # Shallow clones should be disabled for a better relevancy of analysis
-    - name: Google Java Format enforcer
-      uses: axel-op/googlejavaformat-action@v3
-      with:
-        files: "Qourier/TestMe.java"
-        skipCommit: true
-        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
-    - name: Google Java Format import structure enforcer
-      uses: axel-op/googlejavaformat-action@v3
-      with:
-        files: "**/TestMe.java"
-        commitMessage: Google Java Format import ordering
-        args: "--fix-imports-only --replace"
     - name: Set up OpenJDK 17
       uses: actions/setup-java@v3
       with:
@@ -79,10 +67,6 @@ jobs:
     - uses: actions/checkout@v3
       with:
           fetch-depth: 0    # Shallow clones should be disabled for a better relevancy of analysis
-    - name: Google Java Format enforcer
-      uses: axel-op/googlejavaformat-action@v3
-      with:
-        args: "--dry-run --set-exit-if-changed"
     - name: Set up OpenJDK 17
       uses: actions/setup-java@v3
       with:
