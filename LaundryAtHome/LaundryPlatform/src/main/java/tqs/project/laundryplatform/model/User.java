@@ -1,6 +1,7 @@
 package tqs.project.laundryplatform.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -94,5 +95,18 @@ public class User {
 
     public void setPhoneNumber(int phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return phoneNumber == user.phoneNumber && id.equals(user.id) && username.equals(user.username) && email.equals(user.email) && password.equals(user.password) && fullName.equals(user.fullName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, email, password, fullName, phoneNumber);
     }
 }
