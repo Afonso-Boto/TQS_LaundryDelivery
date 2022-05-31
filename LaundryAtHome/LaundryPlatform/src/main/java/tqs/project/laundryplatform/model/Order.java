@@ -46,6 +46,10 @@ public class Order {
         this.deliveryLocation = deliveryLocation;
     }
 
+    public Order(OrderType orderType) {
+        this.orderType = orderType;
+    }
+
     public Order() {
 
     }
