@@ -44,6 +44,8 @@ public class AuthController {
 
         // Set cookie onto person
         response.addCookie(jwtTokenCookie);
+        System.err.println("Cookie set");
+        System.err.println(jwtTokenCookie.getValue());
     }
 
     // Get cookies
@@ -66,6 +68,16 @@ public class AuthController {
         return false;
     }
 
+    // Remove cookie
+    public static HttpServletResponse removeCookie(HttpServletResponse response){
+        Cookie cookie = new Cookie("id", "");
+        cookie.setMaxAge(0);
+        cookie.setSecure(false);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+        return response;
+    }
+
     // Get ID
     public static String getIdFromCookie(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
@@ -80,7 +92,7 @@ public class AuthController {
     @PostMapping("/register")
     public String signUp(RegisterRequest request, HttpServletResponse response){
         if (!accountManager.register(request))
-            return "redirect:/register";
+            return "redirect:/auth/register";
 
         // Set cookie for customer
         setCookie(response, request.getUsername());
@@ -91,8 +103,10 @@ public class AuthController {
     @PostMapping("/login")
     public String loginPost(LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
+        System.err.println("Login result: " + result);
+
         if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)) {
-            return "redirect:/login";
+            return "login_form";
         }
 
         // Set cookie for customer

@@ -1,5 +1,6 @@
 package tqs.project.laundryplatform.controller;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,17 +9,19 @@ import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
-import static tqs.project.laundryplatform.controller.AuthController.verifyCookie;
+import static tqs.project.laundryplatform.controller.AuthController.*;
 
 @Controller
+@Log4j2
 public class MainController {
 
-    private static final String REDIRECT_REGISTER = "register_form";
-    private static final String REDIRECT_LOGIN = "login_form";
-    private static final String REDIRECT_INDEX = "index";
+    private static final String REDIRECT_REGISTER = "redirect:/register";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String REDIRECT_INDEX = "redirect:/index";
 
     @GetMapping("/")
     public String mainPage() {
@@ -29,10 +32,14 @@ public class MainController {
     public String showIndex(Model model, HttpServletRequest request) {
         System.err.println("index");
 
-        if(verifyCookie(request))
+        if(verifyCookie(request)){
+            System.err.println("cookie not verified");
             return REDIRECT_LOGIN;
+        }
 
-        return REDIRECT_INDEX;
+        System.err.println("cookie verified");
+        System.err.println(getIdFromCookie(request));
+        return "index";
     }
 
 
@@ -45,7 +52,7 @@ public class MainController {
 
 
         model.addAttribute("loginRequest", new LoginRequest());
-        return REDIRECT_LOGIN;
+        return "login_form";
     }
 
     @GetMapping("/register")
@@ -53,6 +60,30 @@ public class MainController {
         System.err.println("register");
 
         model.addAttribute("registerRequest", new RegisterRequest());
-        return REDIRECT_REGISTER;
+        return "register_form";
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        System.err.println("logout");
+
+        if (hasCookie(request)) {
+            log.info("Removing cookie");
+            System.err.println("Removing cookie");
+
+            Cookie jwtTokenCookie = new Cookie("id", "null");
+
+            jwtTokenCookie.setMaxAge(0);
+            jwtTokenCookie.setSecure(false);
+            jwtTokenCookie.setHttpOnly(true);
+
+            // Set cookie onto user
+            response.addCookie(jwtTokenCookie);
+            return REDIRECT_LOGIN;
+        }else{
+            return "error";
+        }
+    }
+
+
 }
