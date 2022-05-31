@@ -34,7 +34,7 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         commit_prefix: "AUTO RELEASE"
     - name: Create pull request
-      uses: devops-infra/action-pull-request@0.4.2
+      uses: devops-infra/action-pull-request@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         title: ${{ github.event.commits[0].message }}
