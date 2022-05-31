@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{/css/base.css}" href="../static/css/base.css" type="text/css">
+
+    <title>Qourier</title>
+    <style>  
+        .checked {  
+            font-size : 20px;  
+        }  
+        .unchecked {  
+            color : rgb(156, 156, 156);  
+            font-size : 20px;  
+        }  
+    </style>  
+</head>
+<body>
+
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" id="navbar-admin" th:if="${role.equals('admin')}" th:replace="base :: navbar-admin">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html?role=admin" th:href="@{/index}">
+                        <i class="fa fa-home"></i>
+                        <strong>Home</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="progress.html?role=admin" th:href="@{/progress}">
+                        Progress
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="accounts.html?role=admin" th:href="@{/accounts}">
+                        Accounts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="applications.html?role=admin" th:href="@{/applications}">
+                        Applications
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="monitor.html?role=admin" th:href="@{/monitor}">
+                        Monitor
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html" th:href="@{/logout}">
+                        Log out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" id="navbar-rider" th:if="${role.equals('rider')}" th:replace="base :: navbar-rider">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html?role=rider" th:href="@{/index}">
+                        <i class="fa fa-home"></i>
+                        <strong>Home</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="deliveries.html?role=rider" th:href="@{/deliveries}">
+                        Deliveries
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="profile_rider.html?role=rider" th:href="@{/profile}">
+                        Profile
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html" th:href="@{/logout}">
+                        Log out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-icon-top navbar-expand-lg navbar-dark bg-dark" id="navbar-customer" th:if="${role.equals('customer')}" th:replace="base :: navbar-customer">
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html?role=customer" th:href="@{/index}">
+                        <i class="fa fa-home"></i>
+                        <strong>Home</strong>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="delivery_management.html?role=customer" th:href="@{/delivery_management}">
+                        Deliveries
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="profile_customer.html?role=customer" th:href="@{/profile}">
+                        Profile
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.html" th:href="@{/logout}">
+                        Log out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Rider's Progress</h2>
+        <p>Progress for each rider's delivery:</p> 
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Rider</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">Progress</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Cristina Laundry</td>
+                        <td>Mark</td>
+                        <td>25/5/22 10:22</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width:25%">
+                                  25% (Bid check)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Cristina Laundry</td>
+                        <td>Jacob</td>
+                        <td>25/5/22 09:12</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                    50% (Fetching)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Cristina Laundry</td>
+                        <td>Larry</td>
+                        <td>25/5/22 07:00</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:75%">
+                                75% (Shipped)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">4</th>
+                        <td>Cristina Laundry</td>
+                        <td>Diego</td>
+                        <td>25/5/22 05:49</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                                    100% (Delivered)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Deliveries History</h2>
+        <p>History of deliveries:</p> 
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Rider</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Rating</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>25/5/22 10:22</td>
+                        <td>25/5/22 12:32</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Luis</td>
+                        <td>25/5/22 06:22</td>
+                        <td>25/5/22 11:37</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span> 
+                            <span class = "fa fa-star unchecked"></span> 
+                            <span class = "fa fa-star unchecked"></span> 
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Steve</td>
+                        <td>24/5/22 09:12</td>
+                        <td>25/5/22 13:38</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">4</th>
+                        <td>Ana</td>
+                        <td>23/5/22 23:42</td>
+                        <td>23/5/22 23:43</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">5</th>
+                        <td>Petro</td>
+                        <td>22/5/22 03:05</td>
+                        <td>22/5/22 03:36</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+</body>
+</html>
