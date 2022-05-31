@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.qourier.qourier_app.data.AccountRole.*;
 
@@ -207,7 +209,8 @@ public class WebController {
                 "filterPending", pending,
                 "filterType", accountRole.name(),
                 "filterPage", pageNumber,
-                "filterPageMax", pageNumberMax
+                "filterPageMax", pageNumberMax,
+                "hasher", (Function<String, String>) DigestUtils::sha256Hex
         ));
         return "applications";
     }

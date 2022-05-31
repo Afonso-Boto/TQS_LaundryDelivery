@@ -30,7 +30,7 @@
                         </div>
                         <div>
                             <label for="filter-page">Page</label>
-                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax}" />
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax} - 1" />
                         </div>
 
                         <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>

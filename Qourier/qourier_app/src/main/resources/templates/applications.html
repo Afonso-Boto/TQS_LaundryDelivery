@@ -104,7 +104,7 @@
                         </div>
                         <div>
                             <label for="filter-page">Page</label>
-                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax}" />
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax} - 1" />
                         </div>
 
                         <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>
@@ -127,12 +127,12 @@
                         <td th:text="${riderApp.citizenId}">987654321</td>
                         <td th:text="${riderApp.account.registrationTime}">2022/05/11 19:00:00</td>
                         <td>
-                            <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${riderApp.account.email}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
+                            <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${hasher.apply(riderApp.account.email)}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
                                 <i class="fa fa-clipboard"></i>
                             </button>
                         </td>
 
-                        <th:block th:with="baseId='attrs-rider-' + ${riderApp.account.email} + '-'">
+                        <th:block th:with="baseId='attrs-rider-' + ${hasher.apply(riderApp.account.email)} + '-'">
                             <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.account.name}" />
                             <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.account.email}" />
                             <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.citizenId}" />
@@ -143,7 +143,7 @@
                     </tbody>
                 </table>
 
-                <table id="table-customers" class="table table-hover" th:unless="${filterType == 'CUSTOMER'}">
+                <table id="table-customers" class="table table-hover" th:if="${filterType == 'CUSTOMER'}">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -160,12 +160,12 @@
                         <td th:text="${customerApp.servType}">Food</td>
                         <td th:text="${customerApp.account.registrationTime}">2021/01/23 11:30:01</td>
                         <td>
-                            <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${customerApp.account.email}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
+                            <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${hasher.apply(customerApp.account.email)}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
                                 <i class="fa fa-clipboard"></i>
                             </button>
                         </td>
 
-                        <th:block th:with="baseId='attrs-customer-' + ${customerApp.account.email} + '-'">
+                        <th:block th:with="baseId='attrs-customer-' + ${hasher.apply(customerApp.account.email)} + '-'">
                             <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.account.name}" />
                             <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.account.email}" />
                             <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.servType}" />
@@ -221,10 +221,8 @@
         }
 
         // Update modal with info from clicked row
-        // let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
-        // let customerDetails = ['name', 'email', 'serviceType', 'time', 'state'];
-        let riderDetails = ['name', 'email', 'citizenId', 'state'];
-        let customerDetails = ['name', 'email', 'serviceType', 'state'];
+        let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
+        let customerDetails = ['name', 'email', 'serviceType', 'time', 'state'];
         $('td > button').click(function (event) {
             let clickedButton = event.delegateTarget;
             let splitId = clickedButton.id.split('-');
