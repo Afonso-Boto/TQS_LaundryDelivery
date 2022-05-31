@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -141,7 +142,7 @@ public class WebController {
     public String accounts(Model model, HttpServletRequest request,
                            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
                            @RequestParam(required = false, defaultValue = "rider", name = "type") AccountRole accountRole,
-                           @RequestParam(required = false, defaultValue = "true", name = "active") Boolean active) {
+                           @RequestParam(required = false, defaultValue = "true", name = "active") boolean active) {
         AccountRole role = ADMIN;
 
         // Verify if cookie role is right or not
@@ -149,28 +150,12 @@ public class WebController {
             return REDIRECT_LOGIN;
 
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, TABLE_SIZE);
-        List<RiderDTO> riderAccList = new ArrayList<>();
-        List<CustomerDTO> customerAccList = new ArrayList<>();
-        int pageNumberMax;
-
-        if (accountRole.equals(RIDER)) {
-            riderAccList = accountManager.queryRiderAcceptedAccounts(pageRequest);
-            pageNumberMax = accountManager.queryRiderAcceptedAccountsTotal(pageRequest);
-        }
-        else {
-            customerAccList = accountManager.queryCustomerAcceptedAccounts(PageRequest.of(pageNumber, TABLE_SIZE));
-            pageNumberMax = accountManager.queryCustomerAcceptedAccountsTotal(pageRequest);
-        }
+        fillModelWithRiderCustomerQueries(model, pageNumber, accountRole,
+                (active) ? List.of(AccountState.ACTIVE) : List.of(AccountState.SUSPENDED));
 
         model.addAllAttributes(Map.of(
                 "role", role,
-                "riderAccList", riderAccList,
-                "customerAccList", customerAccList,
-                "filterActive", active,
-                "filterType", accountRole.name(),
-                "filterPage", pageNumber,
-                "filterPageMax", pageNumberMax
+                "filterActive", active
         ));
         return "accounts";
     }
@@ -179,37 +164,19 @@ public class WebController {
     public String applications(Model model, HttpServletRequest request,
                                @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
                                @RequestParam(required = false, defaultValue = "rider", name = "type") AccountRole accountRole,
-                               @RequestParam(required = false, defaultValue = "true", name = "pending") Boolean pending) {
+                               @RequestParam(required = false, defaultValue = "true", name = "pending") boolean pending) {
         AccountRole role = ADMIN;
 
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role))
             return REDIRECT_LOGIN;
 
-        PageRequest pageRequest = PageRequest.of(pageNumber, TABLE_SIZE);
-        List<RiderDTO> riderAppList = new ArrayList<>();
-        List<CustomerDTO> customerAppList = new ArrayList<>();
-        int pageNumberMax;
+        fillModelWithRiderCustomerQueries(model, pageNumber, accountRole,
+                pending ? List.of(AccountState.PENDING) : List.of(AccountState.REFUSED));
 
-        if (accountRole.equals(RIDER)) {
-            riderAppList = accountManager.queryRiderApplications(pageRequest);
-            pageNumberMax = accountManager.queryRiderApplicationsTotal(pageRequest);
-        }
-        else {
-            customerAppList = accountManager.queryCustomerApplications(PageRequest.of(pageNumber, TABLE_SIZE));
-            pageNumberMax = accountManager.queryCustomerApplicationsTotal(pageRequest);
-        }
-
-        model.addAttribute("role", role);
-        model.addAttribute("customerAppList", customerAppList);
         model.addAllAttributes(Map.of(
                 "role", role,
-                "riderAppList", riderAppList,
-                "customerAppList", customerAppList,
                 "filterPending", pending,
-                "filterType", accountRole.name(),
-                "filterPage", pageNumber,
-                "filterPageMax", pageNumberMax,
                 "hasher", (Function<String, String>) DigestUtils::sha256Hex
         ));
         return "applications";
@@ -430,6 +397,32 @@ public class WebController {
                 return cookie.getValue();
             }
         return null;
+    }
+
+    private void fillModelWithRiderCustomerQueries(Model model, int pageNumber, AccountRole accountRole, Collection<AccountState> queryStates) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, TABLE_SIZE);
+        List<RiderDTO> riderList = new ArrayList<>();
+        List<CustomerDTO> customerList = new ArrayList<>();
+        int pageNumberMax;
+
+        if (accountRole.equals(RIDER)) {
+            AccountManager.RiderDTOQueryResult queryResult = accountManager.queryRidersByState(pageRequest, queryStates);
+            riderList = queryResult.getResult();
+            pageNumberMax = queryResult.getTotalPages();
+        }
+        else {
+            AccountManager.CustomerDTOQueryResult queryResult = accountManager.queryCustomersByState(pageRequest, queryStates);
+            customerList = queryResult.getResult();
+            pageNumberMax = queryResult.getTotalPages();
+        }
+
+        model.addAllAttributes(Map.of(
+                "riderAppList", riderList,
+                "customerAppList", customerList,
+                "filterType", accountRole.name(),
+                "filterPage", pageNumber,
+                "filterPageMax", pageNumberMax
+        ));
     }
 
 }
