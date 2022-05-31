@@ -1,12 +1,12 @@
 package tqs.project.laundryplatform.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.model.User;
 
-@org.springframework.web.bind.annotation.RestController
-public class RestController {
+@RestController
+public class MainController {
 
     @GetMapping("/")
     public ModelAndView mainPage() {
