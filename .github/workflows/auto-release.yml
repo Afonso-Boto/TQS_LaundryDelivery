@@ -2,7 +2,7 @@ name: Auto release
 
 on:
   schedule:
-    - cron: '33 11 * * 2'
+    - cron: '36 * * * 2'
   
 jobs:
   update-release:
