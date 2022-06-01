@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class RegisterRiderSteps {
+public class RegisterNonAdminSteps {
     private WebDriver driver;
 
     @When("I navigate to {string}")
@@ -25,6 +25,11 @@ public class RegisterRiderSteps {
         driver.findElement(By.cssSelector("div:nth-child(5) .btn")).click();
     }
 
+    @And("I click the register account button for the type Customer")
+    public void iClickTheRegisterAccountButtonForTheTypeCustomer() {
+        driver.findElement(By.cssSelector("div:nth-child(7) .btn")).click();
+    }
+
     @And("I set the Email as {string}")
     public void iSetTheEmailAs(String email) {
         driver.findElement(By.id("email")).sendKeys(email);
@@ -33,7 +38,6 @@ public class RegisterRiderSteps {
     @And("I set the Password as {string}")
     public void iSetThePasswordAs(String password) {
         driver.findElement(By.id("password")).sendKeys(password);
-        
     }
 
     @And("I set the Name as {string}")
@@ -46,9 +50,19 @@ public class RegisterRiderSteps {
         driver.findElement(By.id("citizen_id")).sendKeys(CID);
     }
 
-    @And("I click the {string} button")
+    @And("I set the Service Type as {string}")
+    public void iSetTheServiceTypeAs(String servType) {
+        driver.findElement(By.id("service_type")).sendKeys(servType);
+    }
+
+    @And("I click the register button")
     public void iClickRegister(String button) {
-        driver.findElement(By.id(button)).click();
+        driver.findElement(By.id("register")).click();
+    }
+
+    @And("I click the logout button")
+    public void iClickTheLogoutButton() {
+        driver.findElement(By.linkText("Log out")).click();
     }
 
     @Then("I should see in the page body the pattern {string}")
