@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
+import static com.qourier.qourier_app.TestUtils.createSampleRider;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -245,20 +247,6 @@ class AccountManagerTest {
 
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
-    }
-
-    private Rider createSampleRider(String riderAccountEmail) {
-        Account riderAccount = new Account("riderz", riderAccountEmail, "rider_ppass");
-        riderAccount.setRole(AccountRole.RIDER);
-        riderAccount.setState(AccountState.SUSPENDED);
-        return new Rider(riderAccount, "123456789");
-    }
-
-    private Customer createSampleCustomer(String customerAccountEmail) {
-        Account customerAccount = new Account("customerss", customerAccountEmail, "pass_custommer");
-        customerAccount.setRole(AccountRole.CUSTOMER);
-        customerAccount.setState(AccountState.ACTIVE);
-        return new Customer(customerAccount, "Food");
     }
 
     private void assertCorrectStateFlow(AccountState startState, AccountState endState, Function<String, Boolean> accountOperation) {

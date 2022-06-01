@@ -18,12 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.Cookie;
@@ -42,6 +40,7 @@ import static com.qourier.qourier_app.data.AccountRole.*;
 @Controller
 public class WebController {
 
+    public static String COOKIE_ID = "id";
     private static final int TABLE_SIZE = 10;
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
@@ -62,7 +61,7 @@ public class WebController {
 
 
     @PostMapping("/login")
-    public String loginPost(LoginRequest user, HttpServletResponse response) {
+    public String loginPost(@ModelAttribute LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
         if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)){
             log.warning("WRONG CREDS");
@@ -79,7 +78,7 @@ public class WebController {
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         // See if we are logged in or not
         if(hasCookie(request)){
-            Cookie jwtTokenCookie = new Cookie("id", "null");
+            Cookie jwtTokenCookie = new Cookie(COOKIE_ID, "null");
 
             jwtTokenCookie.setMaxAge(0);
             jwtTokenCookie.setSecure(false);
@@ -94,7 +93,7 @@ public class WebController {
     }
 
     @PostMapping("/register_customer")
-    public String registerCustomerPost(CustomerRegisterRequest request, HttpServletResponse response) {
+    public String registerCustomerPost(@ModelAttribute CustomerRegisterRequest request, HttpServletResponse response) {
         if (!accountManager.registerCustomer(request))
             return "register_customer";
 
@@ -105,7 +104,7 @@ public class WebController {
     }
 
     @PostMapping("/register_rider")
-    public String registerRiderPost(RiderRegisterRequest request, HttpServletResponse response) {
+    public String registerRiderPost(@ModelAttribute RiderRegisterRequest request, HttpServletResponse response) {
         if (!accountManager.registerRider(request))
             return "register_rider";
 
@@ -238,6 +237,7 @@ public class WebController {
                 model.addAttribute("msg", "An error has occurred");
         }
         model.addAttribute("role", role);
+        model.addAttribute("permitted", !state.equals(AccountState.ACTIVE));
         return "deliveries";
     }
 
@@ -321,6 +321,7 @@ public class WebController {
         }
 
         model.addAttribute("role", role);
+        model.addAttribute("permitted", !state.equals(AccountState.ACTIVE));
         return "delivery_management";
     }
 
@@ -351,7 +352,7 @@ public class WebController {
     // setCookie to user
     public void setCookie(HttpServletResponse response, String email) {
         // Create cookie
-        Cookie jwtTokenCookie = new Cookie("id", email);
+        Cookie jwtTokenCookie = new Cookie(COOKIE_ID, email);
 
         jwtTokenCookie.setMaxAge(86400);
         jwtTokenCookie.setSecure(false);
@@ -366,7 +367,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("id") && accountManager.getAccount(cookie.getValue()).getRole().equals(role))
+            if (cookie.getName().equals(COOKIE_ID) && accountManager.getAccount(cookie.getValue()).getRole().equals(role))
                 return true;
         return false;
     }
@@ -376,7 +377,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("id") && !cookie.getValue().isEmpty())
+            if (cookie.getName().equals(COOKIE_ID) && !cookie.getValue().isEmpty())
                 return true;
         return false;
     }
@@ -386,7 +387,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("id")){
+            if (cookie.getName().equals(COOKIE_ID)){
                 String email = cookie.getValue();
                 return accountManager.getAccount(email).getRole();
             }
@@ -398,7 +399,7 @@ public class WebController {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals("id")){
+            if (cookie.getName().equals(COOKIE_ID)){
                 return cookie.getValue();
             }
         return null;
