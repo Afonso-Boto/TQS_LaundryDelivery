@@ -11,7 +11,7 @@ import org.openqa.selenium.WebDriver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class registerRiderTest {
+public class RegisterRiderSteps {
     private WebDriver driver;
 
     @When("I navigate to {string}")
