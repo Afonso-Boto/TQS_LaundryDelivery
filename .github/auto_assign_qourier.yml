@@ -1,0 +1,10 @@
+addReviewers: true
+
+addAssignees: false
+
+reviewers:
+    - Pengrey
+    - martinhoT
+
+numberOfReviewers: 2
+

@@ -1,0 +1,10 @@
+addReviewers: true
+
+addAssignees: false
+
+reviewers:
+    - tomascandeias
+    - Afonso-Boto
+
+numberOfReviewers: 1
+
