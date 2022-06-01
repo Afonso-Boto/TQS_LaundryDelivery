@@ -1,8 +1,15 @@
 package com.qourier.qourier_app.account;
 
-import com.qourier.qourier_app.data.Account;
-import com.qourier.qourier_app.data.AccountRole;
-import com.qourier.qourier_app.data.AccountState;
+import com.qourier.qourier_app.account.login.LoginRequest;
+import com.qourier.qourier_app.account.login.LoginResult;
+import com.qourier.qourier_app.account.register.AdminRegisterRequest;
+import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
+import com.qourier.qourier_app.account.register.RegisterRequest;
+import com.qourier.qourier_app.account.register.RiderRegisterRequest;
+import com.qourier.qourier_app.data.*;
+import com.qourier.qourier_app.data.dto.AccountDTO;
+import com.qourier.qourier_app.data.dto.CustomerDTO;
+import com.qourier.qourier_app.data.dto.RiderDTO;
 import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
@@ -15,13 +22,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -191,17 +199,20 @@ class AccountManagerTest {
 
     @Test
     void whenGetAccountDetails_thenGetCorrectDetails() {
-        String accountEmail = "the.email@mail.com";
-        Account account = new Account("the name", accountEmail, "the_password");
-        AccountRole accountRole = AccountRole.RIDER;
-        AccountState accountState = AccountState.ACTIVE;
-        account.setRole(accountRole);
-        account.setState(accountState);
+        String riderAccountEmail = "the.email@mail.com";
+        Rider rider = createSampleRider(riderAccountEmail);
+        String customerAccountEmail = "email@email.com";
+        Customer customer = createSampleCustomer(customerAccountEmail);
 
-        when(accountRepository.findById(accountEmail)).thenReturn(Optional.of(account));
+        when(accountRepository.findById(riderAccountEmail)).thenReturn(Optional.of(rider.getAccount()));
+        when(accountRepository.findById(customerAccountEmail)).thenReturn(Optional.of(customer.getAccount()));
+        when(riderRepository.findById(riderAccountEmail)).thenReturn(Optional.of(rider));
+        when(customerRepository.findById(customerAccountEmail)).thenReturn(Optional.of(customer));
 
-        assertThat(accountManager.getAccount(accountEmail).getRole()).isEqualTo(accountRole);
-        assertThat(accountManager.getAccount(accountEmail).getState()).isEqualTo(accountState);
+        assertThat(accountManager.getAccount(riderAccountEmail)).isEqualTo(AccountDTO.fromEntity(rider.getAccount()));
+        assertThat(accountManager.getAccount(customerAccountEmail)).isEqualTo(AccountDTO.fromEntity(customer.getAccount()));
+        assertThat(accountManager.getRiderAccount(riderAccountEmail)).isEqualTo(RiderDTO.fromEntity(rider));
+        assertThat(accountManager.getCustomerAccount(customerAccountEmail)).isEqualTo(CustomerDTO.fromEntity(customer));
     }
 
     @Test
@@ -210,14 +221,44 @@ class AccountManagerTest {
 
         when(accountRepository.findById(accountEmail)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> accountManager.getAccount(accountEmail).getRole())
-                .isInstanceOf(AccountDoesNotExistException.class);
-        assertThatThrownBy(() -> accountManager.getAccount(accountEmail).getState())
+        assertThatThrownBy(() -> accountManager.getAccount(accountEmail))
                 .isInstanceOf(AccountDoesNotExistException.class);
     }
 
+    @Test
+    void givenRiderAndCustomerExist_whenGetWrongAccountEmail_thenThrow() {
+        String riderAccountEmail = "ngoisa@gioa.com";
+        Rider rider = createSampleRider(riderAccountEmail);
+        String customerAccountEmail = "h9agija@hjd90bs.org";
+        Customer customer = createSampleCustomer(customerAccountEmail);
+
+        when(riderRepository.findById(customer.getAccount().getEmail())).thenReturn(Optional.empty());
+        when(customerRepository.findById(rider.getAccount().getEmail())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountManager.getRiderAccount(customerAccountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+        assertThatThrownBy(() -> accountManager.getCustomerAccount(riderAccountEmail))
+                .isInstanceOf(AccountDoesNotExistException.class);
+    }
+
+
+
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
+    }
+
+    private Rider createSampleRider(String riderAccountEmail) {
+        Account riderAccount = new Account("riderz", riderAccountEmail, "rider_ppass");
+        riderAccount.setRole(AccountRole.RIDER);
+        riderAccount.setState(AccountState.SUSPENDED);
+        return new Rider(riderAccount, "123456789");
+    }
+
+    private Customer createSampleCustomer(String customerAccountEmail) {
+        Account customerAccount = new Account("customerss", customerAccountEmail, "pass_custommer");
+        customerAccount.setRole(AccountRole.CUSTOMER);
+        customerAccount.setState(AccountState.ACTIVE);
+        return new Customer(customerAccount, "Food");
     }
 
     private void assertCorrectStateFlow(AccountState startState, AccountState endState, Function<String, Boolean> accountOperation) {

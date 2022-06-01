@@ -1,4 +1,4 @@
-package com.qourier.qourier_app.account;
+package com.qourier.qourier_app.account.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
