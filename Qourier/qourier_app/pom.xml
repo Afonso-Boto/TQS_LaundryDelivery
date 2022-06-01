@@ -120,6 +120,13 @@
 			<version>1.8.2</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -135,19 +142,6 @@
 						</exclude>
 					</excludes>
 				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>3.0.0-M6</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 
             <plugin>
