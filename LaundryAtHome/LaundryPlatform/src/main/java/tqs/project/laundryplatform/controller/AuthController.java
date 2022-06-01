@@ -41,6 +41,7 @@ public class AuthController {
         jwtTokenCookie.setMaxAge(86400);
         jwtTokenCookie.setSecure(false);
         jwtTokenCookie.setHttpOnly(true);
+        jwtTokenCookie.setPath("/");
 
         // Set cookie onto person
         response.addCookie(jwtTokenCookie);
@@ -48,18 +49,11 @@ public class AuthController {
         System.err.println(jwtTokenCookie.getValue());
     }
 
-    // Get cookies
-    public static boolean verifyCookie(HttpServletRequest request){
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) return false;
-        for (Cookie cookie : cookies)
-            if (cookie.getName().equals("id"))
-                return true;
-        return false;
-    }
-
     // Verify cookie presence
     public static boolean hasCookie(HttpServletRequest request){
+        System.err.println();
+        System.err.println(request.getCookies());
+
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
@@ -69,13 +63,15 @@ public class AuthController {
     }
 
     // Remove cookie
-    public static HttpServletResponse removeCookie(HttpServletResponse response){
-        Cookie cookie = new Cookie("id", "");
-        cookie.setMaxAge(0);
-        cookie.setSecure(false);
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
-        return response;
+    public static void removeCookie(HttpServletResponse response){
+        Cookie jwtTokenCookie = new Cookie("id", "null");
+
+        jwtTokenCookie.setMaxAge(0);
+        jwtTokenCookie.setSecure(false);
+        jwtTokenCookie.setHttpOnly(true);
+
+        // Set cookie onto user
+        response.addCookie(jwtTokenCookie);
     }
 
     // Get ID

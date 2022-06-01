@@ -32,7 +32,7 @@ public class MainController {
     public String showIndex(Model model, HttpServletRequest request) {
         System.err.println("index");
 
-        if(verifyCookie(request)){
+        if(!hasCookie(request)){
             System.err.println("cookie not verified");
             return REDIRECT_LOGIN;
         }
@@ -68,17 +68,7 @@ public class MainController {
         System.err.println("logout");
 
         if (hasCookie(request)) {
-            log.info("Removing cookie");
-            System.err.println("Removing cookie");
-
-            Cookie jwtTokenCookie = new Cookie("id", "null");
-
-            jwtTokenCookie.setMaxAge(0);
-            jwtTokenCookie.setSecure(false);
-            jwtTokenCookie.setHttpOnly(true);
-
-            // Set cookie onto user
-            response.addCookie(jwtTokenCookie);
+            removeCookie(response);
             return REDIRECT_LOGIN;
         }else{
             return "error";
