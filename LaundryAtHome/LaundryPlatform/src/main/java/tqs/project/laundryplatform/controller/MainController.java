@@ -1,79 +1,77 @@
 package tqs.project.laundryplatform.controller;
 
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-import tqs.project.laundryplatform.model.User;
+import tqs.project.laundryplatform.account.LoginRequest;
+import tqs.project.laundryplatform.account.RegisterRequest;
 
-@RestController
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static tqs.project.laundryplatform.controller.AuthController.*;
+
+@Controller
+@Log4j2
 public class MainController {
 
+    private static final String REDIRECT_REGISTER = "redirect:/register";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
+    private static final String REDIRECT_INDEX = "redirect:/index";
+
     @GetMapping("/")
-    public ModelAndView mainPage() {
-        return new ModelAndView("login_form");
+    public String mainPage() {
+        return REDIRECT_INDEX;
     }
 
     @GetMapping("/index")
-    public ModelAndView showIndex() {
+    public String showIndex(Model model, HttpServletRequest request) {
         System.err.println("index");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        return modelAndView;
+        if(!hasCookie(request)){
+            System.err.println("cookie not verified");
+            return REDIRECT_LOGIN;
+        }
+
+        System.err.println("cookie verified");
+        System.err.println(getIdFromCookie(request));
+        return "index";
     }
 
 
     @GetMapping("/login")
-    public ModelAndView showLoginForm(User user) {
+    public String showLoginForm(Model model, HttpServletRequest request) {
         System.err.println("get login");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login_form");
-        return modelAndView;
+        if (getIdFromCookie(request) != null)
+            return REDIRECT_INDEX;
+
+
+        model.addAttribute("loginRequest", new LoginRequest());
+        return "login_form";
     }
 
     @GetMapping("/register")
-    public ModelAndView showRegisterForm(User user) {
+    public String showRegisterForm(Model model, HttpServletRequest request) {
         System.err.println("register");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("register_form");
-        return modelAndView;
+        model.addAttribute("registerRequest", new RegisterRequest());
+        return "register_form";
     }
 
-    @GetMapping("/services")
-    public ModelAndView showServices() {
-        System.err.println("service");
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        System.err.println("logout");
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("service");
-        return modelAndView;
-    }
-
-    @GetMapping("/pricing")
-    public ModelAndView showPricing() {
-        System.err.println("pricing");
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("pricing");
-        return modelAndView;
-    }
-
-    @GetMapping("/orders")
-    public ModelAndView showOrders() {
-        System.err.println("orders");
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("orders");
-        return modelAndView;
-    }
-
-    @GetMapping("/neworder")
-    public ModelAndView showNewOrder() {
-        System.err.println("neworder");
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("neworder");
-        return modelAndView;
+        if (hasCookie(request)) {
+            removeCookie(response);
+            return REDIRECT_LOGIN;
+        }else{
+            return "error";
+        }
     }
 }
