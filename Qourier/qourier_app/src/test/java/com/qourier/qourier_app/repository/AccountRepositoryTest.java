@@ -24,7 +24,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
+@TestPropertySource(properties = {
+        "spring.jpa.hibernate.ddl-auto=create",
+        "spring.datasource.adminemail=test@gmail.com",
+        "spring.datasource.adminpass=test"
+})
 @Testcontainers
 @SpringBootTest
 class AccountRepositoryTest {
