@@ -19,6 +19,7 @@ jobs:
       if: always()
       with:
         commitMessage: Google Java Format import ordering
+        ref: ${{ github.event.pull_request.head.ref }}
         args: "--fix-imports-only --replace"
 
   verify-qourier:
