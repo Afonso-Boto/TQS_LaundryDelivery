@@ -7,6 +7,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +17,7 @@ public class RegisterNonAdminSteps {
 
     @When("I navigate to {string}")
     public void iNavigateTo(String url) {
-        driver = WebDriverManager.firefoxdriver().create();
+        driver = new HtmlUnitDriver();
         driver.get(url);
     }
 
