@@ -69,10 +69,14 @@ public class RegisterNonAdminSteps {
     @Then("I should see in the page body the pattern {string}")
     public void iShouldBeSeeInThePageBodyThePattern(String pattern) {
         try {
-            assertThat(driver.findElement(By.cssSelector("html")).getText().replaceAll("[0-9-]","").replace("\n"," "), is(pattern));
+            assertThat(
+                    driver.findElement(By.cssSelector("html"))
+                            .getText()
+                            .replaceAll("[0-9-]", "")
+                            .replace("\n", " "),
+                    is(pattern));
         } catch (NoSuchElementException e) {
-            throw new AssertionError(
-                    "\"" + pattern + "\" not available in results");
+            throw new AssertionError("\"" + pattern + "\" not available in results");
         } finally {
             driver.quit();
         }

@@ -11,5 +11,4 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("com.qourier.qourier_app.cucumber")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.qourier.qourier_app.cucumber")
-public class CucumberFunctionalTest{}
-
+public class CucumberFunctionalTest {}
