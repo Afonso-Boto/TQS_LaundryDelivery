@@ -237,7 +237,7 @@ public class WebController {
                 model.addAttribute("msg", "An error has occurred");
         }
         model.addAttribute("role", role);
-        model.addAttribute("permitted", !state.equals(AccountState.ACTIVE));
+        model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
         return "deliveries";
     }
 
@@ -321,7 +321,7 @@ public class WebController {
         }
 
         model.addAttribute("role", role);
-        model.addAttribute("permitted", !state.equals(AccountState.ACTIVE));
+        model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
         return "delivery_management";
     }
 
