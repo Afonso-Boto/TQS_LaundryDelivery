@@ -15,6 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
+          ref: ${{ github.event.pull_request.head.ref }}    # for Google Java Format auto format commits
           fetch-depth: 0    # Shallow clones should be disabled for a better relevancy of analysis
     - name: Google Java Format enforcer, without imports
       uses: axel-op/googlejavaformat-action@v3
@@ -28,7 +29,6 @@ jobs:
       with:
         files: "Qourier/qourier_app/**/*.java"
         commitMessage: Google Java Format import ordering
-        ref: ${{ github.event.pull_request.head.ref }}
         args: "--fix-imports-only --replace"
     - name: Set up OpenJDK 17
       uses: actions/setup-java@v3
