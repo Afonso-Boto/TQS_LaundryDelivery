@@ -57,7 +57,7 @@ public class RegisterNonAdminSteps {
     }
 
     @And("I click the register button")
-    public void iClickRegister(String button) {
+    public void iClickRegister() {
         driver.findElement(By.id("register")).click();
     }
 
