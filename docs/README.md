@@ -6,7 +6,7 @@ Documents detailing the project's various aspects, including the development wor
 
 *Also detailed in the [QA Manual](qa_manual.pdf).*
 
-The development of the project's increments follows a defined conduct in order to maintain code quality throughout the development cycle. We use a Behavior Driven Development (BDD) approach with the Gitflow workflow.
+The development of the project's increments follows a defined conduct in order to maintain code quality throughout the development cycle. We focus on a Behavior Driven Development (BDD) approach with the Gitflow workflow.
 Below are the main points that were defined:
 - Develop each feature (user story) on a separate branch, which will be later merged back into the respective development branch (`dev`)
     - The branch name should be `{qourier/laundryathome}_tqs-{Jira ID}_{user story title}`, e.g. `qourier_tqs-61_rider-profile-stats`
@@ -16,6 +16,7 @@ Below are the main points that were defined:
     - The merges to the development branch are done using Pull Requests (PRs), which will run an automated QA analysis to determine whether the increment meets the quality requirements. In case the analysis fails, the code should be fixed to pass the quality gates defined. The code will also be manually reviewed by the developers responsible for that development branch
     - The name of the pull requests done to the development branches should be `{Qourier/LaundryAtHome} | TQS-{Jira ID} | {user story title}`, e.g. `Qourier | TQS-61 | Rider profile stats`
 - The commits should be prefixed with a label containing the Jira ID of the respective task being done (e.g. [TQS-22])
+- All code should follow the Google Java Format coding style, with AOSP style indentation (4 spaces)
 
 These practices should be applied for each of the two sub-projects (Qourier and LaundyAtHome), which are developed in parallel and by pairs.
 
