@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -42,7 +43,7 @@ public class Account {
     }
 
     public Account() {
-        registrationTime = LocalDateTime.now();
+        registrationTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
 }

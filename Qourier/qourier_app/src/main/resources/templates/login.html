@@ -50,23 +50,5 @@
 
     <th:block th:include="base :: scripts"></th:block>
 
-    <script>
-        // TODO remove
-        $('#login-submit').click(function () {
-            switch ($('#email').val()) {
-                case 'diego@mail.com':
-                    window.location.href = 'index.html?role=rider';
-                    break;
-                case 'cristina@mail.com':
-                    window.location.href = 'index.html?role=customer';
-                    break;
-                case 'admin@mail.com':
-                    window.location.href = 'index.html?role=admin';
-                    break;
-                default:
-            }
-        })
-    </script>
-
 </body>
 </html>

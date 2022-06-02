@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
@@ -26,6 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.util.Optional;
 
 import static com.qourier.qourier_app.TestUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,7 +87,7 @@ class WebOperationsIntegrationTest {
         mvc.perform(post("/login")
                         .param("email", request.getEmail())
                         .param("password", request.getPassword()))
-                .andExpect(status().isFound())
+                .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
     }
 
@@ -111,7 +112,7 @@ class WebOperationsIntegrationTest {
         String riderPass = "asterisks";
         LoginRequest request = new LoginRequest(riderEmail, riderPass);
 
-        riderRepository.save(createSampleRider(riderEmail, riderPass));
+        riderRepository.save(createSampleRider(riderEmail, riderPass + "oops"));
 
         mvc.perform(post("/login")
                         .param("email", request.getEmail())
@@ -163,10 +164,12 @@ class WebOperationsIntegrationTest {
         assertThat(riderRepository.findById(riderAccountEmail))
                 .isPresent()
                 .map(RiderDTO::fromEntity)
+                .get()
                 .isEqualTo(RiderDTO.fromEntity(rider));
         assertThat(customerRepository.findById(customerAccountEmail))
                 .isPresent()
                 .map(CustomerDTO::fromEntity)
+                .get()
                 .isEqualTo(CustomerDTO.fromEntity(customer));
     }
 
@@ -208,13 +211,24 @@ class WebOperationsIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
 
-        assertThat(riderRepository.findById(riderAccountEmail))
-                .isPresent()
+        Optional<Rider> riderSaved = riderRepository.findById(riderAccountEmail);
+        Optional<Customer> customerSaved = customerRepository.findById(customerAccountEmail);
+
+
+        assertThat(riderSaved).isPresent();
+        assertThat(customerSaved).isPresent();
+
+        // Synchronize registration times
+        rider.getAccount().setRegistrationTime(riderSaved.get().getAccount().getRegistrationTime());
+        customer.getAccount().setRegistrationTime(customerSaved.get().getAccount().getRegistrationTime());
+
+        assertThat(riderSaved)
                 .map(RiderDTO::fromEntity)
+                .get()
                 .isEqualTo(RiderDTO.fromEntity(rider));
-        assertThat(customerRepository.findById(customerAccountEmail))
-                .isPresent()
+        assertThat(customerSaved)
                 .map(CustomerDTO::fromEntity)
+                .get()
                 .isEqualTo(CustomerDTO.fromEntity(customer));
     }
 
