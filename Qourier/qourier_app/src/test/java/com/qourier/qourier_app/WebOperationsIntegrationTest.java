@@ -37,7 +37,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "/application-test.properties")
 @AutoConfigureMockMvc
-@Testcontainers
 class WebOperationsIntegrationTest {
 
     @LocalServerPort int randomServerPort;
@@ -47,20 +46,6 @@ class WebOperationsIntegrationTest {
 
     @Value("${spring.datasource.adminpass}")
     private String adminPass;
-
-    @Container
-    public static MySQLContainer container =
-            new MySQLContainer("mysql:8.0.29")
-                    .withUsername("demo")
-                    .withPassword("demopass")
-                    .withDatabaseName("test_db");
-
-    @DynamicPropertySource
-    static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.password", container::getPassword);
-        registry.add("spring.datasource.username", container::getUsername);
-    }
 
     @Autowired private MockMvc mvc;
     @Autowired private AccountRepository accountRepository;
