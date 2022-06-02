@@ -14,16 +14,15 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AccountManager {

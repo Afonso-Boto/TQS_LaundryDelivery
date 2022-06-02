@@ -1,14 +1,13 @@
 package com.qourier.qourier_app.data;
 
-import lombok.Getter;
-import lombok.Setter;
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter

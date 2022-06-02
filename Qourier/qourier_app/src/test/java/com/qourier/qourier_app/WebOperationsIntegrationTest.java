@@ -1,5 +1,11 @@
 package com.qourier.qourier_app;
 
+import static com.qourier.qourier_app.TestUtils.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.qourier.qourier_app.account.login.LoginRequest;
 import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
@@ -12,27 +18,15 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Optional;
-
-import static com.qourier.qourier_app.TestUtils.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "/application-test.properties")
