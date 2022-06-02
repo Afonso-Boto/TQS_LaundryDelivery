@@ -127,32 +127,6 @@ public class AccountManager {
                 .orElseThrow(() -> new AccountDoesNotExistException(email));
     }
 
-    public RiderDTOQueryResult queryRidersByState(
-            Pageable pageable, Collection<AccountState> states) {
-        RiderDTOQueryResult queryResult = new RiderDTOQueryResult();
-        Page<RiderDTO> page =
-                riderRepository.findByAccount_StateIn(states, pageable).map(RiderDTO::fromEntity);
-
-        queryResult.setResult(page.toList());
-        queryResult.setTotalPages(page.getTotalPages());
-
-        return queryResult;
-    }
-
-    public CustomerDTOQueryResult queryCustomersByState(
-            Pageable pageable, Collection<AccountState> states) {
-        CustomerDTOQueryResult queryResult = new CustomerDTOQueryResult();
-        Page<CustomerDTO> page =
-                customerRepository
-                        .findByAccount_StateIn(states, pageable)
-                        .map(CustomerDTO::fromEntity);
-
-        queryResult.setResult(page.toList());
-        queryResult.setTotalPages(page.getTotalPages());
-
-        return queryResult;
-    }
-
     public boolean accountExists(String email) {
         return accountRepository.existsById(email);
     }
