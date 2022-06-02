@@ -10,25 +10,15 @@ import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
-import com.qourier.qourier_app.data.dto.AccountDTO;
-import com.qourier.qourier_app.data.dto.CustomerDTO;
-import com.qourier.qourier_app.data.dto.RiderDTO;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class WebController {
 
-    public static String COOKIE_ID = "id";
-    private static final int TABLE_SIZE = 10;
+    public static final String COOKIE_ID = "id";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
 
@@ -127,83 +116,6 @@ public class WebController {
         return "index";
     }
 
-    @GetMapping("/progress")
-    public String progress(Model model, HttpServletRequest request) {
-        AccountRole role = ADMIN;
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
-
-        model.addAttribute("role", role);
-        return "progress";
-    }
-
-    @GetMapping("/accounts")
-    public String accounts(
-            Model model,
-            HttpServletRequest request,
-            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
-            @RequestParam(required = false, defaultValue = "rider", name = "type")
-                    AccountRole accountRole,
-            @RequestParam(required = false, defaultValue = "true", name = "active")
-                    boolean active) {
-        AccountRole role = ADMIN;
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
-
-        fillModelWithRiderCustomerQueries(
-                model,
-                pageNumber,
-                accountRole,
-                (active) ? List.of(AccountState.ACTIVE) : List.of(AccountState.SUSPENDED));
-
-        model.addAllAttributes(
-                Map.of(
-                        "role", role,
-                        "filterActive", active));
-        return "accounts";
-    }
-
-    @GetMapping("/applications")
-    public String applications(
-            Model model,
-            HttpServletRequest request,
-            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
-            @RequestParam(required = false, defaultValue = "rider", name = "type")
-                    AccountRole accountRole,
-            @RequestParam(required = false, defaultValue = "true", name = "pending")
-                    boolean pending) {
-        AccountRole role = ADMIN;
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
-
-        fillModelWithRiderCustomerQueries(
-                model,
-                pageNumber,
-                accountRole,
-                pending ? List.of(AccountState.PENDING) : List.of(AccountState.REFUSED));
-
-        model.addAllAttributes(
-                Map.of(
-                        "role", role,
-                        "filterPending", pending,
-                        "hasher", (Function<String, String>) DigestUtils::sha256Hex));
-        return "applications";
-    }
-
-    @GetMapping("/monitor")
-    public String monitor(Model model, HttpServletRequest request) {
-        AccountRole role = ADMIN;
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
-
-        model.addAttribute("role", role);
-        return "monitor";
-    }
-
     @GetMapping("/login")
     public String loginGet(Model model, HttpServletRequest request) {
 
@@ -242,57 +154,6 @@ public class WebController {
         model.addAttribute("role", role);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
         return "deliveries";
-    }
-
-    @GetMapping("/profile")
-    public String profile(Model model, HttpServletRequest request) {
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, ADMIN)
-                && !verifyCookie(request, CUSTOMER)
-                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
-
-        String email = getIdFromCookie(request);
-        String view;
-
-        if (getRoleFromCookie(request) == RIDER) {
-            RiderDTO riderProfile = accountManager.getRiderAccount(email);
-            model.addAttribute("rider", riderProfile);
-            view = "profile_rider";
-        } else {
-            CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
-            model.addAttribute("customer", customerProfile);
-            view = "profile_customer";
-        }
-
-        model.addAttribute("role", getRoleFromCookie(request));
-        return view;
-    }
-
-    @GetMapping("/profile/{id}")
-    public String profileById(Model model, HttpServletRequest request, @PathVariable String id) {
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, ADMIN)
-                && !verifyCookie(request, CUSTOMER)
-                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
-
-        AccountRole role = getRoleFromCookie(request);
-
-        if (role != ADMIN) return "redirect:/profile";
-
-        AccountDTO account = accountManager.getAccount(id);
-        String profileView = REDIRECT_INDEX;
-        if (account.getRole().equals(RIDER)) {
-            profileView = "profile_rider";
-            model.addAttribute("rider", accountManager.getRiderAccount(id));
-        } else if (account.getRole().equals(CUSTOMER)) {
-            profileView = "profile_customer";
-            model.addAttribute("customer", accountManager.getCustomerAccount(id));
-        }
-
-        model.addAttribute("role", getRoleFromCookie(request));
-        return profileView;
     }
 
     @GetMapping("/delivery_management")
@@ -404,34 +265,4 @@ public class WebController {
         return null;
     }
 
-    private void fillModelWithRiderCustomerQueries(
-            Model model,
-            int pageNumber,
-            AccountRole accountRole,
-            Collection<AccountState> queryStates) {
-        PageRequest pageRequest = PageRequest.of(pageNumber, TABLE_SIZE);
-        List<RiderDTO> riderList = new ArrayList<>();
-        List<CustomerDTO> customerList = new ArrayList<>();
-        int pageNumberMax;
-
-        if (accountRole.equals(RIDER)) {
-            AccountManager.RiderDTOQueryResult queryResult =
-                    accountManager.queryRidersByState(pageRequest, queryStates);
-            riderList = queryResult.getResult();
-            pageNumberMax = queryResult.getTotalPages();
-        } else {
-            AccountManager.CustomerDTOQueryResult queryResult =
-                    accountManager.queryCustomersByState(pageRequest, queryStates);
-            customerList = queryResult.getResult();
-            pageNumberMax = queryResult.getTotalPages();
-        }
-
-        model.addAllAttributes(
-                Map.of(
-                        "riderAppList", riderList,
-                        "customerAppList", customerList,
-                        "filterType", accountRole.name(),
-                        "filterPage", pageNumber,
-                        "filterPageMax", pageNumberMax));
-    }
 }
