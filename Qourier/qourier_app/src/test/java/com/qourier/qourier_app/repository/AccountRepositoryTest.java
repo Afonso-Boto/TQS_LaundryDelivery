@@ -1,9 +1,12 @@
 package com.qourier.qourier_app.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.Admin;
 import com.qourier.qourier_app.data.Customer;
 import com.qourier.qourier_app.data.Rider;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +18,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(locations = "/application-test.properties")
 @Testcontainers

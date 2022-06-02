@@ -3,9 +3,8 @@ package com.qourier.qourier_app.data.dto;
 import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class AccountDTO {
