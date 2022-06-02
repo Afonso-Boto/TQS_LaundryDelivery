@@ -8,8 +8,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RegisterNonAdminSteps {
 
@@ -61,15 +61,13 @@ public class RegisterNonAdminSteps {
         driver.findElement(By.id("register")).click();
     }
 
-    @And("I click the logout button")
-    public void iClickTheLogoutButton() {
-        driver.findElement(By.linkText("Log out")).click();
-    }
+    @And("I click the {string} tab")
+    public void iClickTheTab(String tab) { driver.findElement(By.linkText("Deliveries")).click(); }
 
     @Then("I should see in the page body the pattern {string}")
     public void iShouldBeSeeInThePageBodyThePattern(String pattern) {
         try {
-            assertThat(driver.findElement(By.cssSelector("html")).getText().replaceAll("[0-9-]","").replace("\n"," "), is(pattern));
+            assertThat(driver.findElement(By.id("non-permitted-message")).getText()).isEqualTo(pattern);
         } catch (NoSuchElementException e) {
             throw new AssertionError(
                     "\"" + pattern + "\" not available in results");
