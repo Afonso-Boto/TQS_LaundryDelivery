@@ -27,5 +27,4 @@ public class AccountDTO {
         dto.setRegistrationTime(account.getRegistrationTime());
         return dto;
     }
-
 }

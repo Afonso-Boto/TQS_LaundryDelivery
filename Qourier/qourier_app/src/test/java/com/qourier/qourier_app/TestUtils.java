@@ -7,11 +7,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class TestUtils {
 
-    public static Gson gson = new GsonBuilder()
-            .create();
+    public static Gson gson = new GsonBuilder().create();
 
     public static Rider createSampleRider(String riderAccountEmail, String riderAccountPassword) {
-        Account riderAccount = new Account("riderz", riderAccountEmail, hashPassword(riderAccountPassword));
+        Account riderAccount =
+                new Account("riderz", riderAccountEmail, hashPassword(riderAccountPassword));
         riderAccount.setRole(AccountRole.RIDER);
         riderAccount.setState(AccountState.SUSPENDED);
         return new Rider(riderAccount, "123456789");
@@ -21,8 +21,11 @@ public class TestUtils {
         return createSampleRider(riderAccountEmail, "rider_passs");
     }
 
-    public static Customer createSampleCustomer(String customerAccountEmail, String customerAccountPassword) {
-        Account customerAccount = new Account("customerss", customerAccountEmail, hashPassword(customerAccountPassword));
+    public static Customer createSampleCustomer(
+            String customerAccountEmail, String customerAccountPassword) {
+        Account customerAccount =
+                new Account(
+                        "customerss", customerAccountEmail, hashPassword(customerAccountPassword));
         customerAccount.setRole(AccountRole.CUSTOMER);
         customerAccount.setState(AccountState.ACTIVE);
         return new Customer(customerAccount, "Food");
@@ -35,5 +38,4 @@ public class TestUtils {
     private static String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
     }
-
 }

@@ -11,8 +11,7 @@ import javax.persistence.*;
 @Table(name = "rider")
 public class Rider {
 
-    @Id
-    private String email;
+    @Id private String email;
 
     @MapsId
     @OneToOne(cascade = CascadeType.ALL)
@@ -21,7 +20,7 @@ public class Rider {
 
     private String citizenId;
 
-    public Rider(Account account, String citizenId){
+    public Rider(Account account, String citizenId) {
         account.setState(AccountState.PENDING);
         account.setRole(AccountRole.RIDER);
         this.account = account;
@@ -29,5 +28,4 @@ public class Rider {
     }
 
     public Rider() {}
-
 }

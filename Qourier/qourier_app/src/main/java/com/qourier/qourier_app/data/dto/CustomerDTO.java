@@ -15,5 +15,4 @@ public class CustomerDTO {
         dto.setServType(customer.getServType());
         return dto;
     }
-
 }

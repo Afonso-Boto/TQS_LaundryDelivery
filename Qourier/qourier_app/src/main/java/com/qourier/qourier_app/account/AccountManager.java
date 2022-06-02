@@ -20,7 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-;import java.util.Collection;
+;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,29 +34,28 @@ public class AccountManager {
     private final CustomerRepository customerRepository;
 
     @Autowired
-    public AccountManager(AccountRepository accountRepository, AdminRepository adminRepository, RiderRepository riderRepository, CustomerRepository customerRepository) {
+    public AccountManager(
+            AccountRepository accountRepository,
+            AdminRepository adminRepository,
+            RiderRepository riderRepository,
+            CustomerRepository customerRepository) {
         this.accountRepository = accountRepository;
         this.adminRepository = adminRepository;
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
     }
 
-
-
     public LoginResult login(LoginRequest request) {
         Optional<Account> account = accountRepository.findById(request.getEmail());
 
-        if (account.isEmpty())
-            return LoginResult.NON_EXISTENT_ACCOUNT;
-        else if (!account.get().getPassword().equals(hashPassword(request.getPassword()))) {
+        if (account.isEmpty()) return LoginResult.NON_EXISTENT_ACCOUNT;
+        else if (!account.get().getPassword().equals(hashPassword(request.getPassword())))
             return LoginResult.WRONG_CREDENTIALS;
-        }
         return LoginResult.LOGGED_IN;
     }
 
     public boolean registerAdmin(AdminRegisterRequest request) {
-        if (accountExists(request.getEmail()))
-            return false;
+        if (accountExists(request.getEmail())) return false;
 
         Account account = generateAccount(request);
         Admin admin = new Admin(account);
@@ -66,8 +66,7 @@ public class AccountManager {
     }
 
     public boolean registerRider(RiderRegisterRequest request) {
-        if (accountExists(request.getEmail()))
-            return false;
+        if (accountExists(request.getEmail())) return false;
 
         Account account = generateAccount(request);
         Rider rider = new Rider(account, request.getCitizenId());
@@ -78,8 +77,7 @@ public class AccountManager {
     }
 
     public boolean registerCustomer(CustomerRegisterRequest request) {
-        if (accountExists(request.getEmail()))
-            return false;
+        if (accountExists(request.getEmail())) return false;
 
         Account account = generateAccount(request);
         Customer customer = new Customer(account, request.getServType());
@@ -110,24 +108,31 @@ public class AccountManager {
     }
 
     public RiderDTO getRiderAccount(String email) {
-        return riderRepository.findById(email).map(RiderDTO::fromEntity)
+        return riderRepository
+                .findById(email)
+                .map(RiderDTO::fromEntity)
                 .orElseThrow(() -> new AccountDoesNotExistException(email, AccountRole.RIDER));
     }
 
     public CustomerDTO getCustomerAccount(String email) {
-        return customerRepository.findById(email).map(CustomerDTO::fromEntity)
+        return customerRepository
+                .findById(email)
+                .map(CustomerDTO::fromEntity)
                 .orElseThrow(() -> new AccountDoesNotExistException(email, AccountRole.CUSTOMER));
     }
 
     public AccountDTO getAccount(String email) {
-        return accountRepository.findById(email).map(AccountDTO::fromEntity)
+        return accountRepository
+                .findById(email)
+                .map(AccountDTO::fromEntity)
                 .orElseThrow(() -> new AccountDoesNotExistException(email));
     }
 
-    public RiderDTOQueryResult queryRidersByState(Pageable pageable, Collection<AccountState> states) {
+    public RiderDTOQueryResult queryRidersByState(
+            Pageable pageable, Collection<AccountState> states) {
         RiderDTOQueryResult queryResult = new RiderDTOQueryResult();
-        Page<RiderDTO> page = riderRepository.findByAccount_StateIn(states, pageable)
-                .map(RiderDTO::fromEntity);
+        Page<RiderDTO> page =
+                riderRepository.findByAccount_StateIn(states, pageable).map(RiderDTO::fromEntity);
 
         queryResult.setResult(page.toList());
         queryResult.setTotalPages(page.getTotalPages());
@@ -135,10 +140,13 @@ public class AccountManager {
         return queryResult;
     }
 
-    public CustomerDTOQueryResult queryCustomersByState(Pageable pageable, Collection<AccountState> states) {
+    public CustomerDTOQueryResult queryCustomersByState(
+            Pageable pageable, Collection<AccountState> states) {
         CustomerDTOQueryResult queryResult = new CustomerDTOQueryResult();
-        Page<CustomerDTO> page = customerRepository.findByAccount_StateIn(states, pageable)
-                .map(CustomerDTO::fromEntity);
+        Page<CustomerDTO> page =
+                customerRepository
+                        .findByAccount_StateIn(states, pageable)
+                        .map(CustomerDTO::fromEntity);
 
         queryResult.setResult(page.toList());
         queryResult.setTotalPages(page.getTotalPages());
@@ -155,7 +163,6 @@ public class AccountManager {
 
         private List<RiderDTO> result;
         private int totalPages;
-
     }
 
     @Data
@@ -163,16 +170,15 @@ public class AccountManager {
 
         private List<CustomerDTO> result;
         private int totalPages;
-
     }
 
-
-
     private boolean updateState(String email, AccountState startState, AccountState endState) {
-        Account account = accountRepository.findById(email).orElseThrow(() -> new AccountDoesNotExistException(email));
+        Account account =
+                accountRepository
+                        .findById(email)
+                        .orElseThrow(() -> new AccountDoesNotExistException(email));
 
-        if (!account.getState().equals(startState))
-            return false;
+        if (!account.getState().equals(startState)) return false;
 
         account.setState(endState);
         accountRepository.save(account);
@@ -181,11 +187,13 @@ public class AccountManager {
     }
 
     private Account generateAccount(RegisterRequest registerRequest) {
-        return new Account(registerRequest.getName(), registerRequest.getEmail(), hashPassword(registerRequest.getPassword()));
+        return new Account(
+                registerRequest.getName(),
+                registerRequest.getEmail(),
+                hashPassword(registerRequest.getPassword()));
     }
 
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
     }
-
 }

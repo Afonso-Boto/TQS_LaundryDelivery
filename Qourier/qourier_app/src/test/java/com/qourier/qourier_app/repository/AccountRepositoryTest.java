@@ -1,6 +1,5 @@
 package com.qourier.qourier_app.repository;
 
-
 import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.Admin;
 import com.qourier.qourier_app.data.Customer;
@@ -34,17 +33,15 @@ class AccountRepositoryTest {
     Admin admin;
 
     @Container
-    public static MySQLContainer container = new MySQLContainer("mysql:8.0.29")
-            .withUsername("demo")
-            .withPassword("demopass")
-            .withDatabaseName("test_db");
+    public static MySQLContainer container =
+            new MySQLContainer("mysql:8.0.29")
+                    .withUsername("demo")
+                    .withPassword("demopass")
+                    .withDatabaseName("test_db");
 
-    @Autowired
-    private CustomerRepository customerRepository;
-    @Autowired
-    private AdminRepository adminRepository;
-    @Autowired
-    private RiderRepository riderRepository;
+    @Autowired private CustomerRepository customerRepository;
+    @Autowired private AdminRepository adminRepository;
+    @Autowired private RiderRepository riderRepository;
 
     // read configuration from running db
     @DynamicPropertySource
@@ -53,16 +50,16 @@ class AccountRepositoryTest {
         registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.username", container::getUsername);
     }
+
     @BeforeEach
     public void setUp() {
         // Rider
-        rider = new Rider(new Account("Name0", "email0@mail.com", "Password0"),
-                "0123456789");
+        rider = new Rider(new Account("Name0", "email0@mail.com", "Password0"), "0123456789");
         riderRepository.save(rider);
 
         // Customer
-        customer = new Customer(new Account("Name1", "email1@mail.com", "Password1"),
-                "Laundry stuff");
+        customer =
+                new Customer(new Account("Name1", "email1@mail.com", "Password1"), "Laundry stuff");
         customerRepository.save(customer);
 
         // Admin
@@ -78,7 +75,7 @@ class AccountRepositoryTest {
     }
 
     @Test
-    void  whenFindPeopleName_thenReturnPerson() {
+    void whenFindPeopleName_thenReturnPerson() {
         // Rider
         List<Rider> riderPersisted = riderRepository.findByAccount_Name("Name0");
         assertThat(riderPersisted).hasSize(1);
@@ -96,22 +93,22 @@ class AccountRepositoryTest {
     }
 
     @Test
-    void  whenInvalidPersonName_thenReturnNull() {
+    void whenInvalidPersonName_thenReturnNull() {
         // Customer
         List<Customer> fromRepo0 = customerRepository.findByAccount_Name("notName");
-        assertThat( fromRepo0 ).isEmpty();
+        assertThat(fromRepo0).isEmpty();
 
         // Admin
         List<Admin> fromRepo1 = adminRepository.findByAccount_Name("notName");
-        assertThat( fromRepo1 ).isEmpty();
+        assertThat(fromRepo1).isEmpty();
 
         // Rider
         List<Rider> fromRepo2 = riderRepository.findByAccount_Name("notName");
-        assertThat( fromRepo2 ).isEmpty();
+        assertThat(fromRepo2).isEmpty();
     }
 
     @Test
-    void  whenMultiplePersonAdded_thenAllPeoplePersisted() {
+    void whenMultiplePersonAdded_thenAllPeoplePersisted() {
         // Rider
         List<Rider> riderPersisted = riderRepository.findAll();
         assertThat(riderPersisted).hasSize(1);
