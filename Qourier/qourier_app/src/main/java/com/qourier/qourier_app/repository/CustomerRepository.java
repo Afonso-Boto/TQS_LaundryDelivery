@@ -14,7 +14,8 @@ import java.util.List;
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     Customer findByAccount_Email(String email);
-    List<Customer> findByAccount_Name(String name);
-    Page<Customer> findByAccount_StateIn(Collection<AccountState> states, Pageable pageable);
 
+    List<Customer> findByAccount_Name(String name);
+
+    Page<Customer> findByAccount_StateIn(Collection<AccountState> states, Pageable pageable);
 }

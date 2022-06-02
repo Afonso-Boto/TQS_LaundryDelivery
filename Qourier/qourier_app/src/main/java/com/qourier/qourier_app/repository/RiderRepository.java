@@ -14,7 +14,8 @@ import java.util.List;
 public interface RiderRepository extends JpaRepository<Rider, String> {
 
     Rider findByAccount_Email(String email);
-    List<Rider> findByAccount_Name(String name);
-    Page<Rider> findByAccount_StateIn(Collection<AccountState> states, Pageable pageable);
 
+    List<Rider> findByAccount_Name(String name);
+
+    Page<Rider> findByAccount_StateIn(Collection<AccountState> states, Pageable pageable);
 }
