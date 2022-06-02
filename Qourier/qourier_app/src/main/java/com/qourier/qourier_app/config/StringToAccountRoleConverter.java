@@ -9,5 +9,4 @@ public class StringToAccountRoleConverter implements Converter<String, AccountRo
     public AccountRole convert(String source) {
         return AccountRole.valueOf(source.toUpperCase());
     }
-
 }

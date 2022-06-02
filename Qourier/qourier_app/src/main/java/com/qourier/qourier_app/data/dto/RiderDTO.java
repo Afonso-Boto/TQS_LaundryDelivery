@@ -15,5 +15,4 @@ public class RiderDTO {
         dto.setCitizenId(rider.getCitizenId());
         return dto;
     }
-
 }

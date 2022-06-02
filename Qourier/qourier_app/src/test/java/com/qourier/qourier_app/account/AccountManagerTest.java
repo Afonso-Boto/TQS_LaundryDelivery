@@ -46,8 +46,7 @@ class AccountManagerTest {
     @Mock private RiderRepository riderRepository;
     @Mock private CustomerRepository customerRepository;
 
-    @InjectMocks
-    private AccountManager accountManager;
+    @InjectMocks private AccountManager accountManager;
 
     @BeforeEach
     public void setUp() {}
@@ -95,9 +94,14 @@ class AccountManagerTest {
 
     @Test
     void whenRegisterAccountWithoutConflict_thenReturnTrue() {
-        AdminRegisterRequest adminRequest = new AdminRegisterRequest("gsaog@ngoas.com", "1234", "A Name");
-        RiderRegisterRequest riderRequest = new RiderRegisterRequest("gnsioa@moab.com", "67843smA", "Another Name", "123456789");
-        CustomerRegisterRequest customerRequest = new CustomerRegisterRequest("hashc@moab.com", "base003", "Yet Another Name", "Laundry");
+        AdminRegisterRequest adminRequest =
+                new AdminRegisterRequest("gsaog@ngoas.com", "1234", "A Name");
+        RiderRegisterRequest riderRequest =
+                new RiderRegisterRequest(
+                        "gnsioa@moab.com", "67843smA", "Another Name", "123456789");
+        CustomerRegisterRequest customerRequest =
+                new CustomerRegisterRequest(
+                        "hashc@moab.com", "base003", "Yet Another Name", "Laundry");
         List<RegisterRequest> requests = List.of(adminRequest, riderRequest, customerRequest);
 
         for (RegisterRequest request : requests)
@@ -114,9 +118,14 @@ class AccountManagerTest {
 
     @Test
     void whenRegisterAccountWithConflict_thenReturnFalse() {
-        AdminRegisterRequest adminRequest = new AdminRegisterRequest("gsaog@ngoas.com", "1234", "A Name");
-        RiderRegisterRequest riderRequest = new RiderRegisterRequest("gnsioa@moab.com", "67843smA", "Another Name", "123456789");
-        CustomerRegisterRequest customerRequest = new CustomerRegisterRequest("hashc@moab.com", "base003", "Yet Another Name", "Laundry");
+        AdminRegisterRequest adminRequest =
+                new AdminRegisterRequest("gsaog@ngoas.com", "1234", "A Name");
+        RiderRegisterRequest riderRequest =
+                new RiderRegisterRequest(
+                        "gnsioa@moab.com", "67843smA", "Another Name", "123456789");
+        CustomerRegisterRequest customerRequest =
+                new CustomerRegisterRequest(
+                        "hashc@moab.com", "base003", "Yet Another Name", "Laundry");
         List<RegisterRequest> requests = List.of(adminRequest, riderRequest, customerRequest);
 
         for (RegisterRequest request : requests)
@@ -133,52 +142,62 @@ class AccountManagerTest {
 
     @Test
     void whenAcceptApplication_thenReturnTrueAndAccountIsActive() {
-        assertCorrectStateFlow(AccountState.PENDING, AccountState.ACTIVE, accountManager::acceptApplication);
+        assertCorrectStateFlow(
+                AccountState.PENDING, AccountState.ACTIVE, accountManager::acceptApplication);
     }
 
     @Test
     void whenAcceptApplicationInNonPending_thenReturnFalseAndNoOp() {
-        assertIncorrectStateFlow(AccountState.PENDING, AccountState.ACTIVE, accountManager::acceptApplication);
+        assertIncorrectStateFlow(
+                AccountState.PENDING, AccountState.ACTIVE, accountManager::acceptApplication);
     }
 
     @Test
     void whenRefuseApplication_thenReturnTrueAndAccountIsRefused() {
-        assertCorrectStateFlow(AccountState.PENDING, AccountState.REFUSED, accountManager::refuseApplication);
+        assertCorrectStateFlow(
+                AccountState.PENDING, AccountState.REFUSED, accountManager::refuseApplication);
     }
 
     @Test
     void whenRefuseApplicationInNonPending_thenReturnFalseAndNoOp() {
-        assertIncorrectStateFlow(AccountState.PENDING, AccountState.REFUSED, accountManager::refuseApplication);
+        assertIncorrectStateFlow(
+                AccountState.PENDING, AccountState.REFUSED, accountManager::refuseApplication);
     }
 
     @Test
     void whenReconsiderApplication_thenReturnTrueAndAccountIsPending() {
-        assertCorrectStateFlow(AccountState.REFUSED, AccountState.PENDING, accountManager::reconsiderApplication);
+        assertCorrectStateFlow(
+                AccountState.REFUSED, AccountState.PENDING, accountManager::reconsiderApplication);
     }
 
     @Test
     void whenReconsiderApplicationInNonRefused_thenReturnFalseAndNoOp() {
-        assertIncorrectStateFlow(AccountState.REFUSED, AccountState.PENDING, accountManager::reconsiderApplication);
+        assertIncorrectStateFlow(
+                AccountState.REFUSED, AccountState.PENDING, accountManager::reconsiderApplication);
     }
 
     @Test
     void whenSuspendAccount_thenReturnTrueAndAccountIsSuspended() {
-        assertCorrectStateFlow(AccountState.ACTIVE, AccountState.SUSPENDED, accountManager::suspendAccount);
+        assertCorrectStateFlow(
+                AccountState.ACTIVE, AccountState.SUSPENDED, accountManager::suspendAccount);
     }
 
     @Test
     void whenSuspendAccountInNonActive_thenReturnFalseAndNoOp() {
-        assertIncorrectStateFlow(AccountState.ACTIVE, AccountState.SUSPENDED, accountManager::suspendAccount);
+        assertIncorrectStateFlow(
+                AccountState.ACTIVE, AccountState.SUSPENDED, accountManager::suspendAccount);
     }
 
     @Test
     void whenActivateAccount_thenReturnTrueAndAccountIsActive() {
-        assertCorrectStateFlow(AccountState.SUSPENDED, AccountState.ACTIVE, accountManager::activateAccount);
+        assertCorrectStateFlow(
+                AccountState.SUSPENDED, AccountState.ACTIVE, accountManager::activateAccount);
     }
 
     @Test
     void whenActivateAccountInNonSuspended_thenReturnFalseAndNoOp() {
-        assertIncorrectStateFlow(AccountState.SUSPENDED, AccountState.ACTIVE, accountManager::activateAccount);
+        assertIncorrectStateFlow(
+                AccountState.SUSPENDED, AccountState.ACTIVE, accountManager::activateAccount);
     }
 
     @Test
@@ -206,15 +225,21 @@ class AccountManagerTest {
         String customerAccountEmail = "email@email.com";
         Customer customer = createSampleCustomer(customerAccountEmail);
 
-        when(accountRepository.findById(riderAccountEmail)).thenReturn(Optional.of(rider.getAccount()));
-        when(accountRepository.findById(customerAccountEmail)).thenReturn(Optional.of(customer.getAccount()));
+        when(accountRepository.findById(riderAccountEmail))
+                .thenReturn(Optional.of(rider.getAccount()));
+        when(accountRepository.findById(customerAccountEmail))
+                .thenReturn(Optional.of(customer.getAccount()));
         when(riderRepository.findById(riderAccountEmail)).thenReturn(Optional.of(rider));
         when(customerRepository.findById(customerAccountEmail)).thenReturn(Optional.of(customer));
 
-        assertThat(accountManager.getAccount(riderAccountEmail)).isEqualTo(AccountDTO.fromEntity(rider.getAccount()));
-        assertThat(accountManager.getAccount(customerAccountEmail)).isEqualTo(AccountDTO.fromEntity(customer.getAccount()));
-        assertThat(accountManager.getRiderAccount(riderAccountEmail)).isEqualTo(RiderDTO.fromEntity(rider));
-        assertThat(accountManager.getCustomerAccount(customerAccountEmail)).isEqualTo(CustomerDTO.fromEntity(customer));
+        assertThat(accountManager.getAccount(riderAccountEmail))
+                .isEqualTo(AccountDTO.fromEntity(rider.getAccount()));
+        assertThat(accountManager.getAccount(customerAccountEmail))
+                .isEqualTo(AccountDTO.fromEntity(customer.getAccount()));
+        assertThat(accountManager.getRiderAccount(riderAccountEmail))
+                .isEqualTo(RiderDTO.fromEntity(rider));
+        assertThat(accountManager.getCustomerAccount(customerAccountEmail))
+                .isEqualTo(CustomerDTO.fromEntity(customer));
     }
 
     @Test
@@ -234,8 +259,10 @@ class AccountManagerTest {
         String customerAccountEmail = "h9agija@hjd90bs.org";
         Customer customer = createSampleCustomer(customerAccountEmail);
 
-        when(riderRepository.findById(customer.getAccount().getEmail())).thenReturn(Optional.empty());
-        when(customerRepository.findById(rider.getAccount().getEmail())).thenReturn(Optional.empty());
+        when(riderRepository.findById(customer.getAccount().getEmail()))
+                .thenReturn(Optional.empty());
+        when(customerRepository.findById(rider.getAccount().getEmail()))
+                .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> accountManager.getRiderAccount(customerAccountEmail))
                 .isInstanceOf(AccountDoesNotExistException.class);
@@ -243,13 +270,14 @@ class AccountManagerTest {
                 .isInstanceOf(AccountDoesNotExistException.class);
     }
 
-
-
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
     }
 
-    private void assertCorrectStateFlow(AccountState startState, AccountState endState, Function<String, Boolean> accountOperation) {
+    private void assertCorrectStateFlow(
+            AccountState startState,
+            AccountState endState,
+            Function<String, Boolean> accountOperation) {
         String accountEmail = "email@email.com";
         Account account = new Account("name", accountEmail, "password");
         account.setState(startState);
@@ -263,10 +291,14 @@ class AccountManagerTest {
         verify(accountRepository, times(1)).save(account);
     }
 
-    private void assertIncorrectStateFlow(AccountState startState, AccountState endState, Function<String, Boolean> accountOperation) {
-        List<AccountState> prohibitedStates = Arrays.stream(AccountState.values())
-                .filter(accountState -> !accountState.equals(startState))
-                .toList();
+    private void assertIncorrectStateFlow(
+            AccountState startState,
+            AccountState endState,
+            Function<String, Boolean> accountOperation) {
+        List<AccountState> prohibitedStates =
+                Arrays.stream(AccountState.values())
+                        .filter(accountState -> !accountState.equals(startState))
+                        .toList();
 
         List<Account> accounts = new ArrayList<>();
         for (AccountState state : prohibitedStates) {
@@ -285,5 +317,4 @@ class AccountManagerTest {
             verify(accountRepository, never()).save(account);
         }
     }
-
 }

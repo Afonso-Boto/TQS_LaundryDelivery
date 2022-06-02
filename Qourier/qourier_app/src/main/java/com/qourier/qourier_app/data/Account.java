@@ -19,19 +19,16 @@ public class Account {
     static final int MAX_NAME_SIZE = 30;
     static final int MAX_PASSWORD_SIZE = 100;
 
-    @Id
-    @Email
-    private String email;
+    @Id @Email private String email;
 
     @Size(min = 8, max = MAX_PASSWORD_SIZE)
     private String password;
+
     @Size(min = 3, max = MAX_NAME_SIZE)
     private String name;
 
-    @NotNull
-    private AccountState state;
-    @NotNull
-    private AccountRole role;
+    @NotNull private AccountState state;
+    @NotNull private AccountRole role;
 
     private LocalDateTime registrationTime;
 
@@ -45,5 +42,4 @@ public class Account {
     public Account() {
         registrationTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
-
 }

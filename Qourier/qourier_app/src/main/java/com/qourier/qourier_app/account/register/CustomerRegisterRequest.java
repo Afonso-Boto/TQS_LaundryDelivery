@@ -15,5 +15,4 @@ public class CustomerRegisterRequest extends RegisterRequest {
     }
 
     private String servType;
-
 }

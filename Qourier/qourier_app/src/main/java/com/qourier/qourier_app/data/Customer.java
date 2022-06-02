@@ -11,8 +11,7 @@ import javax.persistence.*;
 @Table(name = "customer")
 public class Customer {
 
-    @Id
-    private String email;
+    @Id private String email;
 
     @MapsId
     @OneToOne(cascade = CascadeType.ALL)
@@ -29,5 +28,4 @@ public class Customer {
     }
 
     public Customer() {}
-
 }

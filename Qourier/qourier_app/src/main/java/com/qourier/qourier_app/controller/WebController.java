@@ -58,12 +58,11 @@ public class WebController {
         this.accountManager = accountManager;
     }
 
-
-
     @PostMapping("/login")
     public String loginPost(@ModelAttribute LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
-        if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)){
+        if (result.equals(LoginResult.WRONG_CREDENTIALS)
+                || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)) {
             log.warning("WRONG CREDS");
             return "login";
         }
@@ -77,7 +76,7 @@ public class WebController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         // See if we are logged in or not
-        if(hasCookie(request)){
+        if (hasCookie(request)) {
             Cookie jwtTokenCookie = new Cookie(COOKIE_ID, "null");
 
             jwtTokenCookie.setMaxAge(0);
@@ -87,15 +86,15 @@ public class WebController {
             // Set cookie onto user
             response.addCookie(jwtTokenCookie);
             return REDIRECT_LOGIN;
-        }else{
+        } else {
             return "error";
         }
     }
 
     @PostMapping("/register_customer")
-    public String registerCustomerPost(@ModelAttribute CustomerRegisterRequest request, HttpServletResponse response) {
-        if (!accountManager.registerCustomer(request))
-            return "register_customer";
+    public String registerCustomerPost(
+            @ModelAttribute CustomerRegisterRequest request, HttpServletResponse response) {
+        if (!accountManager.registerCustomer(request)) return "register_customer";
 
         // Set cookie for customer
         setCookie(response, request.getEmail());
@@ -104,9 +103,9 @@ public class WebController {
     }
 
     @PostMapping("/register_rider")
-    public String registerRiderPost(@ModelAttribute RiderRegisterRequest request, HttpServletResponse response) {
-        if (!accountManager.registerRider(request))
-            return "register_rider";
+    public String registerRiderPost(
+            @ModelAttribute RiderRegisterRequest request, HttpServletResponse response) {
+        if (!accountManager.registerRider(request)) return "register_rider";
 
         // Set cookie for rider
         setCookie(response, request.getEmail());
@@ -123,8 +122,9 @@ public class WebController {
     public String index(Model model, HttpServletRequest request) {
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, ADMIN)
+                && !verifyCookie(request, CUSTOMER)
+                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
         model.addAttribute("role", getRoleFromCookie(request));
         return "index";
@@ -135,54 +135,64 @@ public class WebController {
         AccountRole role = ADMIN;
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
         model.addAttribute("role", role);
         return "progress";
     }
 
     @GetMapping("/accounts")
-    public String accounts(Model model, HttpServletRequest request,
-                           @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
-                           @RequestParam(required = false, defaultValue = "rider", name = "type") AccountRole accountRole,
-                           @RequestParam(required = false, defaultValue = "true", name = "active") boolean active) {
+    public String accounts(
+            Model model,
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "rider", name = "type")
+                    AccountRole accountRole,
+            @RequestParam(required = false, defaultValue = "true", name = "active")
+                    boolean active) {
         AccountRole role = ADMIN;
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-
-        fillModelWithRiderCustomerQueries(model, pageNumber, accountRole,
+        fillModelWithRiderCustomerQueries(
+                model,
+                pageNumber,
+                accountRole,
                 (active) ? List.of(AccountState.ACTIVE) : List.of(AccountState.SUSPENDED));
 
-        model.addAllAttributes(Map.of(
-                "role", role,
-                "filterActive", active
-        ));
+        model.addAllAttributes(
+                Map.of(
+                        "role", role,
+                        "filterActive", active));
         return "accounts";
     }
 
     @GetMapping("/applications")
-    public String applications(Model model, HttpServletRequest request,
-                               @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
-                               @RequestParam(required = false, defaultValue = "rider", name = "type") AccountRole accountRole,
-                               @RequestParam(required = false, defaultValue = "true", name = "pending") boolean pending) {
+    public String applications(
+            Model model,
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "rider", name = "type")
+                    AccountRole accountRole,
+            @RequestParam(required = false, defaultValue = "true", name = "pending")
+                    boolean pending) {
         AccountRole role = ADMIN;
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        fillModelWithRiderCustomerQueries(model, pageNumber, accountRole,
+        fillModelWithRiderCustomerQueries(
+                model,
+                pageNumber,
+                accountRole,
                 pending ? List.of(AccountState.PENDING) : List.of(AccountState.REFUSED));
 
-        model.addAllAttributes(Map.of(
-                "role", role,
-                "filterPending", pending,
-                "hasher", (Function<String, String>) DigestUtils::sha256Hex
-        ));
+        model.addAllAttributes(
+                Map.of(
+                        "role", role,
+                        "filterPending", pending,
+                        "hasher", (Function<String, String>) DigestUtils::sha256Hex));
         return "applications";
     }
 
@@ -190,10 +200,8 @@ public class WebController {
     public String monitor(Model model, HttpServletRequest request) {
         AccountRole role = ADMIN;
 
-
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
         model.addAttribute("role", role);
         return "monitor";
@@ -203,8 +211,7 @@ public class WebController {
     public String loginGet(Model model, HttpServletRequest request) {
 
         // Verify if logged in already
-        if (getRoleFromCookie(request) != null)
-            return REDIRECT_INDEX;
+        if (getRoleFromCookie(request) != null) return REDIRECT_INDEX;
 
         model.addAttribute("loginRequest", new LoginRequest());
         return "login";
@@ -215,13 +222,12 @@ public class WebController {
         AccountRole role = RIDER;
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
         // TODO pass right message to show
         AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
 
-        switch(state) {
+        switch (state) {
             case PENDING:
                 model.addAttribute("msg", "Account permission to access resource pending");
                 break;
@@ -245,8 +251,9 @@ public class WebController {
     public String profile(Model model, HttpServletRequest request) {
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, ADMIN)
+                && !verifyCookie(request, CUSTOMER)
+                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
         String email = getIdFromCookie(request);
         String view;
@@ -255,8 +262,7 @@ public class WebController {
             RiderDTO riderProfile = accountManager.getRiderAccount(email);
             model.addAttribute("rider", riderProfile);
             view = "profile_rider";
-        }
-        else {
+        } else {
             CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
             model.addAttribute("customer", customerProfile);
             view = "profile_customer";
@@ -270,21 +276,20 @@ public class WebController {
     public String profileById(Model model, HttpServletRequest request, @PathVariable String id) {
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, ADMIN) && !verifyCookie(request, CUSTOMER) && !verifyCookie(request, RIDER))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, ADMIN)
+                && !verifyCookie(request, CUSTOMER)
+                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
         AccountRole role = getRoleFromCookie(request);
 
-        if (role != ADMIN)
-            return "redirect:/profile";
+        if (role != ADMIN) return "redirect:/profile";
 
         AccountDTO account = accountManager.getAccount(id);
         String profileView = REDIRECT_INDEX;
         if (account.getRole().equals(RIDER)) {
             profileView = "profile_rider";
             model.addAttribute("rider", accountManager.getRiderAccount(id));
-        }
-        else if (account.getRole().equals(CUSTOMER)) {
+        } else if (account.getRole().equals(CUSTOMER)) {
             profileView = "profile_customer";
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
         }
@@ -298,13 +303,12 @@ public class WebController {
         AccountRole role = CUSTOMER;
 
         // Verify if cookie role is right or not
-        if (!verifyCookie(request, role))
-            return REDIRECT_LOGIN;
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
         // TODO pass right message to show
         AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
 
-        switch(state) {
+        switch (state) {
             case PENDING:
                 model.addAttribute("msg", "Account permission to access resource pending");
                 break;
@@ -337,8 +341,6 @@ public class WebController {
         return "register_customer";
     }
 
-
-
     @Bean
     SmartInitializingSingleton smartInitializingSingleton(ApplicationContext context) {
         return () -> {
@@ -363,31 +365,31 @@ public class WebController {
     }
 
     // Get cookies
-    private boolean verifyCookie(HttpServletRequest request, AccountRole role){
+    private boolean verifyCookie(HttpServletRequest request, AccountRole role) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals(COOKIE_ID) && accountManager.getAccount(cookie.getValue()).getRole().equals(role))
+            if (cookie.getName().equals(COOKIE_ID)
+                    && accountManager.getAccount(cookie.getValue()).getRole().equals(role))
                 return true;
         return false;
     }
 
     // Verify cookie presence
-    private boolean hasCookie(HttpServletRequest request){
+    private boolean hasCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals(COOKIE_ID) && !cookie.getValue().isEmpty())
-                return true;
+            if (cookie.getName().equals(COOKIE_ID) && !cookie.getValue().isEmpty()) return true;
         return false;
     }
 
     // Get role
-    private AccountRole getRoleFromCookie(HttpServletRequest request){
+    private AccountRole getRoleFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals(COOKIE_ID)){
+            if (cookie.getName().equals(COOKIE_ID)) {
                 String email = cookie.getValue();
                 return accountManager.getAccount(email).getRole();
             }
@@ -395,40 +397,44 @@ public class WebController {
     }
 
     // Get ID
-    private String getIdFromCookie(HttpServletRequest request){
+    private String getIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie cookie : cookies)
-            if (cookie.getName().equals(COOKIE_ID)){
+            if (cookie.getName().equals(COOKIE_ID)) {
                 return cookie.getValue();
             }
         return null;
     }
 
-    private void fillModelWithRiderCustomerQueries(Model model, int pageNumber, AccountRole accountRole, Collection<AccountState> queryStates) {
+    private void fillModelWithRiderCustomerQueries(
+            Model model,
+            int pageNumber,
+            AccountRole accountRole,
+            Collection<AccountState> queryStates) {
         PageRequest pageRequest = PageRequest.of(pageNumber, TABLE_SIZE);
         List<RiderDTO> riderList = new ArrayList<>();
         List<CustomerDTO> customerList = new ArrayList<>();
         int pageNumberMax;
 
         if (accountRole.equals(RIDER)) {
-            AccountManager.RiderDTOQueryResult queryResult = accountManager.queryRidersByState(pageRequest, queryStates);
+            AccountManager.RiderDTOQueryResult queryResult =
+                    accountManager.queryRidersByState(pageRequest, queryStates);
             riderList = queryResult.getResult();
             pageNumberMax = queryResult.getTotalPages();
-        }
-        else {
-            AccountManager.CustomerDTOQueryResult queryResult = accountManager.queryCustomersByState(pageRequest, queryStates);
+        } else {
+            AccountManager.CustomerDTOQueryResult queryResult =
+                    accountManager.queryCustomersByState(pageRequest, queryStates);
             customerList = queryResult.getResult();
             pageNumberMax = queryResult.getTotalPages();
         }
 
-        model.addAllAttributes(Map.of(
-                "riderAppList", riderList,
-                "customerAppList", customerList,
-                "filterType", accountRole.name(),
-                "filterPage", pageNumber,
-                "filterPageMax", pageNumberMax
-        ));
+        model.addAllAttributes(
+                Map.of(
+                        "riderAppList", riderList,
+                        "customerAppList", customerList,
+                        "filterType", accountRole.name(),
+                        "filterPage", pageNumber,
+                        "filterPageMax", pageNumberMax));
     }
-
 }

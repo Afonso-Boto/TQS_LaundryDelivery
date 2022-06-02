@@ -13,5 +13,4 @@ public class AdminDTO {
         dto.setAccount(AccountDTO.fromEntity(admin.getAccount()));
         return dto;
     }
-
 }

@@ -15,5 +15,4 @@ public class RiderRegisterRequest extends RegisterRequest {
     }
 
     private String citizenId;
-
 }

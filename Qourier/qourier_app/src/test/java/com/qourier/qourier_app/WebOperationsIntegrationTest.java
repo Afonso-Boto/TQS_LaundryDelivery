@@ -35,24 +35,25 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations= "/application-test.properties")
+@TestPropertySource(locations = "/application-test.properties")
 @AutoConfigureMockMvc
 @Testcontainers
 class WebOperationsIntegrationTest {
 
-    @LocalServerPort
-    int randomServerPort;
+    @LocalServerPort int randomServerPort;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
+
     @Value("${spring.datasource.adminpass}")
     private String adminPass;
 
     @Container
-    public static MySQLContainer container = new MySQLContainer("mysql:8.0.29")
-            .withUsername("demo")
-            .withPassword("demopass")
-            .withDatabaseName("test_db");
+    public static MySQLContainer container =
+            new MySQLContainer("mysql:8.0.29")
+                    .withUsername("demo")
+                    .withPassword("demopass")
+                    .withDatabaseName("test_db");
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -67,15 +68,14 @@ class WebOperationsIntegrationTest {
     @Autowired private RiderRepository riderRepository;
     @Autowired private CustomerRepository customerRepository;
 
-
-
     @Test
     void givenAdminAccountInitialized_whenLogIntoAdmin_thenLogin() throws Exception {
         LoginRequest request = new LoginRequest(adminEmail, adminPass);
 
-        mvc.perform(post("/login")
-                        .param("email", request.getEmail())
-                        .param("password", request.getPassword()))
+        mvc.perform(
+                        post("/login")
+                                .param("email", request.getEmail())
+                                .param("password", request.getPassword()))
                 .andExpect(status().isFound())
                 .andExpect(cookie().exists(WebController.COOKIE_ID));
     }
@@ -84,9 +84,10 @@ class WebOperationsIntegrationTest {
     void givenAccountDoesNotExist_whenLogIntoAccount_thenNoLogin() throws Exception {
         LoginRequest request = new LoginRequest("goa@gsioa.com", "hsdshbmosd");
 
-        mvc.perform(post("/login")
-                        .param("email", request.getEmail())
-                        .param("password", request.getPassword()))
+        mvc.perform(
+                        post("/login")
+                                .param("email", request.getEmail())
+                                .param("password", request.getPassword()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
     }
@@ -99,9 +100,10 @@ class WebOperationsIntegrationTest {
 
         riderRepository.save(createSampleRider(riderEmail, riderPass));
 
-        mvc.perform(post("/login")
-                        .param("email", request.getEmail())
-                        .param("password", request.getPassword()))
+        mvc.perform(
+                        post("/login")
+                                .param("email", request.getEmail())
+                                .param("password", request.getPassword()))
                 .andExpect(status().isFound())
                 .andExpect(cookie().exists(WebController.COOKIE_ID));
     }
@@ -114,9 +116,10 @@ class WebOperationsIntegrationTest {
 
         riderRepository.save(createSampleRider(riderEmail, riderPass + "oops"));
 
-        mvc.perform(post("/login")
-                        .param("email", request.getEmail())
-                        .param("password", request.getPassword()))
+        mvc.perform(
+                        post("/login")
+                                .param("email", request.getEmail())
+                                .param("password", request.getPassword()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
     }
@@ -133,31 +136,27 @@ class WebOperationsIntegrationTest {
         Customer customer = createSampleCustomer(customerAccountEmail, customerAccountPass);
         customerRepository.save(customer);
 
-        RiderRegisterRequest riderRegister = new RiderRegisterRequest(
-                rider.getEmail(),
-                "2yt19gv2189",
-                "ASNUINIOA",
-                "3589023523589"
-        );
-        CustomerRegisterRequest customerRegister = new CustomerRegisterRequest(
-                customer.getEmail(),
-                "571092hf2910",
-                "AISgnosnagio",
-                "Electronics"
-        );
+        RiderRegisterRequest riderRegister =
+                new RiderRegisterRequest(
+                        rider.getEmail(), "2yt19gv2189", "ASNUINIOA", "3589023523589");
+        CustomerRegisterRequest customerRegister =
+                new CustomerRegisterRequest(
+                        customer.getEmail(), "571092hf2910", "AISgnosnagio", "Electronics");
 
-        mvc.perform(post("/register_rider")
-                        .param("email", riderRegister.getEmail())
-                        .param("password", riderRegister.getPassword())
-                        .param("name", riderRegister.getName())
-                        .param("citizenId", riderRegister.getCitizenId()))
+        mvc.perform(
+                        post("/register_rider")
+                                .param("email", riderRegister.getEmail())
+                                .param("password", riderRegister.getPassword())
+                                .param("name", riderRegister.getName())
+                                .param("citizenId", riderRegister.getCitizenId()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
-        mvc.perform(post("/register_customer")
-                        .param("email", customerRegister.getEmail())
-                        .param("password", customerRegister.getPassword())
-                        .param("name", customerRegister.getName())
-                        .param("servType", customerRegister.getServType()))
+        mvc.perform(
+                        post("/register_customer")
+                                .param("email", customerRegister.getEmail())
+                                .param("password", customerRegister.getPassword())
+                                .param("name", customerRegister.getName())
+                                .param("servType", customerRegister.getServType()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
 
@@ -183,44 +182,46 @@ class WebOperationsIntegrationTest {
         Rider rider = createSampleRider(riderAccountEmail, riderAccountPass);
         Customer customer = createSampleCustomer(customerAccountEmail, customerAccountPass);
 
-        RiderRegisterRequest riderRegister = new RiderRegisterRequest(
-                rider.getAccount().getEmail(),
-                rider.getAccount().getPassword(),
-                rider.getAccount().getName(),
-                rider.getCitizenId()
-        );
-        CustomerRegisterRequest customerRegister = new CustomerRegisterRequest(
-                customer.getAccount().getEmail(),
-                customer.getAccount().getPassword(),
-                customer.getAccount().getName(),
-                customer.getServType()
-        );
+        RiderRegisterRequest riderRegister =
+                new RiderRegisterRequest(
+                        rider.getAccount().getEmail(),
+                        rider.getAccount().getPassword(),
+                        rider.getAccount().getName(),
+                        rider.getCitizenId());
+        CustomerRegisterRequest customerRegister =
+                new CustomerRegisterRequest(
+                        customer.getAccount().getEmail(),
+                        customer.getAccount().getPassword(),
+                        customer.getAccount().getName(),
+                        customer.getServType());
 
-        mvc.perform(post("/register_rider")
-                        .param("email", riderRegister.getEmail())
-                        .param("password", riderRegister.getPassword())
-                        .param("name", riderRegister.getName())
-                        .param("citizenId", riderRegister.getCitizenId()))
+        mvc.perform(
+                        post("/register_rider")
+                                .param("email", riderRegister.getEmail())
+                                .param("password", riderRegister.getPassword())
+                                .param("name", riderRegister.getName())
+                                .param("citizenId", riderRegister.getCitizenId()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
-        mvc.perform(post("/register_customer")
-                        .param("email", customerRegister.getEmail())
-                        .param("password", customerRegister.getPassword())
-                        .param("name", customerRegister.getName())
-                        .param("servType", customerRegister.getServType()))
+        mvc.perform(
+                        post("/register_customer")
+                                .param("email", customerRegister.getEmail())
+                                .param("password", customerRegister.getPassword())
+                                .param("name", customerRegister.getName())
+                                .param("servType", customerRegister.getServType()))
                 .andExpect(status().isOk())
                 .andExpect(cookie().doesNotExist(WebController.COOKIE_ID));
 
         Optional<Rider> riderSaved = riderRepository.findById(riderAccountEmail);
         Optional<Customer> customerSaved = customerRepository.findById(customerAccountEmail);
 
-
         assertThat(riderSaved).isPresent();
         assertThat(customerSaved).isPresent();
 
         // Synchronize registration times
         rider.getAccount().setRegistrationTime(riderSaved.get().getAccount().getRegistrationTime());
-        customer.getAccount().setRegistrationTime(customerSaved.get().getAccount().getRegistrationTime());
+        customer.getAccount()
+                .setRegistrationTime(customerSaved.get().getAccount().getRegistrationTime());
 
         assertThat(riderSaved)
                 .map(RiderDTO::fromEntity)
@@ -231,5 +232,4 @@ class WebOperationsIntegrationTest {
                 .get()
                 .isEqualTo(CustomerDTO.fromEntity(customer));
     }
-
 }
