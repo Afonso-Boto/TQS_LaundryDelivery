@@ -7,14 +7,14 @@ Feature: Rider | Check profile and stats
     * I register as a Rider
     Then my status is 'pending'
     * the details are the same as the ones in the registration form
-    * there are no statistics
+    * there are not statistics
 
   Scenario: See the profile's status as a refused Rider
     Given I am logged in as a Rider
     And my application has been refused
     When I go to the Profile section
     Then my status is 'refused'
-    And there are no statistics
+    And there are not statistics
 
   Scenario: See the profile's status as an active Rider
     Given I am logged in as a Rider
