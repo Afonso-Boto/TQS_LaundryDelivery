@@ -16,6 +16,7 @@ import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.springframework.data.repository.Repository;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
@@ -48,43 +49,54 @@ public class CucumberSteps {
     }
 
     private AccountRole currentRole;
-    private Account currentAccount;
 
     @Given("I am in the {page} page")
     public void IAmInPage(String page) {
-        reset();
+//        reset();
         startOn(page);
     }
 
     @Given("I am logged in as a {accountRole}")
     public void loggedInAs(AccountRole accountRole) {
+        Account account;
         if (accountRole.equals(AccountRole.RIDER)) {
+            account = sampleRider.getAccount();
+            currentRole = AccountRole.RIDER;
+            if (riderRepository.existsById(account.getEmail()))
+                riderRepository.deleteById(account.getEmail());
             riderRepository.save(sampleRider);
-            currentAccount = sampleRider.getAccount();
         }
         else return;
 
-        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, currentAccount.getEmail()));
-        IAmInPage("Main");
+        // Initialize the document
+        IAmInPage("");
+        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
+        IAmInPage("");
     }
 
     @Given("my application has been refused")
     public void applicationRefused() {
-        currentAccount.setState(AccountState.REFUSED);
-        accountRepository.save(currentAccount);
+        if (currentRole.equals(AccountRole.RIDER)) {
+            sampleRider.getAccount().setState(AccountState.REFUSED);
+            riderRepository.save(sampleRider);
+        }
     }
 
     @Given("I have already been accepted to the platform")
     public void applicationHasBeenAccepted() {
-        currentAccount.setState(AccountState.ACTIVE);
-        accountRepository.save(currentAccount);
+        if (currentRole.equals(AccountRole.RIDER)) {
+            sampleRider.getAccount().setState(AccountState.ACTIVE);
+            riderRepository.save(sampleRider);
+        }
     }
 
     @Given("my account is {not}suspended")
     public void accountSuspendedOrNot(boolean not) {
-        if (not) currentAccount.setState(AccountState.ACTIVE);
-        else currentAccount.setState(AccountState.SUSPENDED);
-        accountRepository.save(currentAccount);
+        if (currentRole.equals(AccountRole.RIDER)) {
+            if (not) sampleRider.getAccount().setState(AccountState.ACTIVE);
+            else sampleRider.getAccount().setState(AccountState.SUSPENDED);
+            riderRepository.save(sampleRider);
+        }
     }
 
 
@@ -171,15 +183,15 @@ public class CucumberSteps {
 
 
     private void reset() {
-        riderRepository.deleteAll();
-        customerRepository.deleteAll();
-        adminRepository.deleteAll();
-        accountRepository.deleteAll();
-        driver.manage().deleteCookieNamed(WebController.COOKIE_ID);
+//        riderRepository.deleteAll();
+//        customerRepository.deleteAll();
+//        adminRepository.deleteAll();
+//        accountRepository.deleteAll();
+//        driver.manage().deleteCookieNamed(WebController.COOKIE_ID);
     }
 
     private void startOn(String pagePath) {
-        driver.get("http://localhost:8080/" + pagePath);
+        driver.get("http://localhost:8989/" + pagePath);
         driver.manage().window().setSize(new Dimension(1916, 1076));
     }
 
