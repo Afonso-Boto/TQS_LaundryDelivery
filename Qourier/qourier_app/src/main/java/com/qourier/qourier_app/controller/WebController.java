@@ -13,6 +13,10 @@ import com.qourier.qourier_app.data.AccountState;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.qourier.qourier_app.data.dto.AccountDTO;
+import com.qourier.qourier_app.data.dto.CustomerDTO;
+import com.qourier.qourier_app.data.dto.RiderDTO;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -197,6 +201,35 @@ public class WebController {
     public String registerCustomerGet(Model model, HttpServletRequest request) {
         model.addAttribute("customerRegisterRequest", new CustomerRegisterRequest());
         return "register_customer";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, HttpServletRequest request) {
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, ADMIN)
+                && !verifyCookie(request, CUSTOMER)
+                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
+
+        String email = getIdFromCookie(request);
+        AccountDTO account;
+        String view;
+
+        if (getRoleFromCookie(request) == RIDER) {
+            RiderDTO riderProfile = accountManager.getRiderAccount(email);
+            model.addAttribute("rider", riderProfile);
+            view = "profile_rider";
+            account = riderProfile.getAccount();
+        } else {
+            CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
+            model.addAttribute("customer", customerProfile);
+            view = "profile_customer";
+            account = customerProfile.getAccount();
+        }
+
+        model.addAttribute("role", getRoleFromCookie(request));
+        model.addAttribute("accepted", account.getState().equals(AccountState.ACTIVE) || account.getState().equals(AccountState.SUSPENDED));
+        return view;
     }
 
     @Bean

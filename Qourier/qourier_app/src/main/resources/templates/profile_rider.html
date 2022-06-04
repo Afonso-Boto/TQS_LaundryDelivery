@@ -13,14 +13,14 @@
         <div class="row">
             <div class="col-12">
                 <h2 id="details-name">Diego</h2>
-                <h4><i>Rider</i></h4>
+                <h4><i id="account-type">Rider</i></h4>
 
                 <p>State: <span id="details-state" th:text="${rider.account.state.name().toLowerCase()}">suspended</span></p>
                 <p>Email: <span id="details-email" th:text="${rider.account.email}">diego@mail.com</span></p>
                 <p>Citizen ID: <span id="details-citizen-id" th:text="${rider.citizenId}">123456789</span></p>
             </div>
         </div>
-        <div class="row">
+        <div id="statistics-section" class="row" th:if="${accepted}">
             <div class="col-12">
                 <h3>Statistics</h3>
 
