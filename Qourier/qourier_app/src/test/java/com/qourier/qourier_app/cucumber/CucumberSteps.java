@@ -1,6 +1,7 @@
 package com.qourier.qourier_app.cucumber;
 
 import com.qourier.qourier_app.controller.WebController;
+import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.Rider;
@@ -12,10 +13,8 @@ import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -27,7 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration
 public class CucumberSteps {
 
-    private final WebDriver driver = new HtmlUnitDriver(true);
+//    private final WebDriver driver = new HtmlUnitDriver(true);
+    private final WebDriver driver = WebDriverManager.firefoxdriver().create();
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -48,35 +48,43 @@ public class CucumberSteps {
     }
 
     private AccountRole currentRole;
+    private Account currentAccount;
 
     @Given("I am in the {page} page")
     public void IAmInPage(String page) {
         reset();
         startOn(page);
-
     }
 
     @Given("I am logged in as a {accountRole}")
     public void loggedInAs(AccountRole accountRole) {
         if (accountRole.equals(AccountRole.RIDER)) {
             riderRepository.save(sampleRider);
+            currentAccount = sampleRider.getAccount();
         }
+        else return;
+
+        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, currentAccount.getEmail()));
         IAmInPage("Main");
     }
 
     @Given("my application has been refused")
     public void applicationRefused() {
-
+        currentAccount.setState(AccountState.REFUSED);
+        accountRepository.save(currentAccount);
     }
 
     @Given("I have already been accepted to the platform")
     public void applicationHasBeenAccepted() {
-
+        currentAccount.setState(AccountState.ACTIVE);
+        accountRepository.save(currentAccount);
     }
 
     @Given("my account is {not}suspended")
     public void accountSuspendedOrNot(boolean not) {
-
+        if (not) currentAccount.setState(AccountState.ACTIVE);
+        else currentAccount.setState(AccountState.SUSPENDED);
+        accountRepository.save(currentAccount);
     }
 
 

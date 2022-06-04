@@ -5,6 +5,7 @@ Feature: Rider | Check profile and stats
     When I go to register myself as a Rider
     * I fill the registration details
     * I register
+    And I go to the Profile section
     Then my status is 'pending'
     * the details are the same as the ones in the registration form
     * there are not statistics
