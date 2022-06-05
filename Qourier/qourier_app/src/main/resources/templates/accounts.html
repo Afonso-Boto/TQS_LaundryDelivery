@@ -30,10 +30,10 @@
                         </div>
                         <div>
                             <label for="filter-page">Page</label>
-                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax} - 1" />
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" />
                         </div>
 
-                        <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>
+                        <button id="filter-apply" type="submit" class="btn btn-primary">Apply</button>
                     </div>
                 </form>
                 <table id="table-riders" class="table table-hover" th:if="${filterType == 'RIDER'}">

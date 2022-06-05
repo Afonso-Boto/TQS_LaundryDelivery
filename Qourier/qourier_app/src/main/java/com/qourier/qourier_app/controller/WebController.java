@@ -13,15 +13,24 @@ import com.qourier.qourier_app.data.AccountState;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.qourier.qourier_app.data.dto.CustomerDTO;
+import com.qourier.qourier_app.data.dto.RiderDTO;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 @Log
 @Controller
@@ -30,6 +39,7 @@ public class WebController {
     public static final String COOKIE_ID = "id";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
+    private static final int TABLE_SIZE = 10;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
@@ -43,6 +53,8 @@ public class WebController {
     public WebController(AccountManager accountManager) {
         this.accountManager = accountManager;
     }
+
+
 
     @PostMapping("/login")
     public String loginPost(@ModelAttribute LoginRequest user, HttpServletResponse response) {
@@ -199,6 +211,34 @@ public class WebController {
         return "register_customer";
     }
 
+    @GetMapping("/accounts")
+    public String accounts(
+            Model model,
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "rider", name = "type")
+            AccountRole accountRole,
+            @RequestParam(required = false, defaultValue = "true", name = "active")
+            boolean active) {
+        AccountRole role = ADMIN;
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        fillModelWithRiderCustomerQueries(
+                model,
+                pageNumber,
+                accountRole,
+                (active) ? List.of(AccountState.ACTIVE) : List.of(AccountState.SUSPENDED));
+
+        model.addAllAttributes(
+                Map.of(
+                        "role", role,
+                        "filterActive", active));
+        return "accounts";
+    }
+
+
     @Bean
     SmartInitializingSingleton smartInitializingSingleton(ApplicationContext context) {
         return () -> {
@@ -263,5 +303,36 @@ public class WebController {
                 return cookie.getValue();
             }
         return null;
+    }
+
+    private void fillModelWithRiderCustomerQueries(
+            Model model,
+            int pageNumber,
+            AccountRole accountRole,
+            Collection<AccountState> queryStates) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, TABLE_SIZE);
+        List<RiderDTO> riderList = new ArrayList<>();
+        List<CustomerDTO> customerList = new ArrayList<>();
+        int pageNumberMax;
+
+        if (accountRole.equals(RIDER)) {
+            AccountManager.RiderDTOQueryResult queryResult =
+                    accountManager.queryRidersByState(pageRequest, queryStates);
+            riderList = queryResult.getResult();
+            pageNumberMax = queryResult.getTotalPages();
+        } else {
+            AccountManager.CustomerDTOQueryResult queryResult =
+                    accountManager.queryCustomersByState(pageRequest, queryStates);
+            customerList = queryResult.getResult();
+            pageNumberMax = queryResult.getTotalPages();
+        }
+
+        model.addAllAttributes(
+                Map.of(
+                        "riderAppList", riderList,
+                        "customerAppList", customerList,
+                        "filterType", accountRole.name(),
+                        "filterPage", pageNumber,
+                        "filterPageMax", pageNumberMax));
     }
 }

@@ -9,6 +9,61 @@ public class TestUtils {
 
     public static Gson gson = new GsonBuilder().create();
 
+    public static class SampleAccountBuilder {
+
+        private String email;
+        private String password;
+        private AccountState state;
+        private AccountRole role;
+
+        public SampleAccountBuilder(AccountRole role, String email) {
+            this.role = role;
+            this.email = email;
+            password = "rider_passs";
+            state = AccountState.SUSPENDED;
+        }
+
+        public SampleAccountBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public SampleAccountBuilder state(AccountState state) {
+            this.state = state;
+            return this;
+        }
+
+        public Rider buildRider() {
+            if (!role.equals(AccountRole.RIDER))
+                return null;
+
+            return new Rider(buildAccount(), "123456789");
+        }
+
+        public Customer buildCustomer() {
+            if (!role.equals(AccountRole.CUSTOMER))
+                return null;
+
+            return new Customer(buildAccount(), "123456789");
+        }
+
+        public Admin buildAdmin() {
+            if (!role.equals(AccountRole.ADMIN))
+                return null;
+
+            return new Admin(buildAccount());
+        }
+
+        private Account buildAccount() {
+            Account account =
+                    new Account("riderz", email, hashPassword(password));
+            account.setRole(AccountRole.RIDER);
+            account.setState(state);
+            return account;
+        }
+
+    }
+
     public static Rider createSampleRider(String riderAccountEmail, String riderAccountPassword) {
         Account riderAccount =
                 new Account("riderz", riderAccountEmail, hashPassword(riderAccountPassword));

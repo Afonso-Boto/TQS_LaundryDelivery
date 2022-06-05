@@ -14,11 +14,15 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -126,6 +130,32 @@ public class AccountManager {
 
     public boolean accountExists(String email) {
         return accountRepository.existsById(email);
+    }
+
+    public RiderDTOQueryResult queryRidersByState(
+            Pageable pageable, Collection<AccountState> states) {
+        RiderDTOQueryResult queryResult = new RiderDTOQueryResult();
+        Page<RiderDTO> page =
+                riderRepository.findByAccount_StateIn(states, pageable).map(RiderDTO::fromEntity);
+
+        queryResult.setResult(page.toList());
+        queryResult.setTotalPages(page.getTotalPages());
+
+        return queryResult;
+    }
+
+    public CustomerDTOQueryResult queryCustomersByState(
+            Pageable pageable, Collection<AccountState> states) {
+        CustomerDTOQueryResult queryResult = new CustomerDTOQueryResult();
+        Page<CustomerDTO> page =
+                customerRepository
+                        .findByAccount_StateIn(states, pageable)
+                        .map(CustomerDTO::fromEntity);
+
+        queryResult.setResult(page.toList());
+        queryResult.setTotalPages(page.getTotalPages());
+
+        return queryResult;
     }
 
     @Data
