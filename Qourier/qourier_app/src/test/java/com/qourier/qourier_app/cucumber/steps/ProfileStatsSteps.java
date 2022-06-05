@@ -1,4 +1,4 @@
-package com.qourier.qourier_app.cucumber;
+package com.qourier.qourier_app.cucumber.steps;
 
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.Account;
@@ -13,29 +13,24 @@ import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.springframework.data.repository.Repository;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
 import static com.qourier.qourier_app.TestUtils.createSampleRider;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ContextConfiguration
-public class CucumberSteps {
+public class ProfileStatsSteps {
 
-//    private final WebDriver driver = new HtmlUnitDriver(true);
-    private final WebDriver driver = WebDriverManager.firefoxdriver().create();
+    private final WebDriver driver = new HtmlUnitDriver(true);
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
     private final AccountRepository accountRepository;
     private final Rider sampleRider;
 
-    public CucumberSteps(
+    public ProfileStatsSteps(
             RiderRepository riderRepository,
             CustomerRepository customerRepository,
             AdminRepository adminRepository,
@@ -50,9 +45,10 @@ public class CucumberSteps {
 
     private AccountRole currentRole;
 
+
+
     @Given("I am in the {page} page")
     public void IAmInPage(String page) {
-//        reset();
         startOn(page);
     }
 
@@ -68,7 +64,7 @@ public class CucumberSteps {
         }
         else return;
 
-        // Initialize the document
+        // Two calls have to be made because the document has to be initialized before a cookie can be set
         IAmInPage("");
         driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
         IAmInPage("");
@@ -101,7 +97,7 @@ public class CucumberSteps {
 
 
 
-    @When("I go to register myself as a {accountRole}")
+    @When("I go to register myself as a(n) {accountRole}")
     public void registerAs(AccountRole accountRole) {
         String role = accountRole.name().toLowerCase();
         driver.findElement(By.id("btn-register-" + role)).click();
@@ -148,9 +144,13 @@ public class CucumberSteps {
 
     @Then("there are {not}statistics")
     public void statisticsOrNot(boolean not) {
-        List<WebElement> elements = driver.findElements(By.id("statistics-section"));
-        if (not) assertThat(elements).isEmpty();
-        else assertThat(elements).isNotEmpty();
+        List<List<WebElement>> statsElements = List.of(
+                driver.findElements(By.id("statistics-section")),
+                driver.findElements(By.id("statistics-deliveries-over-time")),
+                driver.findElements(By.id("statistics-average-time-spent"))
+        );
+        if (not) assertThat(statsElements).allMatch(List::isEmpty);
+        else assertThat(statsElements).noneMatch(List::isEmpty);
     }
 
 
@@ -182,16 +182,8 @@ public class CucumberSteps {
 
 
 
-    private void reset() {
-//        riderRepository.deleteAll();
-//        customerRepository.deleteAll();
-//        adminRepository.deleteAll();
-//        accountRepository.deleteAll();
-//        driver.manage().deleteCookieNamed(WebController.COOKIE_ID);
-    }
-
     private void startOn(String pagePath) {
-        driver.get("http://localhost:8989/" + pagePath);
+        driver.get("http://localhost:8080/" + pagePath);
         driver.manage().window().setSize(new Dimension(1916, 1076));
     }
 
