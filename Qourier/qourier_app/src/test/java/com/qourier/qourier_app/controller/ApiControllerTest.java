@@ -112,7 +112,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    @DisplayName("Obtain all deliveries for a given customerId")
+    @DisplayName("Create delivery through post")
     void whenPostDelivery_thenDeliveryIsCreated() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String json =
