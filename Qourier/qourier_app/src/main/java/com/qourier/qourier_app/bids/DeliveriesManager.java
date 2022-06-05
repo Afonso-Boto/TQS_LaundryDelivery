@@ -21,6 +21,7 @@ public class DeliveriesManager {
     private final BidsRepository bidsRepository;
     private final DeliveryRepository deliveryRepository;
     private final AccountManager accountManager;
+    private long AuctionSpan;
 
     @Autowired
     public DeliveriesManager(
@@ -30,6 +31,7 @@ public class DeliveriesManager {
         this.bidsRepository = bidsrepository;
         this.deliveryRepository = deliveryRepository;
         this.accountManager = accountManager;
+        this.AuctionSpan = 2000;
     }
 
     public void bidOnDelivery() {}
@@ -45,7 +47,6 @@ public class DeliveriesManager {
     }
 
     public void createAuction(Delivery delivery) {
-        System.out.println("Created Auction");
         new Timer()
                 .schedule(
                         new TimerTask() {
@@ -64,13 +65,17 @@ public class DeliveriesManager {
                                 } else {
                                     deliveryRepository.delete(delivery);
                                 }
-                                System.out.println("Finished Auction");
                             }
                         },
-                        2000);
+                        AuctionSpan);
+    }
+
+    public void setNewAuctionSpan(int seconds) {
+        AuctionSpan = seconds * 1000L;
     }
 
     public Bid createBid(Bid bid) {
+        if (bid.getDistance() == null) bid.setDistance(Double.POSITIVE_INFINITY);
         return bidsRepository.save(bid);
     }
 

@@ -129,7 +129,13 @@ public class AccountManager {
     }
 
     public void assignWork(String riderId, Long deliveryId) {
-        // TODO
+        Rider rider =
+                riderRepository
+                        .findById(riderId)
+                        .orElseThrow(() -> new AccountDoesNotExistException(riderId));
+
+        rider.setCurrentDelivery(deliveryId);
+        riderRepository.save(rider);
     }
 
     @Data
