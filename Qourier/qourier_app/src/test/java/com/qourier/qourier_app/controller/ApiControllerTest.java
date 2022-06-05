@@ -1,17 +1,23 @@
 package com.qourier.qourier_app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Delivery;
+import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -26,7 +32,7 @@ public class ApiControllerTest {
 
     @Autowired private MockMvc mvc;
 
-    @MockBean private DeliveryRepository deliveryRepository;
+    @MockBean private DeliveriesManager deliveriesManager;
 
     private List<Delivery> deliveryList, filteredDeliveryList;
 
@@ -74,8 +80,8 @@ public class ApiControllerTest {
                                 "Test3 street",
                                 "Test3 origin street"));
 
-        when(deliveryRepository.findAll()).thenReturn(deliveryList);
-        when(deliveryRepository.findByCustomerId("test0@email.com"))
+        when(deliveriesManager.getAllDeliveries()).thenReturn(deliveryList);
+        when(deliveriesManager.getDeliveriesFromCustomer("test0@email.com"))
                 .thenReturn(filteredDeliveryList);
     }
 

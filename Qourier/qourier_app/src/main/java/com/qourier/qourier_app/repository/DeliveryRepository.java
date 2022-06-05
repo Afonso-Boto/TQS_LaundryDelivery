@@ -8,7 +8,7 @@ import java.util.List;
 public interface DeliveryRepository extends JpaRepository<Delivery, String> {
     List<Delivery> findByCustomerId(String customerId);
 
-    Delivery findByDeliveryId(String deliveryId);
+    Delivery findByDeliveryId(Long deliveryId);
 
     List<Delivery> findAll();
 }

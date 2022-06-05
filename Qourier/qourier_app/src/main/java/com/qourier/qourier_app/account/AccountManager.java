@@ -128,6 +128,10 @@ public class AccountManager {
         return accountRepository.existsById(email);
     }
 
+    public void assignWork(String riderId, Long deliveryId) {
+        // TODO
+    }
+
     @Data
     public static class RiderDTOQueryResult {
 
