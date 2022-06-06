@@ -106,9 +106,9 @@
     <div id="first">
         <label for="address" style="width: 20%;">Address</label>
         <input type="text" name="address" id="address">
+        </br>
+        </br>
 
-        </br>
-        </br>
 
         <label for="type" style="width: 20%;">Type</label>
         <select id="type" name="type">
@@ -132,11 +132,13 @@
         <label for="number" style="width: 20%;">Number</label>
         <input type="number" min="1" value="1" id="number">
 
+
         </br>
 
         <input type="button" id="btnAdd" value="Add" onclick="addItem()"
                style="margin-bottom: 50px; align-content: center;">
-        <a href="ok.html"><h4>Make order</h4></a>
+
+        <a onclick="submitOrder()"><h4>Make order</h4></a>
 
 
         </br>
@@ -165,30 +167,6 @@
 
 <!-- About End -->
 
-<script>
-    function addItem() {
-        if (document.getElementById("type").value === "" || document.getElementById("color").value === "" || document.getElementById("number").value === "") {
-            alert("Please select a type, color and a number!");
-            return;
-        }
-
-        var table = document.getElementById("lstItems").insertRow();
-
-        var type = table.insertCell();
-        type.innerHTML = document.getElementById("type").value;
-
-        var color = table.insertCell();
-        color.innerHTML = document.getElementById("color").value;
-
-        var number = table.insertCell();
-        number.innerHTML = document.getElementById("number").value;
-
-        //Clean view
-        document.getElementById("type").value = "";
-        document.getElementById("number").value = "1";
-        document.getElementById("color").value = "";
-    }
-</script>
 
 
 <!-- Back to Top -->
@@ -202,6 +180,7 @@
 
 <!-- Template Javascript -->
 <script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/new_order.js}"></script>
 </body>
 
 </html>

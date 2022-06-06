@@ -1,5 +1,6 @@
 package tqs.project.laundryplatform.service;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.project.laundryplatform.model.Item;
@@ -7,8 +8,6 @@ import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.model.OrderType;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.OrderTypeRepository;
-
-import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {

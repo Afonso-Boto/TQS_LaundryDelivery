@@ -1,5 +1,7 @@
 package tqs.project.laundryplatform;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,8 +15,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.UserRepository;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers

@@ -1,10 +1,9 @@
 package tqs.project.laundryplatform.service;
 
+import java.util.List;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.model.OrderType;
-
-import java.util.List;
 
 public interface OrderService {
     List<Order> getOrder(int userID);

@@ -1,22 +1,17 @@
 package tqs.project.laundryplatform.controller;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 import tqs.project.laundryplatform.account.AccountManager;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.LoginResult;
 import tqs.project.laundryplatform.account.RegisterRequest;
-import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.service.AuthenticationService;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/auth")
