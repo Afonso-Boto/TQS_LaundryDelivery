@@ -1,11 +1,9 @@
 package tqs.project.laundryplatform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.model.OrderType;
@@ -21,7 +19,7 @@ import java.util.List;
 import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
 import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
 
-@RestController
+@Controller
 @RequestMapping("/order")
 public class OrderController {
     private static final String REDIRECT_ORDER = "redirect:/new_order";
@@ -38,7 +36,7 @@ public class OrderController {
         return "make order";
     }
 
-    @PostMapping("/init-order")
+    @GetMapping("/init-order")
     public String initOrder(Model model, HttpServletRequest request, @RequestParam("orderTypeId") long orderTypeId) {
 
         if (!hasCookie(request)) {
