@@ -13,7 +13,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
@@ -26,115 +26,123 @@
 </head>
 
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-primary py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                    </div>
-                </div>
-                <div class="col-md-6 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-
-    <nav th:replace="base :: navbar"></nav>
-
-    <!-- Navbar End -->
-
-
-    <!-- Page Header Start -->
-    <div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
-        <div class="container py-5">
-            <div class="row align-items-center py-4">
-                <div class="col-md-6 text-center text-md-left">
-                    <h1 class="mb-4 mb-md-0 text-white">Active & latest orders</h1>
-                </div>
-                <div class="col-md-6 text-center text-md-right">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="btn text-white" href="">Home</a>
-                        <i class="fas fa-angle-right text-white"></i>
-                        <a class="btn text-white disabled" href="">Orders</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Page Header Start -->
-
-
-    <!-- Blog Start -->
-    <div class="container py-5">
+<!-- Topbar Start -->
+<div class="container-fluid bg-primary py-3">
+    <div class="container">
         <div class="row">
-            <!-- Blog Grid Start -->
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-md-6 mb-2">
-                        <div class="bg-light mb-4">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
-                                <a href="" class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4" style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
-                                    <h4 class="text-center text-white font-weight-medium mb-3">Order #261739</h4>
-                                    <div class="d-flex text-light">
-                                        <small class="mr-2"><i class="fa fa-globe text-secondary"></i> Active</small>
-                                    </div>
-                                </a>
-                            </div>
+            <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+
+<nav th:replace="base :: navbar"></nav>
+
+<!-- Navbar End -->
+
+
+<!-- Page Header Start -->
+<div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center py-4">
+            <div class="col-md-6 text-center text-md-left">
+                <h1 class="mb-4 mb-md-0 text-white">Active & latest orders</h1>
+            </div>
+            <div class="col-md-6 text-center text-md-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="btn text-white" href="">Home</a>
+                    <i class="fas fa-angle-right text-white"></i>
+                    <a class="btn text-white disabled" href="">Orders</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header Start -->
+
+
+<!-- Blog Start -->
+<div class="container py-5">
+    <div class="row">
+        <!-- Blog Grid Start -->
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <div class="bg-light mb-4">
+                        <div class="position-relative">
+                            <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
+                            <a href=""
+                               class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
+                               style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
+                                <h4 class="text-center text-white font-weight-medium mb-3">Order #261739</h4>
+                                <div class="d-flex text-light">
+                                    <small class="mr-2"><i class="fa fa-globe text-secondary"></i> Active</small>
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-2">
-                        <div class="bg-light mb-4">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" th:src="@{/images/blog-2.jpg}" alt="">
-                                <a href="" class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4" style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
-                                    <h4 class="text-center text-white font-weight-medium mb-3" style="color: rgb(217, 211, 211) !important;">Order #13949</h4>
-                                    <div class="d-flex text-light">
-                                    </div>
-                                </a>
-                            </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="bg-light mb-4">
+                        <div class="position-relative">
+                            <img class="img-fluid w-100" th:src="@{/images/blog-2.jpg}" alt="">
+                            <a href=""
+                               class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
+                               style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
+                                <h4 class="text-center text-white font-weight-medium mb-3"
+                                    style="color: rgb(217, 211, 211) !important;">Order #13949</h4>
+                                <div class="d-flex text-light">
+                                </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-2">
-                        <div class="bg-light mb-4">
-                            <div class="position-relative">
-                                <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
-                                <a href="" class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4" style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
-                                    <h4 class="text-center text-white font-weight-medium mb-3" style="color: rgb(217, 211, 211) !important;">Order #12349</h4>
-                                    <div class="d-flex text-light">
-                                    </div>
-                                </a>
-                            </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="bg-light mb-4">
+                        <div class="position-relative">
+                            <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
+                            <a href=""
+                               class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
+                               style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
+                                <h4 class="text-center text-white font-weight-medium mb-3"
+                                    style="color: rgb(217, 211, 211) !important;">Order #12349</h4>
+                                <div class="d-flex text-light">
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Blog Grid End -->
-
-            
         </div>
+        <!-- Blog Grid End -->
+
+
     </div>
-    <!-- Blog End -->
+</div>
+<!-- Blog End -->
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/scripts/owlcarousel/owl.carousel.min.js}"></script>
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
 
-    <!-- Template Javascript -->
-    <script th:src="@{/scripts/main.js}"></script>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/scripts/owlcarousel/owl.carousel.min.js}"></script>
+
+
+<!-- Template Javascript -->
+<script th:src="@{/scripts/main.js}"></script>
 </body>
 
 </html>

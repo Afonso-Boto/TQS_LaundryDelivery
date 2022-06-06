@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface OrderTypeRepository extends JpaRepository<OrderType, Long> {
 
     Optional<OrderType> findById(long id);
-
 }
