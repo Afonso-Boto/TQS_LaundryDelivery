@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface LaundryRepository extends JpaRepository<Laundry, Long> {
     Optional<Laundry> findById(Long laundryId);
+    Optional<Laundry> findByName(String name);
 }
