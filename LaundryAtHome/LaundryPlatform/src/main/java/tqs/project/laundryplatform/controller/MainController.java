@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
+import tqs.project.laundryplatform.model.ItemRequest;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
@@ -72,6 +75,12 @@ public class MainController {
         }
     }
 
+    @GetMapping("/new_order")
+    public String newOrder(Model model, HttpServletRequest request){
+        model.addAttribute("newOrder", new ArrayList<ItemRequest>());
+        return "new_order";
+    }
+
     @GetMapping("/orders")
     public String orders(Model model, HttpServletRequest request){
         return "orders";
@@ -87,9 +96,6 @@ public class MainController {
         return "pricing";
     }
 
-    @GetMapping("/new_order")
-    public String newOrder(Model model, HttpServletRequest request){
-        return "new_order";
-    }
+
 
 }
