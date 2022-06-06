@@ -6,13 +6,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/order")
 public class OrderController {
 
-//    @PostMapping("/make-order")
-//    public String makeOrder(@ResponseBody ItemRequest json, long itemTypeId, List<Item> items) {
-//        System.out.println();
-//        return "make order";
-//    }
 
-    @RequestMapping(path = "/make-order", method = RequestMethod.POST)
+    @PostMapping("/make-order")
     public String makeOrder(@RequestBody String formObject) {
         System.out.println(formObject);
         return "make order";
