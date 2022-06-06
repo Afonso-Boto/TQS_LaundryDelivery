@@ -24,14 +24,11 @@ public class Laundry {
         this.location = location;
     }
 
-    public Laundry(){
-
-    }
+    public Laundry() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;

@@ -39,7 +39,6 @@ public class Order {
     @OneToOne(mappedBy = "order")
     Complaint complaint;
 
-
     public Order(Date date, boolean isCompleted, String deliveryLocation) {
         this.date = date;
         this.isCompleted = isCompleted;
@@ -50,14 +49,11 @@ public class Order {
         this.orderType = orderType;
     }
 
-    public Order() {
-
-    }
+    public Order() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;

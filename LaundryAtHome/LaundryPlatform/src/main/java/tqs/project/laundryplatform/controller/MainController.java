@@ -32,7 +32,7 @@ public class MainController {
     public String showIndex(Model model, HttpServletRequest request) {
         System.err.println("index");
 
-        if(!hasCookie(request)){
+        if (!hasCookie(request)) {
             System.err.println("cookie not verified");
             return REDIRECT_LOGIN;
         }
@@ -42,14 +42,11 @@ public class MainController {
         return "index";
     }
 
-
     @GetMapping("/login")
     public String showLoginForm(Model model, HttpServletRequest request) {
         System.err.println("get login");
 
-        if (getIdFromCookie(request) != null)
-            return REDIRECT_INDEX;
-
+        if (getIdFromCookie(request) != null) return REDIRECT_INDEX;
 
         model.addAttribute("loginRequest", new LoginRequest());
         return "login_form";
@@ -70,7 +67,7 @@ public class MainController {
         if (hasCookie(request)) {
             removeCookie(response);
             return REDIRECT_LOGIN;
-        }else{
+        } else {
             return "error";
         }
     }

@@ -9,14 +9,12 @@ import java.util.Optional;
 
 @Service
 public class AccountManager {
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private UserRepository userRepository;
 
     public LoginResult login(LoginRequest request) {
         Optional<User> user = userRepository.findByUsername(request.getUsername());
 
-        if (user.isEmpty())
-            return LoginResult.NON_EXISTENT_ACCOUNT;
+        if (user.isEmpty()) return LoginResult.NON_EXISTENT_ACCOUNT;
         else if (!user.get().getPassword().equals(request.getPassword())) {
             return LoginResult.WRONG_CREDENTIALS;
         }
@@ -24,8 +22,7 @@ public class AccountManager {
     }
 
     public boolean register(RegisterRequest request) {
-        if (accountExists(request.getUsername()))
-            return false;
+        if (accountExists(request.getUsername())) return false;
 
         User user = generateUser(request);
         userRepository.save(user);
@@ -38,7 +35,11 @@ public class AccountManager {
     }
 
     private User generateUser(RegisterRequest registerRequest) {
-        return new User(registerRequest.getUsername(), registerRequest.getEmail(), registerRequest.getPassword(),
-                registerRequest.getFullName(), registerRequest.getPhoneNumber());
+        return new User(
+                registerRequest.getUsername(),
+                registerRequest.getEmail(),
+                registerRequest.getPassword(),
+                registerRequest.getFullName(),
+                registerRequest.getPhoneNumber());
     }
 }

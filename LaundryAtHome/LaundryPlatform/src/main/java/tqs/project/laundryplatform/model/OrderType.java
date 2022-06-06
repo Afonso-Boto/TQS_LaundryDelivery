@@ -25,14 +25,11 @@ public class OrderType {
         this.basePrice = basePrice;
     }
 
-    public OrderType() {
-
-    }
+    public OrderType() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;

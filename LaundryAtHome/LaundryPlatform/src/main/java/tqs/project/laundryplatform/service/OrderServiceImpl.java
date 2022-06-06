@@ -12,11 +12,9 @@ import java.util.List;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-    @Autowired
-    OrderRepository orderRepository;
+    @Autowired OrderRepository orderRepository;
 
-    @Autowired
-    OrderTypeRepository orderTypeRepository;
+    @Autowired OrderTypeRepository orderTypeRepository;
 
     @Override
     public List<Order> getOrder(int userID) {
@@ -47,11 +45,9 @@ public class OrderServiceImpl implements OrderService {
     public boolean initOrder(long orderTypeId) {
 
         OrderType type = orderTypeRepository.findById(orderTypeId).orElse(null);
-        if (type == null)
-            return false;
+        if (type == null) return false;
         Order newOrder = new Order(type);
         orderRepository.save(newOrder);
         return true;
     }
 }
-

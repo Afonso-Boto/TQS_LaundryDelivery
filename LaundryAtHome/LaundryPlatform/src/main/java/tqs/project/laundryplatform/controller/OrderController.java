@@ -14,7 +14,6 @@ public class OrderController {
     @PostMapping("/make-order")
     public String makeOrder(long itemTypeId, List<Item> items) {
 
-
         return "make order";
     }
 

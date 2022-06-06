@@ -30,7 +30,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     Set<Order> orders;
 
-
     public User(String username, String email, String password, String fullName, int phoneNumber) {
         this.username = username;
         this.email = email;
@@ -44,14 +43,11 @@ public class User {
         this.password = password;
     }
 
-    public User() {
-
-    }
+    public User() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;
@@ -102,7 +98,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return phoneNumber == user.phoneNumber && id.equals(user.id) && username.equals(user.username) && email.equals(user.email) && password.equals(user.password) && fullName.equals(user.fullName);
+        return phoneNumber == user.phoneNumber
+                && id.equals(user.id)
+                && username.equals(user.username)
+                && email.equals(user.email)
+                && password.equals(user.password)
+                && fullName.equals(user.fullName);
     }
 
     @Override

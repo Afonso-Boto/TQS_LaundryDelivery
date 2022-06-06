@@ -7,12 +7,11 @@ import tqs.project.laundryplatform.repository.UserRepository;
 
 @Service
 public class AuthServiceImpl implements AuthenticationService {
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
+
     @Override
     public boolean register(User user) {
-        if(userRepository.existsByUsername(user.getUsername()))
-            return false;
+        if (userRepository.existsByUsername(user.getUsername())) return false;
 
         userRepository.save(user);
         return true;
@@ -22,8 +21,7 @@ public class AuthServiceImpl implements AuthenticationService {
     public boolean logIn(String username, String password) {
         if (userRepository.existsByUsername(username)) {
             User user = userRepository.findByUsername(username).orElse(null);
-            if (user.getPassword().equals(password))
-                return true;
+            if (user.getPassword().equals(password)) return true;
         }
         return false;
     }
