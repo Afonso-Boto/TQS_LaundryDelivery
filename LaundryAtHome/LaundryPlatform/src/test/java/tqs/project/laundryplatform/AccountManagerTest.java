@@ -22,15 +22,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AccountManagerTest {
 
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserRepository userRepository;
 
-    @InjectMocks
-    private AccountManager accountManager;
+    @InjectMocks private AccountManager accountManager;
 
     @BeforeEach
-    public void setUp() {
-    }
+    public void setUp() {}
 
     @Test
     void whenLoginExistent_thenEmptyResult() {
@@ -80,7 +77,8 @@ class AccountManagerTest {
         String loginUsername = "test";
         String loginEmail = "test@ua.pt";
         String loginPassword = "123";
-        RegisterRequest registerRequest = new RegisterRequest(loginUsername, loginEmail, loginPassword, "test", 123);
+        RegisterRequest registerRequest =
+                new RegisterRequest(loginUsername, loginEmail, loginPassword, "test", 123);
 
         when(userRepository.existsByUsername(registerRequest.getUsername())).thenReturn(false);
 
@@ -92,11 +90,11 @@ class AccountManagerTest {
         String loginUsername = "test";
         String loginEmail = "test@ua.pt";
         String loginPassword = "123";
-        RegisterRequest registerRequest = new RegisterRequest(loginUsername, loginEmail, loginPassword, "test", 123);
+        RegisterRequest registerRequest =
+                new RegisterRequest(loginUsername, loginEmail, loginPassword, "test", 123);
 
         when(userRepository.existsByUsername(registerRequest.getUsername())).thenReturn(true);
 
         assertThat(accountManager.register(registerRequest)).isFalse();
     }
 }
-

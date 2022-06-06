@@ -76,26 +76,23 @@ public class MainController {
     }
 
     @GetMapping("/new_order")
-    public String newOrder(Model model, HttpServletRequest request){
+    public String newOrder(Model model, HttpServletRequest request) {
         model.addAttribute("newOrder", new ArrayList<ItemRequest>());
         return "new_order";
     }
 
     @GetMapping("/orders")
-    public String orders(Model model, HttpServletRequest request){
+    public String orders(Model model, HttpServletRequest request) {
         return "orders";
     }
 
     @GetMapping("/service")
-    public String service(Model model, HttpServletRequest request){
+    public String service(Model model, HttpServletRequest request) {
         return "service";
     }
 
     @GetMapping("/pricing")
-    public String pricing(Model model, HttpServletRequest request){
+    public String pricing(Model model, HttpServletRequest request) {
         return "pricing";
     }
-
-
-
 }

@@ -23,13 +23,13 @@ public class UserRepositoryTest {
     User user;
 
     @Container
-    public static MySQLContainer container = new MySQLContainer("mysql:8.0.29")
-            .withDatabaseName("test_db")
-            .withUsername("test_user")
-            .withPassword("123456");
+    public static MySQLContainer container =
+            new MySQLContainer("mysql:8.0.29")
+                    .withDatabaseName("test_db")
+                    .withUsername("test_user")
+                    .withPassword("123456");
 
-    @Autowired
-    private UserRepository repository;
+    @Autowired private UserRepository repository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -78,5 +78,4 @@ public class UserRepositoryTest {
     public void whenInvalidUsername_thenReturnFalse() {
         assertThat(repository.existsByUsername("invalid_username")).isFalse();
     }
-
 }
