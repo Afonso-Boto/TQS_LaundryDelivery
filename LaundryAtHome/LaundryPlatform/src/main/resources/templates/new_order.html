@@ -51,6 +51,16 @@
             background-color: #007bff;
             color: white;
         }
+
+        #first {
+            width: 45%;
+            float: left;
+        }
+
+        #second {
+            width: 55%;
+            float: left;
+        }
     </style>
 
 </head>
@@ -75,26 +85,9 @@
 
 
 <!-- Navbar Start -->
-<div class="container-fluid position-relative nav-bar p-0">
-    <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
-        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 pl-3 pl-lg-5">
-            <a href="index.html" class="navbar-brand">
-                <h1 class="m-0 text-secondary"><span class="text-primary">Laundry</span>AtHome</h1>
-            </a>
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                <div class="navbar-nav ml-auto py-0">
-                    <a href="index.html" class="nav-item nav-link active">Home</a>
-                    <a href="service.html" class="nav-item nav-link">Services</a>
-                    <a href="pricing.html" class="nav-item nav-link">Pricing</a>
-                    <a href="orders.html" class="nav-item nav-link">Orders</a>
-                </div>
-            </div>
-        </nav>
-    </div>
-</div>
+
+<nav th:replace="base :: navbar"></nav>
+
 <!-- Navbar End -->
 
 <!-- Page Header Start -->
@@ -110,67 +103,74 @@
 <!-- Page Header Start -->
 
 <div class="container">
-    <label for="address">Address</label>
-    <input type="text" name="address">
+    <div id="first">
+        <label for="address" style="width: 20%;">Address</label>
+        <input type="text" name="address" id="address">
 
-    </br>
-    </br>
+        </br>
+        </br>
 
-    <label for="type">Type</label>
-    <select id="type" name="type">
-        <option value="casaco">Casaco</option>
-        <option value="roupa_interior">Roupa Interior</option>
-        <option value="camisa">Camisa</option>
-        <option value="t_shirt">T-Shirt</option>
-        <option value="calcas">Calças</option>
-    </select>
+        <label for="type" style="width: 20%;">Type</label>
+        <select id="type" name="type">
+            <option value="Casaco">Casaco</option>
+            <option value="Roupa Interior">Roupa Interior</option>
+            <option value="Camisa">Camisa</option>
+            <option value="T-Shirt">T-Shirt</option>
+            <option value="Calças">Calças</option>
+        </select>
 
-    </br>
+        </br>
 
-    <label for="color">Color</label>
-    <select id="color" name="color">
-        <option value="claras">Claras</option>
-        <option value="escuras">Escuras</option>
-    </select>
+        <label for="color" style="width: 20%;">Color</label>
+        <select id="color" name="color">
+            <option value="Claras">Claras</option>
+            <option value="Escuras">Escuras</option>
+        </select>
 
-    </br>
+        </br>
 
-    <label for="number">Number</label>
-    <input type="number" min="1" value="1" id="number">
+        <label for="number" style="width: 20%;">Number</label>
+        <input type="number" min="1" value="1" id="number">
 
-    </br>
+        </br>
 
-    <input type="button" id="btnAdd" value="Add" onclick="addItem()">
-    <a href="ok.html"><h4>Make order</h4></a>
+        <input type="button" id="btnAdd" value="Add" onclick="addItem()" style="margin-bottom: 50px; align-content: center;">
+        <a href="ok.html"><h4>Make order</h4></a>
 
-</div>
 
-<div class="container-fluid py-5">
-    <div class="container pt-0 pt-lg-4">
+        </br>
+    </div>
+
+    <div id="second">
         <div class="row align-items-center">
-            <div class="col-lg-5">
-                <table id="lstItems">
-                    <thead>
-                    <tr>
-                        <th>Type</th>
-                        <th>Color</th>
-                        <th>Number</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+            <table id="lstItems" style="margin-right: 50px;">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Color</th>
+                    <th>Number</th>
+                </tr>
+                </thead>
+                <tbody>
 
-                    </tbody>
-                </table>
-                <ul id="lstItems">
-                </ul>
-            </div>
+                </tbody>
+            </table>
         </div>
     </div>
+
+
 </div>
+
+
 <!-- About End -->
 
 <script>
     function addItem() {
+        if (document.getElementById("type").value === "" || document.getElementById("color").value === "" || document.getElementById("number").value === "") {
+            alert("Please select a type, color and a number!");
+            return;
+        }
+
         var table = document.getElementById("lstItems").insertRow();
 
         var type = table.insertCell();
