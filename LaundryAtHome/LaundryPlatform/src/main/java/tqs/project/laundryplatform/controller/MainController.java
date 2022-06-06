@@ -4,17 +4,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
-import tqs.project.laundryplatform.model.ItemRequest;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.ArrayList;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
@@ -77,7 +71,6 @@ public class MainController {
 
     @GetMapping("/new_order")
     public String newOrder(Model model, HttpServletRequest request) {
-        model.addAttribute("newOrder", new ArrayList<ItemRequest>());
         return "new_order";
     }
 

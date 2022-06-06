@@ -1,14 +1,6 @@
 package tqs.project.laundryplatform.controller;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import tqs.project.laundryplatform.model.Item;
-import tqs.project.laundryplatform.model.ItemRequest;
-
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
