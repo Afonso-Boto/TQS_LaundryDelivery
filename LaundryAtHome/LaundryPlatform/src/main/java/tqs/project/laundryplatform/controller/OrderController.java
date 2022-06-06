@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
@@ -12,6 +13,7 @@ import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.UserRepository;
 import tqs.project.laundryplatform.service.OrderService;
 
+import javax.persistence.FieldResult;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
@@ -37,13 +39,12 @@ public class OrderController {
     }
 
     @PostMapping("/init-order")
-    public String initOrder(Model model, HttpServletRequest request) {
+    public String initOrder(Model model, HttpServletRequest request, @RequestParam("orderTypeId") long orderTypeId) {
 
         if (!hasCookie(request)) {
             return "error";
         }
 
-        long orderTypeId = (long) model.getAttribute("orderTypeId");
         String cookieID = getIdFromCookie(request);
 
         long orderID = orderService.initOrder(orderTypeId, cookieID);
