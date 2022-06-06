@@ -71,4 +71,21 @@ public class MainController {
             return "error";
         }
     }
+
+    @GetMapping("/orders")
+    public String orders(Model model, HttpServletRequest request){
+        return "orders";
+    }
+
+    @GetMapping("/service")
+    public String service(Model model, HttpServletRequest request){
+        return "service";
+    }
+
+    @GetMapping("/pricing")
+    public String pricing(Model model, HttpServletRequest request){
+        return "pricing";
+    }
+
+
 }
