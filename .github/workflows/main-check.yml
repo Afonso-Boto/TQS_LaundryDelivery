@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}    # for Google Java Format auto format commits
+        fetch-depth: 0
     - name: Google Java Format enforcer, without imports
       uses: axel-op/googlejavaformat-action@v3
       with:
