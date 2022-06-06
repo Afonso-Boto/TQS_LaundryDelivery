@@ -1,5 +1,10 @@
 package tqs.project.laundryplatform;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,12 +17,6 @@ import tqs.project.laundryplatform.account.LoginResult;
 import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.UserRepository;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class AccountManagerTest {

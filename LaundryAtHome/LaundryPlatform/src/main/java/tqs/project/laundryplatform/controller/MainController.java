@@ -1,16 +1,15 @@
 package tqs.project.laundryplatform.controller;
 
+import static tqs.project.laundryplatform.controller.AuthController.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import static tqs.project.laundryplatform.controller.AuthController.*;
 
 @Controller
 @Log4j2
