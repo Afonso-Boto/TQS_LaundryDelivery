@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemRequest {
-    private long itemTypeId;
-    private boolean isDark;
-    private int number;
+    private String itemType;
+    private String isDark;
+    private String number;
 }
