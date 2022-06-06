@@ -13,7 +13,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
@@ -26,179 +26,182 @@
 
     <style>
         #lstItems {
-          font-family: Arial, Helvetica, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
         }
-        
+
         #lstItems td, #customers th {
-          border: 1px solid #ddd;
-          padding: 8px;
+            border: 1px solid #ddd;
+            padding: 8px;
         }
-        
-        #lstItems tr:nth-child(even){background-color: #f2f2f2;}
-        
-        #lstItems tr:hover {background-color: #ddd;}
-        
+
+        #lstItems tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #lstItems tr:hover {
+            background-color: #ddd;
+        }
+
         #lstItems th {
-          padding-top: 12px;
-          padding-bottom: 12px;
-          text-align: left;
-          background-color: #007bff;
-          color: white;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #007bff;
+            color: white;
         }
-        </style>
-    
+
+        #first {
+            width: 45%;
+            float: left;
+        }
+
+        #second {
+            width: 55%;
+            float: left;
+        }
+    </style>
+
 </head>
 
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid bg-primary py-3">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                    </div>
-                </div>
-                <div class="col-md-6 text-center text-lg-right">
-                    <div class="d-inline-flex align-items-center">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-    <div class="container-fluid position-relative nav-bar p-0">
-        <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
-            <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 pl-3 pl-lg-5">
-                <a href="index.html" class="navbar-brand">
-                    <h1 class="m-0 text-secondary"><span class="text-primary">Laundry</span>AtHome</h1>
-                </a>
-                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
-                    <div class="navbar-nav ml-auto py-0">
-                        <a href="index.html" class="nav-item nav-link active">Home</a>
-                        <a href="service.html" class="nav-item nav-link">Services</a>
-                        <a href="pricing.html" class="nav-item nav-link">Pricing</a>
-                        <a href="orders.html" class="nav-item nav-link">Orders</a>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </div>
-    <!-- Navbar End -->
-
-    <!-- Page Header Start -->
-    <div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
-        <div class="container py-5">
-            <div class="row align-items-center py-4">
-                <div class="col-md-6 text-center text-md-left">
-                    <h1 class="mb-4 mb-md-0 text-white">New order</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Page Header Start -->
-
+<!-- Topbar Start -->
+<div class="container-fluid bg-primary py-3">
     <div class="container">
-        <label for="address">Address</label>
-        <input type="text" name="address">
-
-    </br>
-    </br>
-
-        <label for="type">Type</label>
-        <select id="type" name="type">
-            <option value="casaco">Casaco</option>
-            <option value="roupa_interior">Roupa Interior</option>
-            <option value="camisa">Camisa</option>
-            <option value="t_shirt">T-Shirt</option>
-            <option value="calcas">Calças</option>
-        </select>
-        
-    </br>
-
-        <label for="color">Color</label>
-        <select id="color" name="color">
-            <option value="claras">Claras</option>
-            <option value="escuras">Escuras</option>
-        </select>
-        
-    </br>
-
-        <label for="number">Number</label>
-        <input type="number" min="1" value="1" id="number">
-    
-    </br>
-
-        <input type="button" id="btnAdd" value="Add" onclick="addItem()">
-        <a href="ok.html"><h4>Make order</h4></a>
-        
-    </div>
-
-    <div class="container-fluid py-5">
-        <div class="container pt-0 pt-lg-4">
-            <div class="row align-items-center">
-                <div class="col-lg-5">
-                    <table id="lstItems">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Color</th>
-                                <th>Number</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
-                    <ul id="lstItems">
-                    </ul>
+        <div class="row">
+            <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
                 </div>
             </div>
         </div>
     </div>
-    <!-- About End -->
+</div>
+<!-- Topbar End -->
 
-    <script>
-        function addItem(){
-            var table = document.getElementById("lstItems").insertRow();
-            
-            var type = table.insertCell();
-            type.innerHTML = document.getElementById("type").value;
 
-            var color = table.insertCell();
-            color.innerHTML = document.getElementById("color").value;
-            
-            var number = table.insertCell();
-            number.innerHTML = document.getElementById("number").value;
+<!-- Navbar Start -->
 
-            //Clean view
-            document.getElementById("type").value = "";
-            document.getElementById("number").value = "1";
-            document.getElementById("color").value = "";
+<nav th:replace="base :: navbar"></nav>
+
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center py-4">
+            <div class="col-md-6 text-center text-md-left">
+                <h1 class="mb-4 mb-md-0 text-white">New order</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header Start -->
+
+<div class="container">
+    <div id="first">
+        <label for="address" style="width: 20%;">Address</label>
+        <input type="text" name="address" id="address">
+
+        </br>
+        </br>
+
+        <label for="type" style="width: 20%;">Type</label>
+        <select id="type" name="type">
+            <option value="Casaco">Casaco</option>
+            <option value="Roupa Interior">Roupa Interior</option>
+            <option value="Camisa">Camisa</option>
+            <option value="T-Shirt">T-Shirt</option>
+            <option value="Calças">Calças</option>
+        </select>
+
+        </br>
+
+        <label for="color" style="width: 20%;">Color</label>
+        <select id="color" name="color">
+            <option value="Claras">Claras</option>
+            <option value="Escuras">Escuras</option>
+        </select>
+
+        </br>
+
+        <label for="number" style="width: 20%;">Number</label>
+        <input type="number" min="1" value="1" id="number">
+
+        </br>
+
+        <input type="button" id="btnAdd" value="Add" onclick="addItem()"
+               style="margin-bottom: 50px; align-content: center;">
+        <a href="ok.html"><h4>Make order</h4></a>
+
+
+        </br>
+    </div>
+
+    <div id="second">
+        <div class="row align-items-center">
+            <table id="lstItems" style="margin-right: 50px;">
+                <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Color</th>
+                    <th>Number</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+
+<!-- About End -->
+
+<script>
+    function addItem() {
+        if (document.getElementById("type").value === "" || document.getElementById("color").value === "" || document.getElementById("number").value === "") {
+            alert("Please select a type, color and a number!");
+            return;
         }
-    </script>
-    
+
+        var table = document.getElementById("lstItems").insertRow();
+
+        var type = table.insertCell();
+        type.innerHTML = document.getElementById("type").value;
+
+        var color = table.insertCell();
+        color.innerHTML = document.getElementById("color").value;
+
+        var number = table.insertCell();
+        number.innerHTML = document.getElementById("number").value;
+
+        //Clean view
+        document.getElementById("type").value = "";
+        document.getElementById("number").value = "1";
+        document.getElementById("color").value = "";
+    }
+</script>
 
 
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/scripts/owlcarousel/owl.carousel.min.js}"></script>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/scripts/owlcarousel/owl.carousel.min.js}"></script>
 
 
-    <!-- Template Javascript -->
-    <script th:src="@{/scripts/main.js}"></script>
+<!-- Template Javascript -->
+<script th:src="@{/scripts/main.js}"></script>
 </body>
 
 </html>
