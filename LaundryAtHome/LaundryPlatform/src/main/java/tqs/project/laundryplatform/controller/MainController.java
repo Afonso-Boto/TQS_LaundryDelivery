@@ -87,5 +87,9 @@ public class MainController {
         return "pricing";
     }
 
+    @GetMapping("/new_order")
+    public String newOrder(Model model, HttpServletRequest request){
+        return "new_order";
+    }
 
 }
