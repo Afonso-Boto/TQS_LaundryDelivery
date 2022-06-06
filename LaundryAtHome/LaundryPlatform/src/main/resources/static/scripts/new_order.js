@@ -9,8 +9,8 @@ function submitOrder() {
         contentType: "application/json",
         data: JSON.stringify(items),
         dataType: 'json',
-        success: function(data) {
-            console.log('success',data);
+        success: function (data) {
+            console.log('success', data);
         },
     });
 }

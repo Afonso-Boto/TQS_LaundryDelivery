@@ -45,8 +45,10 @@ public class Order {
         this.deliveryLocation = deliveryLocation;
     }
 
-    public Order(OrderType orderType) {
+    public Order(OrderType orderType, User user, Laundry laundry) {
         this.orderType = orderType;
+        this.user = user;
+        this.laundry = laundry;
     }
 
     public Order() {}
