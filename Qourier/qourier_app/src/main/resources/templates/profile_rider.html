@@ -31,15 +31,22 @@
                 <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for average time spent" />
             </div>
         </div>
-        <div class="row">
+        <div id="admin-space" class="row" th:if="${role.name() == 'ADMIN'}">
             <div class="col-12">
                 <h3>Other</h3>
 
-                <th:block id='admin-space' th:if="${role.name() == 'ADMIN'}">
-                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${rider.account.state.name().equals('ACTIVE') ? 'Suspend account' : 'Activate account'}">
-                        Activate account
-                    </button>
-                </th:block>
+                <div id="toggle-account">
+                    <a href="#" th:href="@{/profile/activate/{id}(id=${rider.account.email})}" th:unless="${rider.account.state.name().equals('ACTIVE')}">
+                        <button type="button" class="btn btn-primary">
+                            Activate account
+                        </button>
+                    </a>
+                    <a href="#" th:href="@{/profile/suspend/{id}(id=${rider.account.email})}" th:if="${rider.account.state.name().equals('ACTIVE')}">
+                        <button type="button" class="btn btn-primary">
+                            Suspend account
+                        </button>
+                    </a>
+                </div>
 
                 <input id="attrs-state" type="hidden" value="SUSPENDED" th:value="${rider.account.state.name()}" />
             </div>
@@ -51,32 +58,32 @@
 
     <script>
 
-        let activeAccount = $('#attrs-state').val() === 'ACTIVE';
-        let toggleAccountButton = $('#toggle-account');
-        let detailsState = $('#details-state');
-
-        toggleAccountButton.click(function () {
-
-            activeAccount = !activeAccount;
-            if (activeAccount) {
-                toggleAccountButton.text('Suspend account');
-                detailsState.text('active');
-                activateAccount();
-            }
-            else {
-                toggleAccountButton.text('Activate account');
-                detailsState.text('suspended');
-                suspendAccount();
-            }
-        })
-
-        function activateAccount() {
-            // TODO fill with implementation
-        }
-
-        function suspendAccount() {
-            // TODO fill with implementation
-        }
+        // let activeAccount = $('#attrs-state').val() === 'ACTIVE';
+        // let toggleAccountButton = $('#toggle-account');
+        // let detailsState = $('#details-state');
+        //
+        // toggleAccountButton.click(function () {
+        //
+        //     activeAccount = !activeAccount;
+        //     if (activeAccount) {
+        //         toggleAccountButton.text('Suspend account');
+        //         detailsState.text('active');
+        //         activateAccount();
+        //     }
+        //     else {
+        //         toggleAccountButton.text('Activate account');
+        //         detailsState.text('suspended');
+        //         suspendAccount();
+        //     }
+        // })
+        //
+        // function activateAccount() {
+        //     // TODO fill with implementation
+        // }
+        //
+        // function suspendAccount() {
+        //     // TODO fill with implementation
+        // }
 
     </script>
 

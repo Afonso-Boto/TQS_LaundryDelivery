@@ -14,6 +14,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
 import lombok.extern.java.Log;
@@ -237,6 +238,55 @@ public class WebController {
                         "filterActive", active));
         return "accounts";
     }
+
+    @GetMapping("/profile/{id}")
+    public String profileById(Model model, HttpServletRequest request, @PathVariable String id) {
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, ADMIN)
+                && !verifyCookie(request, CUSTOMER)
+                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
+
+        AccountRole role = getRoleFromCookie(request);
+
+        if (role != ADMIN) return "redirect:/profile";
+
+        AccountDTO account = accountManager.getAccount(id);
+        String profileView = REDIRECT_INDEX;
+        if (account.getRole().equals(RIDER)) {
+            profileView = "profile_rider";
+            model.addAttribute("rider", accountManager.getRiderAccount(id));
+        } else if (account.getRole().equals(CUSTOMER)) {
+            profileView = "profile_customer";
+            model.addAttribute("customer", accountManager.getCustomerAccount(id));
+        }
+
+        model.addAttribute("role", getRoleFromCookie(request));
+        return profileView;
+    }
+
+    @PostMapping("profile/activate/{id}")
+    public String profileActivateById(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable String id) {
+
+        accountManager.activateAccount(id);
+
+        return profileById(model, request, id);
+    }
+
+    @PostMapping("profile/suspend/{id}")
+    public String profileSuspendById(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable String id) {
+
+        accountManager.suspendAccount(id);
+
+        return profileById(model, request, id);
+    }
+
 
 
     @Bean
