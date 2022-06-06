@@ -16,5 +16,5 @@ public interface OrderService {
 
     boolean makeOrder(long itemTypeId, List<Item> items);
 
-    long initOrder(long orderTypeId, String cookieID);
+    boolean initOrder(long orderTypeId);
 }
