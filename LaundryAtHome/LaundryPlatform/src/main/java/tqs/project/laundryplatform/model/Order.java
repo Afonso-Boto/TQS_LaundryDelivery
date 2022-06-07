@@ -1,10 +1,15 @@
 package tqs.project.laundryplatform.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.sql.Date;
 import java.util.Set;
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "Orders")
 public class Order {
 
@@ -20,6 +25,12 @@ public class Order {
 
     @Column(name = "delivery_location")
     private String deliveryLocation;
+
+    @Column(name = "delivery_date")
+    private Date deliveryDate;
+
+    @Column(name = "total_price")
+    private double totalPrice;
 
     @OneToMany(mappedBy = "order")
     Set<Item> items;
@@ -52,36 +63,4 @@ public class Order {
     }
 
     public Order() {}
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public boolean isIsCompleted() {
-        return isCompleted;
-    }
-
-    public void setIsCompleted(boolean is_completed) {
-        this.isCompleted = is_completed;
-    }
-
-    public String getDeliveryLocation() {
-        return deliveryLocation;
-    }
-
-    public void setDeliveryLocation(String delivery_location) {
-        this.deliveryLocation = delivery_location;
-    }
 }

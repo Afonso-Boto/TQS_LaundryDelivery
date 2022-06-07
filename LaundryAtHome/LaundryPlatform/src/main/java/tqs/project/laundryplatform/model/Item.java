@@ -29,6 +29,13 @@ public class Item {
         this.isDark = isDark;
     }
 
+    public Item(int number, boolean isDark, Order order, ItemType itemType) {
+        this.number = number;
+        this.isDark = isDark;
+        this.order = order;
+        this.itemType = itemType;
+    }
+
     public Item() {}
 
     public void setId(Long id) {
