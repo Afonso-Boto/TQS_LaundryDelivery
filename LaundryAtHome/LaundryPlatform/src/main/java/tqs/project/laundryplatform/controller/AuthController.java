@@ -11,19 +11,16 @@ import tqs.project.laundryplatform.account.AccountManager;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.LoginResult;
 import tqs.project.laundryplatform.account.RegisterRequest;
-import tqs.project.laundryplatform.service.AuthenticationService;
 
 @Controller
 @RequestMapping("/auth")
 @Log4j2
 public class AuthController {
 
-    private final AuthenticationService service;
     private final AccountManager accountManager;
 
     @Autowired
-    public AuthController(AuthenticationService service, AccountManager accountManager) {
-        this.service = service;
+    public AuthController(AccountManager accountManager) {
         this.accountManager = accountManager;
     }
 
