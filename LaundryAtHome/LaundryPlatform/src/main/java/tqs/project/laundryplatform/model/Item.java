@@ -1,8 +1,13 @@
 package tqs.project.laundryplatform.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "Item")
 public class Item {
 
@@ -37,28 +42,4 @@ public class Item {
     }
 
     public Item() {}
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public boolean isDark() {
-        return isDark;
-    }
-
-    public void setDark(boolean dark) {
-        isDark = dark;
-    }
 }
