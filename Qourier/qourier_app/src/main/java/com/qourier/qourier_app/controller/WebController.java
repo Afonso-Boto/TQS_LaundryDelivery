@@ -228,7 +228,10 @@ public class WebController {
         }
 
         model.addAttribute("role", getRoleFromCookie(request));
-        model.addAttribute("accepted", account.getState().equals(AccountState.ACTIVE) || account.getState().equals(AccountState.SUSPENDED));
+        model.addAttribute(
+                "accepted",
+                account.getState().equals(AccountState.ACTIVE)
+                        || account.getState().equals(AccountState.SUSPENDED));
         return view;
     }
 

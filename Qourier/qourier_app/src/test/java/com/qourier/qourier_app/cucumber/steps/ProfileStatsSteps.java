@@ -45,8 +45,6 @@ public class ProfileStatsSteps {
 
     private AccountRole currentRole;
 
-
-
     @Given("I am in the {page} page")
     public void IAmInPage(String page) {
         startOn(page);
@@ -61,10 +59,10 @@ public class ProfileStatsSteps {
             if (riderRepository.existsById(account.getEmail()))
                 riderRepository.deleteById(account.getEmail());
             riderRepository.save(sampleRider);
-        }
-        else return;
+        } else return;
 
-        // Two calls have to be made because the document has to be initialized before a cookie can be set
+        // Two calls have to be made because the document has to be initialized before a cookie can
+        // be set
         IAmInPage("");
         driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
         IAmInPage("");
@@ -95,8 +93,6 @@ public class ProfileStatsSteps {
         }
     }
 
-
-
     @When("I go to register myself as a(n) {accountRole}")
     public void registerAs(AccountRole accountRole) {
         String role = accountRole.name().toLowerCase();
@@ -124,8 +120,6 @@ public class ProfileStatsSteps {
         driver.findElement(By.linkText(section)).click();
     }
 
-
-
     @Then("my status is {accountState}")
     public void statusIs(AccountState accountState) {
         String state = accountState.name().toLowerCase();
@@ -135,8 +129,10 @@ public class ProfileStatsSteps {
     @Then("the details are the same as the ones in the registration form")
     public void profileDetailsSameAsRegistration() {
         if (currentRole.equals(AccountRole.RIDER)) {
-            assertThat(driver.findElement(By.id("details-email")).getText()).isEqualTo("rider_example@mial.com");
-            assertThat(driver.findElement(By.id("details-citizen-id")).getText()).isEqualTo("9901294");
+            assertThat(driver.findElement(By.id("details-email")).getText())
+                    .isEqualTo("rider_example@mial.com");
+            assertThat(driver.findElement(By.id("details-citizen-id")).getText())
+                    .isEqualTo("9901294");
             assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Diego");
             assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Rider");
         }
@@ -144,16 +140,14 @@ public class ProfileStatsSteps {
 
     @Then("there are {not}statistics")
     public void statisticsOrNot(boolean not) {
-        List<List<WebElement>> statsElements = List.of(
-                driver.findElements(By.id("statistics-section")),
-                driver.findElements(By.id("statistics-deliveries-over-time")),
-                driver.findElements(By.id("statistics-average-time-spent"))
-        );
+        List<List<WebElement>> statsElements =
+                List.of(
+                        driver.findElements(By.id("statistics-section")),
+                        driver.findElements(By.id("statistics-deliveries-over-time")),
+                        driver.findElements(By.id("statistics-average-time-spent")));
         if (not) assertThat(statsElements).allMatch(List::isEmpty);
         else assertThat(statsElements).noneMatch(List::isEmpty);
     }
-
-
 
     @ParameterType("Login|Main")
     public String page(String pageName) {
@@ -180,11 +174,8 @@ public class ProfileStatsSteps {
         return !not.isEmpty();
     }
 
-
-
     private void startOn(String pagePath) {
         driver.get("http://localhost:8080/" + pagePath);
         driver.manage().window().setSize(new Dimension(1916, 1076));
     }
-
 }
