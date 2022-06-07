@@ -25,14 +25,11 @@ public class Complaint {
         this.description = description;
     }
 
-    public Complaint() {
-
-    }
+    public Complaint() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;

@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Register</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
     <link rel="stylesheet" th:href="@{/css/form.css}">
 
 </head>
@@ -19,38 +20,45 @@
                 <div class="signin-content">
                     <div class="signin-form">
                         <h2 class="form-title">Register</h2>
-                        <form method="POST" th:action="@{/auth/register}" th:object="${user}" class="register-form" id="register-form">
+                        <form method="POST" th:action="@{/auth/register}" th:object="${registerRequest}"
+                              class="register-form" id="register-form">
                             <div class="form-group">
                                 <label for="fullName"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" th:field="*{fullName}" name="fullName" id="fullName" placeholder="Your Name"/>
+                                <input type="text" th:field="*{fullName}" name="fullName" id="fullName"
+                                       placeholder="Your Name"/>
                             </div>
                             <div class="form-group">
                                 <label for="username"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" th:field="*{username}" name="username" id="username" placeholder="Username"/>
+                                <input type="text" th:field="*{username}" name="username" id="username"
+                                       placeholder="Username"/>
                             </div>
                             <div class="form-group">
                                 <label for="phoneNumber"><i class="zmdi zmdi-phone-in-talk"></i></label>
-                                <input type="number" th:field="*{phoneNumber}" name="phoneNumber" id="phoneNumber" placeholder="Your phone number"/>
+                                <input type="number" th:field="*{phoneNumber}" name="phoneNumber" id="phoneNumber"
+                                       placeholder="Your phone number"/>
                             </div>
                             <div class="form-group">
                                 <label for="email"><i class="zmdi zmdi-email"></i></label>
-                                <input type="email" th:field="*{email}" name="email" id="email" placeholder="Your Email"/>
+                                <input type="email" th:field="*{email}" name="email" id="email"
+                                       placeholder="Your Email"/>
                             </div>
                             <div class="form-group">
                                 <label for="password"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
+                                <input type="password" th:field="*{password}" name="password" id="password"
+                                       placeholder="Password"/>
                             </div>
 
                             <div class="form-group form-button">
-                                <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
+                                <input type="submit" name="register" id="register" class="form-submit"
+                                       value="Register"/>
                             </div>
                         </form>
                     </div>
                     <div class="signin-image" style="margin-top: 150px !important;">
                         <figure><img th:src="@{/images/logo.png}" alt="sing up image"></figure>
                         <a th:href="@{login}" class="signup-image-link">I am already member</a>
+                    </div>
                 </div>
-            </div>
         </section>
 
     </div>

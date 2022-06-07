@@ -1,7 +1,7 @@
 package tqs.project.laundryplatform.model;
 
-import javax.persistence.*;
 import java.util.Set;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Laundry")
@@ -24,14 +24,11 @@ public class Laundry {
         this.location = location;
     }
 
-    public Laundry(){
-
-    }
+    public Laundry() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;

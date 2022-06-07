@@ -1,8 +1,8 @@
 package tqs.project.laundryplatform.model;
 
-import javax.persistence.*;
 import java.sql.Date;
 import java.util.Set;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Orders")
@@ -39,21 +39,23 @@ public class Order {
     @OneToOne(mappedBy = "order")
     Complaint complaint;
 
-
     public Order(Date date, boolean isCompleted, String deliveryLocation) {
         this.date = date;
         this.isCompleted = isCompleted;
         this.deliveryLocation = deliveryLocation;
     }
 
-    public Order() {
-
+    public Order(OrderType orderType, User user, Laundry laundry) {
+        this.orderType = orderType;
+        this.user = user;
+        this.laundry = laundry;
     }
+
+    public Order() {}
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public Long getId() {
         return id;
