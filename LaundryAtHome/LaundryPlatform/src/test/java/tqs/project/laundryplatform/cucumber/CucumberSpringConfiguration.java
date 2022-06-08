@@ -7,4 +7,3 @@ import org.springframework.test.context.TestPropertySource;
 @CucumberContextConfiguration
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class CucumberSpringConfiguration {}
-

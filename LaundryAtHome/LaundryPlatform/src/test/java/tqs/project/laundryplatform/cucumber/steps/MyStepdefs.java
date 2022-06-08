@@ -4,7 +4,6 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -43,38 +42,32 @@ public class MyStepdefs {
 
     @Then("I should see the index page")
     public void iShouldSeeTheIndexPage() {
-        assertThat(driver.findElement(By.cssSelector(".active .text-uppercase")).getText(), is("Laundry & Dry Cleaning"));
+        assertThat(
+                driver.findElement(By.cssSelector(".active .text-uppercase")).getText(),
+                is("Laundry & Dry Cleaning"));
     }
 
     @And("I click the {string} option")
-    public void iClickTheOption(String arg0) {
-    }
+    public void iClickTheOption(String arg0) {}
 
     @Then("I select the {string} for the type")
-    public void iSelectTheForTheType(String arg0) {
-    }
+    public void iSelectTheForTheType(String arg0) {}
 
     @And("I select the {string} for the color")
-    public void iSelectTheForTheColor(String arg0) {
-    }
+    public void iSelectTheForTheColor(String arg0) {}
 
     @And("I select {string} as the number")
-    public void iSelectAsTheNumber(String arg0) {
-    }
+    public void iSelectAsTheNumber(String arg0) {}
 
     @Then("I click the {string} button")
-    public void iClickTheButton(String arg0) {
-    }
+    public void iClickTheButton(String arg0) {}
 
     @Then("I should see the {string} in the table")
-    public void iShouldSeeTheInTheTable(String arg0) {
-    }
+    public void iShouldSeeTheInTheTable(String arg0) {}
 
     @And("I should see {string} in the table")
-    public void iShouldSeeInTheTable(String arg0) {
-    }
+    public void iShouldSeeInTheTable(String arg0) {}
 
     @Then("I select the {string} for the typeCucum")
-    public void iSelectTheForTheTypeCucum(String arg0) {
-    }
+    public void iSelectTheForTheTypeCucum(String arg0) {}
 }
