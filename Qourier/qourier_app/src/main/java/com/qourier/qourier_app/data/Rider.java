@@ -3,10 +3,12 @@ package com.qourier.qourier_app.data;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name = "rider")
 public class Rider {
 

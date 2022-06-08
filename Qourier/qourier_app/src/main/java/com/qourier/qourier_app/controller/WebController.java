@@ -11,6 +11,9 @@ import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
+import com.qourier.qourier_app.data.dto.AccountDTO;
+import com.qourier.qourier_app.data.dto.CustomerDTO;
+import com.qourier.qourier_app.data.dto.RiderDTO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -208,6 +211,39 @@ public class WebController {
     public String registerCustomerGet(Model model, HttpServletRequest request) {
         model.addAttribute("customerRegisterRequest", new CustomerRegisterRequest());
         return "register_customer";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, HttpServletRequest request) {
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, ADMIN)
+                && !verifyCookie(request, CUSTOMER)
+                && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
+
+        String email = getIdFromCookie(request);
+        AccountDTO account;
+        String view;
+
+        AccountRole cookieRole = getRoleFromCookie(request);
+        if (cookieRole == RIDER) {
+            RiderDTO riderProfile = accountManager.getRiderAccount(email);
+            model.addAttribute("rider", riderProfile);
+            view = "profile_rider";
+            account = riderProfile.getAccount();
+        } else if (cookieRole == CUSTOMER) {
+            CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
+            model.addAttribute("customer", customerProfile);
+            view = "profile_customer";
+            account = customerProfile.getAccount();
+        } else return REDIRECT_INDEX;
+
+        model.addAttribute("role", getRoleFromCookie(request));
+        model.addAttribute(
+                "accepted",
+                account.getState().equals(AccountState.ACTIVE)
+                        || account.getState().equals(AccountState.SUSPENDED));
+        return view;
     }
 
     @Bean
