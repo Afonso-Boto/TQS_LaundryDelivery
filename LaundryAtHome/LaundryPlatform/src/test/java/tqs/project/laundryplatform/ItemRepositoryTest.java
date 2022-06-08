@@ -1,6 +1,5 @@
 package tqs.project.laundryplatform;
 
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +27,7 @@ public class ItemRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired
-    private ItemRepository repository;
+    @Autowired private ItemRepository repository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -48,6 +46,4 @@ public class ItemRepositoryTest {
     public void tearDown() {
         repository.deleteAll();
     }
-
-
 }
