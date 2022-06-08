@@ -2,6 +2,7 @@ package com.qourier.qourier_app.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qourier.qourier_app.bids.DeliveriesManager;
+import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
@@ -152,7 +153,7 @@ public class ApiControllerTest {
     }
 
     @Test
-    @DisplayName("Obtain progress for delivery")
+    @DisplayName("Update progress for delivery")
     void whenUpdatingProgress_thenProgressShouldUpdate() throws Exception {
         // Update progress
         mvc.perform(
@@ -161,5 +162,25 @@ public class ApiControllerTest {
                 .andReturn();
 
         verify(deliveriesManager, times(1)).setDeliveryState(1L, "rider@email.com");
+    }
+
+    @Test
+    @DisplayName("Create bid for delivery")
+    void whenCreatingBid_thenProgressShouldUpdate() throws Exception {
+        // Create Bid
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json =
+                objectMapper.writeValueAsString(
+                        new Bid("rider@email.com", 1L, null));
+        System.out.println(json);
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/deliveries/bid")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isCreated())
+                        .andReturn();
+
+        verify(deliveriesManager, times(1)).createBid(any());
     }
 }

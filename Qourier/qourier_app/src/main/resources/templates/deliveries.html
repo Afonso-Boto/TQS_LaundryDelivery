@@ -53,7 +53,7 @@
                                         <td th:text="${delivery.originAddr}"></td>
                                         <td th:text="${delivery.deliveryAddr}"></td>
                                         <td>
-                                            <button id="btn-delivery-4" th:id="'btn-delivery-' ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                            <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
                                                 <i class="fa fa-duotone fa-check"></i>
                                             </button>
                                         </td>
@@ -87,7 +87,7 @@
                 <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal" onclick="bidDelivery()">Confirm</button>
             </div>
 
-            <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/deliveries/bid}" />
+            <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/api/v1/deliveries/bid}" />
             <input id="modal-attrs-delivery" type="hidden" value="4" />
         </div>
         </div>
@@ -108,9 +108,16 @@
 
         $('#modal-btn-confirm').click(function (event) {
             let url = $('#modal-attrs-url').val();
-            $.post(url, {
-                ridersId: $('#rider-id').val(),
-                deliveryId: $('#modal-attrs-delivery').val()
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({
+                    ridersId: $('#rider-id').val(),
+                    deliveryId: $('#modal-attrs-delivery').val(),
+                    distance: null
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
             });
         });
 

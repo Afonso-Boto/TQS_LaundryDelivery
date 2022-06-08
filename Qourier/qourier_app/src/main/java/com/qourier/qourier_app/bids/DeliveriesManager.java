@@ -60,6 +60,11 @@ public class DeliveriesManager {
                                                     .stream()
                                                     .map(Bid::getRidersId)
                                                     .toList());
+
+                                    // Set delivery status
+                                    delivery.setRiderId(winnerId);
+                                    delivery.setDeliveryState(FETCHING);
+                                    deliveryRepository.save(delivery);
                                 } else {
                                     deliveryRepository.delete(delivery);
                                 }
@@ -121,5 +126,9 @@ public class DeliveriesManager {
 
     public List<Delivery> getDeliveriesFromCustomer(String customerId) {
         return deliveryRepository.findByCustomerId(customerId);
+    }
+
+    public void deleteAll() {
+        deliveryRepository.deleteAll(deliveryRepository.findAll());
     }
 }
