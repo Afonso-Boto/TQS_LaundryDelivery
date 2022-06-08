@@ -104,8 +104,7 @@ public class ProfileStatsSteps {
             if (not) sampleRider.getAccount().setState(AccountState.ACTIVE);
             else sampleRider.getAccount().setState(AccountState.SUSPENDED);
             riderRepository.save(sampleRider);
-        }
-        else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
             if (not) sampleCustomer.getAccount().setState(AccountState.ACTIVE);
             else sampleCustomer.getAccount().setState(AccountState.SUSPENDED);
             customerRepository.save(sampleCustomer);
@@ -126,8 +125,7 @@ public class ProfileStatsSteps {
             driver.findElement(By.id("password")).sendKeys("secret");
             driver.findElement(By.id("name")).sendKeys("Diegos");
             driver.findElement(By.id("citizen_id")).sendKeys("9901294");
-        }
-        else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
             driver.findElement(By.id("email")).sendKeys("customer_example@mial.com");
             driver.findElement(By.id("password")).sendKeys("the_password");
             driver.findElement(By.id("name")).sendKeys("Christina Laundry");
@@ -160,13 +158,13 @@ public class ProfileStatsSteps {
                     .isEqualTo("9901294");
             assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Diegos");
             assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Rider");
-        }
-        else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
             assertThat(driver.findElement(By.id("details-email")).getText())
                     .isEqualTo("customer_example@mial.com");
             assertThat(driver.findElement(By.id("details-service-type")).getText())
                     .isEqualTo("Laundry");
-            assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Christina Laundry");
+            assertThat(driver.findElement(By.id("details-name")).getText())
+                    .isEqualTo("Christina Laundry");
             assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Customer");
         }
     }

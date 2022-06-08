@@ -225,8 +225,7 @@ public class WebController {
             model.addAttribute("customer", customerProfile);
             view = "profile_customer";
             account = customerProfile.getAccount();
-        } else
-            return REDIRECT_INDEX;
+        } else return REDIRECT_INDEX;
 
         model.addAttribute("role", getRoleFromCookie(request));
         model.addAttribute(
