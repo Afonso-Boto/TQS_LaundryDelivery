@@ -1,9 +1,7 @@
 package tqs.project.laundryplatform.service;
 
 import java.util.List;
-
 import org.json.JSONObject;
-import org.springframework.stereotype.Service;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.model.OrderType;
