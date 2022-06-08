@@ -1,4 +1,4 @@
-package com.qourier.qourier_app.cucumber;
+package com.qourier.qourier_app.cucumber.steps;
 
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.Account;
@@ -8,7 +8,6 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -21,10 +20,10 @@ import java.util.Optional;
 
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
+import static com.qourier.qourier_app.cucumber.steps.WebDriverHolder.driver;
 
 public class AdminManageSteps {
 
-    private final WebDriver driver = new HtmlUnitDriver(true);
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -39,6 +38,8 @@ public class AdminManageSteps {
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
+
+        driver = new HtmlUnitDriver(true);
     }
 
     @Given("the following accounts exist:")
@@ -110,11 +111,6 @@ public class AdminManageSteps {
         toggleButton.click();
     }
 
-    @When("I go to the {section} section")
-    public void goToSection(String section) {
-        driver.findElement(By.linkText(section)).click();
-    }
-
 
 
     @Then("the status of {string} is {accountsFilterType}")
@@ -135,27 +131,5 @@ public class AdminManageSteps {
             assertThat(toggleButton.getText()).startsWith("Activate");
         else
             assertThat(toggleButton.getText()).startsWith("Suspend");
-    }
-
-
-
-    @ParameterType("\\w+")
-    public String section(String section) {
-        return section;
-    }
-
-    @ParameterType("not |")
-    public boolean not(String not) {
-        return !not.isEmpty();
-    }
-
-    @ParameterType("active|suspended")
-    public AccountState accountsFilterType(String stateStr) {
-        return AccountState.valueOf(stateStr.toUpperCase());
-    }
-
-    @ParameterType("activate|suspend")
-    public String accountAction(String action) {
-        return action;
     }
 }
