@@ -163,8 +163,7 @@ public class WebController {
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
 
         // Add Deliveries
-        List<Delivery> deliveryList = deliveriesManager.getToDoDeliveries();
-        model.addAttribute("");
+        model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());
         return "deliveries";
     }
 

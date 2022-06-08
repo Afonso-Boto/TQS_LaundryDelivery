@@ -4,10 +4,8 @@ import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
-import com.qourier.qourier_app.data.Rider;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
-import com.qourier.qourier_app.repository.RiderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -31,7 +29,7 @@ public class DeliveriesManager {
         this.bidsRepository = bidsrepository;
         this.deliveryRepository = deliveryRepository;
         this.accountManager = accountManager;
-        this.AuctionSpan = 2000;
+        this.AuctionSpan = 600000;
     }
 
     public void bidOnDelivery() {}
@@ -40,7 +38,6 @@ public class DeliveriesManager {
         deliveryRepository.save(newDelivery);
 
         createAuction(newDelivery);
-        System.out.println("Run on func call");
         newDelivery.setDeliveryState(DeliveryState.DELIVERED);
 
         return newDelivery;

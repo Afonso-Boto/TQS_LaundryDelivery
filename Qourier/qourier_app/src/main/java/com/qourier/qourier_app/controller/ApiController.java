@@ -34,7 +34,6 @@ public class ApiController {
     @PostMapping("/deliveries")
     public ResponseEntity<Delivery> deliveriesPost(@RequestBody Delivery newDelivery){
         Delivery delivery = deliveriesManager.createDelivery(newDelivery);
-        //bidManager.
         return new ResponseEntity<>(delivery, HttpStatus.CREATED);
     }
 
