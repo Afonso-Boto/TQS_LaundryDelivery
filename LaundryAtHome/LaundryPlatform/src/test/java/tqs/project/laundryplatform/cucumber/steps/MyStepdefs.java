@@ -31,7 +31,7 @@ public class MyStepdefs {
 
     @When("I navigate to {string}")
     public void iNavigateTo(String arg0) {
-        driver = WebDriverManager.chromiumdriver().create();
+        driver = new HtmlUnitDriver(true);
         driver.get(arg0);
         driver.manage().window().setSize(new Dimension(1512, 886));
     }
