@@ -1,18 +1,16 @@
 package tqs.project.laundryplatform.controller;
 
+import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
+import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
+
+import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import tqs.project.laundryplatform.service.OrderService;
-
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.*;
-
-import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
-import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
 
 @Controller
 @RequestMapping("/order")
