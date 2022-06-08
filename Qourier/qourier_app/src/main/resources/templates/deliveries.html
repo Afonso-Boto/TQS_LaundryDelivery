@@ -30,10 +30,10 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div id="non-permitted-content" th:unless="${permitted}">
+                <div id="non-permitted-content" th:unless="${!permitted}">
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
-                <div id="permitted-content" th:if="${permitted}" class="container">
+                <div id="permitted-content" th:if="${!permitted}" class="container">
                     <h2>Deliveries to be processed</h2>
                     <p>Progress for each delivery:</p> 
                     <div class="row">
@@ -42,41 +42,13 @@
                                 <thead class="thead-dark">
                                   <tr>
                                     <th scope="col">Id</th>
-                                    <th scope="col">Region</th>
+                                    <th scope="col">Location</th>
                                     <th scope="col">Interested</th>
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr>
-                                    <th scope="row">1</th>
-                                    <td>Zona Baixa</td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            <i class="fa fa-duotone fa-check"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">2</th>
-                                    <td>Relva de Cima</td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            <i class="fa fa-duotone fa-check"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">3</th>
-                                    <td>Pedreiras</td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            <i class="fa fa-duotone fa-check"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">4</th>
-                                    <td>Peixada de baixo</td>
+                                  <tr th:each="delivery : ${deliveries}">
+                                    <td>th:text="${delivery.deliveryAddr}</td>
                                     <td>
                                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
                                             <i class="fa fa-duotone fa-check"></i>

@@ -8,11 +8,15 @@ import com.qourier.qourier_app.account.login.LoginResult;
 import com.qourier.qourier_app.account.register.AdminRegisterRequest;
 import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
+import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.qourier.qourier_app.data.Delivery;
+import com.qourier.qourier_app.data.DeliveryState;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Log
 @Controller
@@ -38,10 +44,12 @@ public class WebController {
     private String adminPass;
 
     private final AccountManager accountManager;
+    private final DeliveriesManager deliveriesManager;
 
     @Autowired
-    public WebController(AccountManager accountManager) {
+    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager) {
         this.accountManager = accountManager;
+        this.deliveriesManager = deliveriesManager;
     }
 
     @PostMapping("/login")
@@ -153,6 +161,10 @@ public class WebController {
         }
         model.addAttribute("role", role);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+
+        // Add Deliveries
+        List<Delivery> deliveryList = deliveriesManager.getToDoDeliveries();
+        model.addAttribute("");
         return "deliveries";
     }
 
