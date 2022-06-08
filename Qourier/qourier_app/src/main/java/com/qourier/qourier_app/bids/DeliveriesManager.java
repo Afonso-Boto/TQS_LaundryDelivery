@@ -32,8 +32,6 @@ public class DeliveriesManager {
         this.AuctionSpan = 600000;
     }
 
-    public void bidOnDelivery() {}
-
     public Delivery createDelivery(Delivery newDelivery) {
         deliveryRepository.save(newDelivery);
 
@@ -72,7 +70,7 @@ public class DeliveriesManager {
     }
 
     public Bid createBid(Bid bid) {
-        if (bid.getDistance() == null) bid.setDistance(Double.POSITIVE_INFINITY);
+        if (bid.getDistance() == null) bid.setDistance(Double.MAX_VALUE);
         return bidsRepository.save(bid);
     }
 

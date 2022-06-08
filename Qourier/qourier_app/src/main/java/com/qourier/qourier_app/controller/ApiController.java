@@ -1,6 +1,7 @@
 package com.qourier.qourier_app.controller;
 
 import com.qourier.qourier_app.bids.DeliveriesManager;
+import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,11 @@ public class ApiController {
                 case DELIVERED -> delivery.setDeliveryState(BID_CHECK);
             }
         }
+    }
+
+    @PostMapping("/deliveries/bid")
+    public ResponseEntity<Bid> deliveriesBidPost(@RequestBody Bid newBid){
+        Bid bid = deliveriesManager.createBid(newBid);
+        return new ResponseEntity<>(bid, HttpStatus.CREATED);
     }
 }
