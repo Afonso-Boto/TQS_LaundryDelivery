@@ -49,7 +49,7 @@ public class MyStepdefs {
     public void iShouldSeeTheIndexPage() {
         assertThat(
                 driver.findElement(By.cssSelector(".active .text-uppercase")).getText(),
-                CoreMatchers.is("LAUNDRY & DRY CLEANING"));
+                CoreMatchers.is("Laundry & Dry Cleaning"));
     }
 
     @And("I click the {string} option")
