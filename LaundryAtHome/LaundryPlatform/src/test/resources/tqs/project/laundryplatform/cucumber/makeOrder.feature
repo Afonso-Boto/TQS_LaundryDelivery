@@ -1,7 +1,7 @@
 Feature: Make order from customer
 
   Scenario: Make Order
-    When I navigate to "http://localhost:81/service"
+    When I navigate to "http://localhost:8080/service"
     And I click the "Wash" option
     Then I select the "Camisa" for the type
     And I select the "Escuras" for the color

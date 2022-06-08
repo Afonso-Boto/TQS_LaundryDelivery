@@ -4,20 +4,34 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import tqs.project.laundryplatform.model.User;
+import tqs.project.laundryplatform.repository.UserRepository;
+
+import java.util.List;
+import java.util.Map;
 
 public class MyStepdefs {
 
     private static WebDriver driver;
+    private final UserRepository userRepository;
+
+    public MyStepdefs(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @When("I navigate to {string}")
     public void iNavigateTo(String arg0) {
-        driver = new HtmlUnitDriver(true);
+        driver = WebDriverManager.chromiumdriver().create();
         driver.get(arg0);
         driver.manage().window().setSize(new Dimension(1512, 886));
     }
@@ -43,7 +57,7 @@ public class MyStepdefs {
     public void iShouldSeeTheIndexPage() {
         assertThat(
                 driver.findElement(By.cssSelector(".active .text-uppercase")).getText(),
-                is("Laundry & Dry Cleaning"));
+                CoreMatchers.is("LAUNDRY & DRY CLEANING"));
     }
 
     @And("I click the {string} option")
@@ -69,4 +83,27 @@ public class MyStepdefs {
 
     @Then("I select the {string} for the typeCucum")
     public void iSelectTheForTheTypeCucum(String arg0) {}
+
+    @And("I set the your name as {string}")
+    public void iSetTheYourNameAs(String arg0) {
+        driver.findElement(By.id("fullName")).click();
+        driver.findElement(By.id("fullName")).sendKeys(arg0);
+    }
+
+    @And("I set the phone number as {string}")
+    public void iSetThePhoneNumberAs(String arg0) {
+        driver.findElement(By.id("phoneNumber")).click();
+        driver.findElement(By.id("phoneNumber")).sendKeys(arg0);
+    }
+
+    @And("I set the email as {string}")
+    public void iSetTheEmailAs(String arg0) {
+        driver.findElement(By.id("email")).click();
+        driver.findElement(By.id("email")).sendKeys(arg0);
+    }
+
+    @And("I click the register button")
+    public void iClickTheRegisterButton() {
+        driver.findElement(By.id("register")).click();
+    }
 }
