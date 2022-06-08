@@ -1,4 +1,4 @@
-package com.qourier.qourier_app.cucumber;
+package com.qourier.qourier_app.cucumber.steps;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
