@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2 id="details-name">Diego</h2>
+                <h2 id="details-name" th:text="${rider.account.name}">Diego</h2>
                 <h4><i id="account-type">Rider</i></h4>
 
                 <p>State: <span id="details-state" th:text="${rider.account.state.name().toLowerCase()}">suspended</span></p>

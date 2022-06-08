@@ -11,6 +11,7 @@ import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.dto.AccountDTO;
+import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -209,16 +210,22 @@ public class WebController {
                 && !verifyCookie(request, CUSTOMER)
                 && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
-        if (getRoleFromCookie(request) != RIDER) return REDIRECT_INDEX;
-
         String email = getIdFromCookie(request);
         AccountDTO account;
         String view;
 
-        RiderDTO riderProfile = accountManager.getRiderAccount(email);
-        model.addAttribute("rider", riderProfile);
-        view = "profile_rider";
-        account = riderProfile.getAccount();
+        AccountRole cookieRole = getRoleFromCookie(request);
+        if (cookieRole == RIDER) {
+            RiderDTO riderProfile = accountManager.getRiderAccount(email);
+            model.addAttribute("rider", riderProfile);
+            view = "profile_rider";
+            account = riderProfile.getAccount();
+        } else if (cookieRole == CUSTOMER) {
+            CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
+            model.addAttribute("customer", customerProfile);
+            view = "profile_customer";
+            account = customerProfile.getAccount();
+        } else return REDIRECT_INDEX;
 
         model.addAttribute("role", getRoleFromCookie(request));
         model.addAttribute(

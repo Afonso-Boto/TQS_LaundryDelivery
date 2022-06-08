@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2 id="details-name">Cristina Laundry</h2>
+                <h2 id="details-name" th:text="${customer.account.name}">Cristina Laundry</h2>
                 <h4><i id="account-type">Customer</i></h4>
 
                 <h3>Details</h3>
@@ -26,12 +26,10 @@
             <div class="col-12">
                 <h3>Statistics</h3>
 
-                <!-- TODO grafana -->
-                <h5>Rate of delivery requests</h5>
+                <h5 id="statistics-delivery-request-rate">Rate of delivery requests</h5>
                 <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for request rate" />
 
-                <!-- TODO grafana -->
-                <h5>Average time until delivery</h5>
+                <h5 id="statistics-delivery-average-time">Average time until delivery</h5>
                 <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for time until delivery" />
             </div>
         </div>
