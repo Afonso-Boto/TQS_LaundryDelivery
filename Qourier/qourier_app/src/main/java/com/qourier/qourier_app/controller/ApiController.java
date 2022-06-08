@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.qourier.qourier_app.data.DeliveryState.*;
-
 @RestController
 @RequestMapping("/api/v1/")
 public class ApiController {
@@ -46,19 +44,14 @@ public class ApiController {
 
 
     @PostMapping("/deliveries/progress")
-    public void deliveryProgressPost(@RequestBody String delivery_id, @RequestBody String rider_id){
-        Delivery delivery = deliveriesManager.getDelivery(Long.valueOf(delivery_id));
-        DeliveryState previousState = delivery.getDeliveryState();
+    public HttpStatus deliveryProgressPost(@RequestParam List<String> data){
+        // Get data from params
+        String delivery_id = data.get(0);
+        String rider_id = data.get(1);
 
-        // Iterate states if rider id is right
-        if( delivery.getRiderId().equals(rider_id)){
-            switch (previousState) {
-                case BID_CHECK -> delivery.setDeliveryState(FETCHING);
-                case FETCHING -> delivery.setDeliveryState(SHIPPED);
-                case SHIPPED -> delivery.setDeliveryState(DELIVERED);
-                case DELIVERED -> delivery.setDeliveryState(BID_CHECK);
-            }
-        }
+        deliveriesManager.setDeliveryState(Long.valueOf(delivery_id), rider_id);
+
+        return HttpStatus.OK;
     }
 
     @PostMapping("/deliveries/bid")

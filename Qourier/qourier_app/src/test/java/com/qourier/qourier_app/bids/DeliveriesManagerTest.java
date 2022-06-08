@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Objects;
+
+import static com.qourier.qourier_app.data.DeliveryState.BID_CHECK;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
@@ -33,12 +36,6 @@ public class DeliveriesManagerTest {
                         "test0@email.com", 99.99, 99.99, "test address", "test origin address");
 
         deliveryManager.createDelivery(delivery);
-
-        try {
-            SECONDS.sleep(3);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
 
         // Wait until auction is finished
         await().atMost(AuctionSpan + 1, SECONDS)
@@ -112,7 +109,7 @@ public class DeliveriesManagerTest {
     }
 
     @Test
-    void whenMultipleRiderBid_RiderWhoHasDistanceWins() {
+    void whenMultipleRiderBid_RiderWhoHasLeastDistanceWins() {
         // Deliveries
         Delivery delivery =
                 new Delivery(
@@ -144,5 +141,47 @@ public class DeliveriesManagerTest {
                                                         .getRiderAccount(riderRequest0.getEmail())
                                                         .getCurrentDelivery())
                                         .isEqualTo(delivery.getDeliveryId()));
+    }
+
+    @Test
+    void whenGettingDeliveryState_ReturnsState() {
+        // Deliveries
+        Delivery delivery =
+                new Delivery(
+                        "test0@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryManager.createDelivery(delivery);
+        // Wait until auction is finished
+        await().atMost(AuctionSpan + 1, SECONDS)
+                .untilAsserted(
+                        () ->
+                                assertThat(deliveryManager.getDeliveryState(1L))
+                                        .isEqualTo(BID_CHECK));
+    }
+
+    @Test
+    void whenGetOngoingDeliveries_ReturnsOngoingDeliveries() {
+        // Deliveries
+        Delivery deliveryDone =
+                new Delivery(
+                        "test98@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryDone.setDeliveryState(DeliveryState.DELIVERED);
+        deliveryManager.createDelivery(deliveryDone);
+
+        Delivery deliveryToDo =
+                new Delivery(
+                        "test99@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryManager.createDelivery(deliveryToDo);
+
+        // Wait until auction is finished
+        assertThat(
+                        deliveryManager.getToDoDeliveries().stream()
+                                .filter(
+                                        delivery ->
+                                                Objects.equals(
+                                                        delivery.getCustomerId(),
+                                                        deliveryToDo.getCustomerId()))
+                                .toList()
+                                .size())
+                .isEqualTo(1);
     }
 }

@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.qourier.qourier_app.data.DeliveryState.*;
+import static com.qourier.qourier_app.data.DeliveryState.BID_CHECK;
+
 @Service
 public class DeliveriesManager {
     private final BidsRepository bidsRepository;
@@ -76,6 +79,24 @@ public class DeliveriesManager {
 
     public DeliveryState getDeliveryState(Long deliveryId) {
         return deliveryRepository.findByDeliveryId(deliveryId).getDeliveryState();
+    }
+
+    public DeliveryState setDeliveryState(Long deliveryId, String riderId) {
+        DeliveryState previousState = deliveryRepository.findByDeliveryId(deliveryId).getDeliveryState();
+        Delivery delivery = deliveryRepository.findByDeliveryId(deliveryId);
+
+        // Iterate states if rider id is right
+        if(delivery.getRiderId().equals(riderId)){
+            switch (previousState) {
+                case BID_CHECK -> delivery.setDeliveryState(FETCHING);
+                case FETCHING -> delivery.setDeliveryState(SHIPPED);
+                case SHIPPED -> delivery.setDeliveryState(DELIVERED);
+                case DELIVERED -> delivery.setDeliveryState(BID_CHECK);
+            }
+        }
+        deliveryRepository.save(delivery);
+
+        return delivery.getDeliveryState();
     }
 
     public String getBidderWinner(Long deliveryId) {

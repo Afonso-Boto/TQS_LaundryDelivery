@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,8 +22,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static com.qourier.qourier_app.data.DeliveryState.FETCHING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -83,6 +86,8 @@ public class ApiControllerTest {
         when(deliveriesManager.getAllDeliveries()).thenReturn(deliveryList);
         when(deliveriesManager.getDeliveriesFromCustomer("test0@email.com"))
                 .thenReturn(filteredDeliveryList);
+        when(deliveriesManager.getDeliveryState(any())).thenReturn(deliveryList.get(0).getDeliveryState());
+
     }
 
     @Test
@@ -131,5 +136,30 @@ public class ApiControllerTest {
                                         .content(json))
                         .andExpect(status().isCreated())
                         .andReturn();
+    }
+
+    @Test
+    @DisplayName("Obtain progress for delivery")
+    void whenGetProgress_thenReturnProgress() throws Exception {
+        MvcResult result =
+                mvc.perform(get("/api/v1/deliveries/progress/0"))
+                        .andExpect(status().isOk())
+                        .andReturn();
+
+        String resultDeliveriesString = result.getResponse().getContentAsString();
+        String expectedDeliveries = "\"BID_CHECK\"";
+        assertEquals(expectedDeliveries, resultDeliveriesString);
+    }
+
+    @Test
+    @DisplayName("Obtain progress for delivery")
+    void whenUpdatingProgress_thenProgressShouldUpdate() throws Exception {
+        // Update progress
+        mvc.perform(
+                        post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        verify(deliveriesManager, times(1)).setDeliveryState(1L, "rider@email.com");
     }
 }

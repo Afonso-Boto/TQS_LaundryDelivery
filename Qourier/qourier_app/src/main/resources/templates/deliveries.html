@@ -30,10 +30,10 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <div id="non-permitted-content" th:unless="${!permitted}">
+                <div id="non-permitted-content" th:unless="${permitted}">
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
-                <div id="permitted-content" th:if="${!permitted}" class="container">
+                <div id="permitted-content" th:if="${permitted}" class="container">
                     <h2>Deliveries to be processed</h2>
                     <p>Progress for each delivery:</p> 
                     <div class="row">

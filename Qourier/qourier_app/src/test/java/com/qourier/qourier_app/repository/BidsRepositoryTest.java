@@ -1,7 +1,6 @@
 package com.qourier.qourier_app.repository;
 
 import com.qourier.qourier_app.data.Bid;
-import com.qourier.qourier_app.data.Delivery;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
