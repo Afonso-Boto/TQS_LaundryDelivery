@@ -1,13 +1,11 @@
 package com.qourier.qourier_app.cucumber.steps;
 
 import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.qourier.qourier_app.controller.WebController;
-import com.qourier.qourier_app.data.Account;
-import com.qourier.qourier_app.data.AccountRole;
-import com.qourier.qourier_app.data.AccountState;
-import com.qourier.qourier_app.data.Rider;
+import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
@@ -16,6 +14,9 @@ import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -28,6 +29,7 @@ public class ProfileStatsSteps {
     private final AdminRepository adminRepository;
     private final AccountRepository accountRepository;
     private final Rider sampleRider;
+    private final Customer sampleCustomer;
 
     public ProfileStatsSteps(
             RiderRepository riderRepository,
@@ -40,6 +42,7 @@ public class ProfileStatsSteps {
         this.accountRepository = accountRepository;
 
         sampleRider = createSampleRider("riderino@gmail.com");
+        sampleCustomer = createSampleCustomer("customerino@gmail.com");
     }
 
     private AccountRole currentRole;
@@ -54,10 +57,16 @@ public class ProfileStatsSteps {
         Account account;
         if (accountRole.equals(AccountRole.RIDER)) {
             account = sampleRider.getAccount();
-            currentRole = AccountRole.RIDER;
+            currentRole = account.getRole();
             if (riderRepository.existsById(account.getEmail()))
                 riderRepository.deleteById(account.getEmail());
             riderRepository.save(sampleRider);
+        } else if (accountRole.equals(AccountRole.CUSTOMER)) {
+            account = sampleCustomer.getAccount();
+            currentRole = account.getRole();
+            if (customerRepository.existsById(account.getEmail()))
+                customerRepository.deleteById(account.getEmail());
+            customerRepository.save(sampleCustomer);
         } else return;
 
         // Two calls have to be made because the document has to be initialized before a cookie can
@@ -72,6 +81,9 @@ public class ProfileStatsSteps {
         if (currentRole.equals(AccountRole.RIDER)) {
             sampleRider.getAccount().setState(AccountState.REFUSED);
             riderRepository.save(sampleRider);
+        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+            sampleCustomer.getAccount().setState(AccountState.REFUSED);
+            customerRepository.save(sampleCustomer);
         }
     }
 
@@ -80,6 +92,9 @@ public class ProfileStatsSteps {
         if (currentRole.equals(AccountRole.RIDER)) {
             sampleRider.getAccount().setState(AccountState.ACTIVE);
             riderRepository.save(sampleRider);
+        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+            sampleCustomer.getAccount().setState(AccountState.ACTIVE);
+            customerRepository.save(sampleCustomer);
         }
     }
 
@@ -89,6 +104,11 @@ public class ProfileStatsSteps {
             if (not) sampleRider.getAccount().setState(AccountState.ACTIVE);
             else sampleRider.getAccount().setState(AccountState.SUSPENDED);
             riderRepository.save(sampleRider);
+        }
+        else if (currentRole.equals(AccountRole.CUSTOMER)) {
+            if (not) sampleCustomer.getAccount().setState(AccountState.ACTIVE);
+            else sampleCustomer.getAccount().setState(AccountState.SUSPENDED);
+            customerRepository.save(sampleCustomer);
         }
     }
 
@@ -106,6 +126,12 @@ public class ProfileStatsSteps {
             driver.findElement(By.id("password")).sendKeys("secret");
             driver.findElement(By.id("name")).sendKeys("Diegos");
             driver.findElement(By.id("citizen_id")).sendKeys("9901294");
+        }
+        else if (currentRole.equals(AccountRole.CUSTOMER)) {
+            driver.findElement(By.id("email")).sendKeys("customer_example@mial.com");
+            driver.findElement(By.id("password")).sendKeys("the_password");
+            driver.findElement(By.id("name")).sendKeys("Christina Laundry");
+            driver.findElement(By.id("service_type")).sendKeys("Laundry");
         }
     }
 
@@ -132,18 +158,32 @@ public class ProfileStatsSteps {
                     .isEqualTo("rider_example@mial.com");
             assertThat(driver.findElement(By.id("details-citizen-id")).getText())
                     .isEqualTo("9901294");
-            assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Diego");
+            assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Diegos");
             assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Rider");
+        }
+        else if (currentRole.equals(AccountRole.CUSTOMER)) {
+            assertThat(driver.findElement(By.id("details-email")).getText())
+                    .isEqualTo("customer_example@mial.com");
+            assertThat(driver.findElement(By.id("details-service-type")).getText())
+                    .isEqualTo("Laundry");
+            assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Christina Laundry");
+            assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Customer");
         }
     }
 
     @Then("there are {not}statistics")
     public void statisticsOrNot(boolean not) {
-        List<List<WebElement>> statsElements =
-                List.of(
-                        driver.findElements(By.id("statistics-section")),
-                        driver.findElements(By.id("statistics-deliveries-over-time")),
-                        driver.findElements(By.id("statistics-average-time-spent")));
+        List<List<WebElement>> statsElements = new ArrayList<>();
+
+        statsElements.add(driver.findElements(By.id("statistics-section")));
+        if (currentRole == AccountRole.RIDER) {
+            statsElements.add(driver.findElements(By.id("statistics-deliveries-over-time")));
+            statsElements.add(driver.findElements(By.id("statistics-average-time-spent")));
+        } else if (currentRole == AccountRole.CUSTOMER) {
+            statsElements.add(driver.findElements(By.id("statistics-delivery-request-rate")));
+            statsElements.add(driver.findElements(By.id("statistics-delivery-average-time")));
+        }
+
         if (not) assertThat(statsElements).allMatch(List::isEmpty);
         else assertThat(statsElements).noneMatch(List::isEmpty);
     }
