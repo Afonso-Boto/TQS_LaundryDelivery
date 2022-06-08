@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-12">
                 <h2 id="details-name">Cristina Laundry</h2>
-                <h4><i>Customer</i></h4>
+                <h4><i id="account-type">Customer</i></h4>
 
                 <h3>Details</h3>
 
@@ -22,7 +22,7 @@
                 <p>Service type: <span id="details-service-type" th:text="${customer.servType}">Laundry</span></p>
             </div>
         </div>
-        <div class="row">
+        <div id="statistics-section" class="row" th:if="${accepted}">
             <div class="col-12">
                 <h3>Statistics</h3>
 
