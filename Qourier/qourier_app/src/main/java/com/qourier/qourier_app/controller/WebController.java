@@ -11,7 +11,6 @@ import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.dto.AccountDTO;
-import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
