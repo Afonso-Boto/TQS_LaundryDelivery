@@ -1,7 +1,7 @@
 package com.qourier.qourier_app.cucumber.steps;
 
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
 import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
+import static com.qourier.qourier_app.TestUtils.createSampleRider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.qourier.qourier_app.controller.WebController;
@@ -14,9 +14,7 @@ import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
