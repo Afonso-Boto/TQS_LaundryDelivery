@@ -210,8 +210,7 @@ public class WebController {
                 && !verifyCookie(request, CUSTOMER)
                 && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
-        if (getRoleFromCookie(request) != RIDER)
-            return REDIRECT_INDEX;
+        if (getRoleFromCookie(request) != RIDER) return REDIRECT_INDEX;
 
         String email = getIdFromCookie(request);
         AccountDTO account;
