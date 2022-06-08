@@ -1,24 +1,16 @@
 package tqs.project.laundryplatform.cucumber.steps;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.UserRepository;
-
-import java.util.List;
-import java.util.Map;
 
 public class MyStepdefs {
 
