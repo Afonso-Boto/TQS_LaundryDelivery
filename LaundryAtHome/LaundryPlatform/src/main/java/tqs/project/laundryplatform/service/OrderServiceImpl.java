@@ -1,20 +1,26 @@
 package tqs.project.laundryplatform.service;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.project.laundryplatform.model.*;
-import tqs.project.laundryplatform.repository.LaundryRepository;
-import tqs.project.laundryplatform.repository.OrderRepository;
-import tqs.project.laundryplatform.repository.OrderTypeRepository;
-import tqs.project.laundryplatform.repository.UserRepository;
+import tqs.project.laundryplatform.repository.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-    @Autowired OrderRepository orderRepository;
-    @Autowired UserRepository userRepository;
-    @Autowired OrderTypeRepository orderTypeRepository;
+
     @Autowired LaundryRepository laundryRepository;
+    @Autowired OrderTypeRepository orderTypeRepository;
+    @Autowired OrderRepository orderRepository;
+    @Autowired ItemTypeRepository itemTypeRepository;
+    @Autowired ItemRepository itemRepository;
+    @Autowired UserRepository userRepository;
 
     @Override
     public List<Order> getOrder(int userID) {
@@ -37,8 +43,54 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean makeOrder(long itemTypeId, List<Item> items) {
-        return false;
+    public boolean makeOrder(long orderId, JSONObject orderInfo) {
+        Order newOrder;
+
+        newOrder = orderRepository.findById(orderId).orElse(null);
+        if (newOrder == null) return false;
+
+        Set<Item> items = new HashSet<>();
+
+        if (orderInfo.get("its") == JSONObject.NULL) return false;
+
+        JSONArray itemsArray = orderInfo.getJSONArray("its");
+
+        for (int i = 0; i < itemsArray.length(); i++) {
+            JSONObject itemObject = itemsArray.getJSONObject(i);
+            Item item;
+
+            boolean isDark;
+            int number;
+            ItemType itemType;
+
+            if (itemObject.get("itemType") == JSONObject.NULL) return false;
+            String itemTypeId = itemObject.getString("itemType").toLowerCase();
+
+            itemType = itemTypeRepository.findByName(itemTypeId).orElse(null);
+
+            if (itemType == null) return false;
+            if (itemObject.get("isDark") == JSONObject.NULL) return false;
+
+            if (itemObject.getString("isDark").equals("Claras")) {
+                isDark = false;
+            } else if (itemObject.getString("isDark").equals("Escuras")) {
+                isDark = true;
+            } else {
+                return false;
+            }
+
+            if (itemObject.get("number") == JSONObject.NULL) return false;
+
+            number = Integer.valueOf(itemObject.getString("number"));
+
+            item = new Item(number, isDark, newOrder, itemType);
+            items.add(item);
+            itemRepository.save(item);
+        }
+
+        newOrder.setItems(items);
+
+        return true;
     }
 
     @Override

@@ -1,15 +1,15 @@
 package tqs.project.laundryplatform.controller;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import tqs.project.laundryplatform.repository.UserRepository;
 import tqs.project.laundryplatform.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.HashMap;
+import java.util.*;
 
 import static tqs.project.laundryplatform.controller.AuthController.getIdFromCookie;
 import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
@@ -18,17 +18,29 @@ import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
 @RequestMapping("/order")
 public class OrderController {
 
+    @Autowired OrderService orderService;
     private static final String REDIRECT_ORDER = "redirect:/new_order";
 
-    private HashMap<Long, String> ordersUncompleted = new HashMap<>();
-
-    @Autowired OrderService orderService;
-    @Autowired UserRepository userRepository;
+    private HashMap<String, Long> ordersUncompleted = new HashMap<>();
 
     @PostMapping("/make-order")
-    public String makeOrder(@RequestBody String formObject) {
-        System.out.println(formObject);
-        return "make order";
+    public String makeOrder(@RequestBody String formObject, HttpServletRequest request) {
+        JSONObject orderInfo = new JSONObject(formObject);
+        long orderId;
+
+        if (!hasCookie(request)) return "error";
+
+        String cookieId = getIdFromCookie(request);
+        orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
+
+        if (orderId == -1L) return "error";
+
+        if (orderService.makeOrder(orderId, orderInfo)) {
+            ordersUncompleted.remove(cookieId);
+            return REDIRECT_ORDER;
+        }
+
+        return "error";
     }
 
     @GetMapping("/init-order")
@@ -49,7 +61,7 @@ public class OrderController {
             return "error";
         }
 
-        ordersUncompleted.put(orderID, cookieID);
+        ordersUncompleted.put(cookieID, orderID);
 
         return REDIRECT_ORDER;
     }
