@@ -49,36 +49,5 @@
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
 
-    <script>
-
-        let activeAccount = $('#attrs-state').val() === 'ACTIVE';
-        let toggleAccountButton = $('#toggle-account');
-        let detailsState = $('#details-state');
-
-        toggleAccountButton.click(function () {
-
-            activeAccount = !activeAccount;
-            if (activeAccount) {
-                toggleAccountButton.text('Suspend account');
-                detailsState.text('active');
-                activateAccount();
-            }
-            else {
-                toggleAccountButton.text('Activate account');
-                detailsState.text('suspended');
-                suspendAccount();
-            }
-        })
-
-        function activateAccount() {
-            // TODO fill with implementation
-        }
-
-        function suspendAccount() {
-            // TODO fill with implementation
-        }
-
-    </script>
-
 </body>
 </html>

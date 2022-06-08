@@ -210,21 +210,17 @@ public class WebController {
                 && !verifyCookie(request, CUSTOMER)
                 && !verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
+        if (getRoleFromCookie(request) != RIDER)
+            return REDIRECT_INDEX;
+
         String email = getIdFromCookie(request);
         AccountDTO account;
         String view;
 
-        if (getRoleFromCookie(request) == RIDER) {
-            RiderDTO riderProfile = accountManager.getRiderAccount(email);
-            model.addAttribute("rider", riderProfile);
-            view = "profile_rider";
-            account = riderProfile.getAccount();
-        } else {
-            CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
-            model.addAttribute("customer", customerProfile);
-            view = "profile_customer";
-            account = customerProfile.getAccount();
-        }
+        RiderDTO riderProfile = accountManager.getRiderAccount(email);
+        model.addAttribute("rider", riderProfile);
+        view = "profile_rider";
+        account = riderProfile.getAccount();
 
         model.addAttribute("role", getRoleFromCookie(request));
         model.addAttribute(
