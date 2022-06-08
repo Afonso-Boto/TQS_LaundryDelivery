@@ -48,18 +48,18 @@
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  <tr th:each="delivery : ${deliveries}">
-                                    <td th:text="${delivery.deliveryId}"></td>
-                                    <td th:text="${delivery.originAddr}"></td>
-                                    <td th:text="${delivery.deliveryAddr}"></td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                            <i class="fa fa-duotone fa-check"></i>
-                                        </button>
-                                    </td>
-                                  </tr>
+                                    <tr th:each="delivery : ${deliveries}">
+                                        <td th:text="${delivery.deliveryId}"></td>
+                                        <td th:text="${delivery.originAddr}"></td>
+                                        <td th:text="${delivery.deliveryAddr}"></td>
+                                        <td>
+                                            <button id="btn-delivery-4" th:id="'btn-delivery-' ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                                <i class="fa fa-duotone fa-check"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
-                              </table>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -67,23 +67,28 @@
         </div>
     </div>
 
+    <input id="rider-id" type="hidden" th:value="${riderId}" />
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Beware</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+                <h5 class="modal-title" id="exampleModalLongTitle">Beware</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
-            By clicking Confirm you hereby consent to the rules and conditions associated with the delivery task.
+                By clicking Confirm you hereby consent to the rules and conditions associated with the delivery task.
             </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="demo()">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal" onclick="bidDelivery()">Confirm</button>
             </div>
+
+            <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/deliveries/bid}" />
+            <input id="modal-attrs-delivery" type="hidden" value="4" />
         </div>
         </div>
     </div>
@@ -92,25 +97,42 @@
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
 
     <script>
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
+        // Update modal with info from clicked row
+        $('td > button').click(function (event) {
+            let clickedButton = event.delegateTarget;
+            let splitId = clickedButton.id.split('-');
+            let deliveryId = splitId[splitId.length - 1];
 
-        async function demo() {
-            await sleep(5);
-            const alertList = document.getElementById('alert-list');
-            let alert = document.createElement('li');
-            alert.textContent = 'A job is ready for you ';
-            alert.className = 'alert';
-            let x = document.createElement('span');
-            x.className = 'btn btn-outline-dark';
-            x.onclick = function (event) {
-                this.parentElement.style.display='none';
-            }
-            x.innerHTML = '&times';
-            alert.appendChild(x);
-            alertList.appendChild(alert);
-        }
+            $('#modal-attrs-delivery').val(deliveryId);
+        });
+
+        $('#modal-btn-confirm').click(function (event) {
+            let url = $('#modal-attrs-url').val();
+            $.post(url, {
+                ridersId: $('#rider-id').val(),
+                deliveryId: $('#modal-attrs-delivery').val()
+            });
+        });
+
+        // function sleep(ms) {
+        //     return new Promise(resolve => setTimeout(resolve, ms));
+        // }
+        //
+        // async function demo() {
+        //     await sleep(5);
+        //     const alertList = document.getElementById('alert-list');
+        //     let alert = document.createElement('li');
+        //     alert.textContent = 'A job is ready for you ';
+        //     alert.className = 'alert';
+        //     let x = document.createElement('span');
+        //     x.className = 'btn btn-outline-dark';
+        //     x.onclick = function (event) {
+        //         this.parentElement.style.display='none';
+        //     }
+        //     x.innerHTML = '&times';
+        //     alert.appendChild(x);
+        //     alertList.appendChild(alert);
+        // }
     </script>
 
 </body>

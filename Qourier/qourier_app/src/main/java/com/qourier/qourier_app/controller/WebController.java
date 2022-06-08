@@ -163,6 +163,7 @@ public class WebController {
                 model.addAttribute("msg", "An error has occurred");
         }
         model.addAttribute("role", role);
+        model.addAttribute("riderId", getIdFromCookie(request));
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
 
         // Add Deliveries
