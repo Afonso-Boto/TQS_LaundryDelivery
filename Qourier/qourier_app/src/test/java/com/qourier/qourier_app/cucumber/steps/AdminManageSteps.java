@@ -50,7 +50,7 @@ public class AdminManageSteps {
             AccountRole role = AccountRole.valueOf(accountDetails.get("role").toUpperCase());
             AccountState state = AccountState.valueOf(accountDetails.get("state").toUpperCase());
 
-            SampleAccountBuilder accountBuilder = new SampleAccountBuilder(role, email).state(state);
+            SampleAccountBuilder accountBuilder = new SampleAccountBuilder(email).state(state);
             switch (role) {
                 case RIDER -> riderRepository.save(accountBuilder.buildRider());
                 case CUSTOMER -> customerRepository.save(accountBuilder.buildCustomer());

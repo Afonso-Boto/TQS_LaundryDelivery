@@ -1,7 +1,6 @@
 package com.qourier.qourier_app.cucumber.steps;
 
-import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.qourier.qourier_app.controller.WebController;
@@ -38,8 +37,8 @@ public class ProfileStatsSteps {
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
 
-        sampleRider = createSampleRider("riderino@gmail.com");
-        sampleCustomer = createSampleCustomer("customerino@gmail.com");
+        sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
+        sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
 
         driver = WebDriverHolder.initDriver();
     }

@@ -14,10 +14,8 @@ public class TestUtils {
         private String email;
         private String password;
         private AccountState state;
-        private AccountRole role;
 
-        public SampleAccountBuilder(AccountRole role, String email) {
-            this.role = role;
+        public SampleAccountBuilder(String email) {
             this.email = email;
             password = "rider_passs";
             state = AccountState.SUSPENDED;
@@ -34,27 +32,18 @@ public class TestUtils {
         }
 
         public Rider buildRider() {
-            if (!role.equals(AccountRole.RIDER))
-                return null;
-
-            return new Rider(buildAccount(), "123456789");
+            return new Rider(buildAccount(AccountRole.RIDER), "123456789");
         }
 
         public Customer buildCustomer() {
-            if (!role.equals(AccountRole.CUSTOMER))
-                return null;
-
-            return new Customer(buildAccount(), "Laundry");
+            return new Customer(buildAccount(AccountRole.CUSTOMER), "Laundry");
         }
 
         public Admin buildAdmin() {
-            if (!role.equals(AccountRole.ADMIN))
-                return null;
-
-            return new Admin(buildAccount());
+            return new Admin(buildAccount(AccountRole.ADMIN));
         }
 
-        private Account buildAccount() {
+        private Account buildAccount(AccountRole role) {
             Account account =
                     new Account("Sample Name", email, hashPassword(password));
             account.setRole(role);
@@ -62,32 +51,6 @@ public class TestUtils {
             return account;
         }
 
-    }
-
-    public static Rider createSampleRider(String riderAccountEmail, String riderAccountPassword) {
-        Account riderAccount =
-                new Account("riderz", riderAccountEmail, hashPassword(riderAccountPassword));
-        riderAccount.setRole(AccountRole.RIDER);
-        riderAccount.setState(AccountState.SUSPENDED);
-        return new Rider(riderAccount, "123456789");
-    }
-
-    public static Rider createSampleRider(String riderAccountEmail) {
-        return createSampleRider(riderAccountEmail, "rider_passs");
-    }
-
-    public static Customer createSampleCustomer(
-            String customerAccountEmail, String customerAccountPassword) {
-        Account customerAccount =
-                new Account(
-                        "customerss", customerAccountEmail, hashPassword(customerAccountPassword));
-        customerAccount.setRole(AccountRole.CUSTOMER);
-        customerAccount.setState(AccountState.ACTIVE);
-        return new Customer(customerAccount, "Food");
-    }
-
-    public static Customer createSampleCustomer(String customerAccountEmail) {
-        return createSampleCustomer(customerAccountEmail, "pass_custommer");
     }
 
     private static String hashPassword(String password) {
