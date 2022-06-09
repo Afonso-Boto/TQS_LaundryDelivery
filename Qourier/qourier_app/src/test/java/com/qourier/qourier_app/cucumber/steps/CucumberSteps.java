@@ -1,5 +1,9 @@
 package com.qourier.qourier_app.cucumber.steps;
 
+import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
+import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
@@ -12,16 +16,10 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.openqa.selenium.*;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class CucumberSteps {
 

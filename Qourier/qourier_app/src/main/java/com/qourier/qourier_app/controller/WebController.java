@@ -17,9 +17,6 @@ import com.qourier.qourier_app.data.dto.RiderDTO;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.qourier.qourier_app.data.Delivery;
-import com.qourier.qourier_app.data.DeliveryState;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +26,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Log
 @Controller
