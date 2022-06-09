@@ -121,7 +121,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="riderApp : ${riderAppList}">
+                    <tr th:each="riderApp : ${riderList}">
                         <td th:text="${riderApp.account.email}">5</td>
                         <td th:text="${riderApp.account.name}">Manuel</td>
                         <td th:text="${riderApp.citizenId}">987654321</td>
@@ -154,7 +154,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="customerApp : ${customerAppList}">
+                    <tr th:each="customerApp : ${customerList}">
                         <td th:text="${customerApp.account.email}">3</td>
                         <td th:text="${customerApp.account.name}">Manuel Food Service</td>
                         <td th:text="${customerApp.servType}">Food</td>

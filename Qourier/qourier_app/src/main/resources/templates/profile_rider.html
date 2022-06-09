@@ -31,15 +31,15 @@
                 <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for average time spent" />
             </div>
         </div>
-        <div class="row">
+        <div id="admin-space" class="row" th:if="${role.name() == 'ADMIN'}">
             <div class="col-12">
                 <h3>Other</h3>
 
-                <th:block id='admin-space' th:if="${role.name() == 'ADMIN'}">
-                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${rider.account.state.name().equals('ACTIVE') ? 'Suspend account' : 'Activate account'}">
-                        Activate account
+                <form method="POST" href="#" th:action="@{/profile/{action}/{id}(action=${active ? 'suspend' : 'activate'},id=${rider.account.email})}">
+                    <button id="toggle-account" type="submit" class="btn btn-primary">
+                        <span th:text="${active ? 'Suspend' : 'Activate'}">Activate</span> account
                     </button>
-                </th:block>
+                </form>
 
                 <input id="attrs-state" type="hidden" value="SUSPENDED" th:value="${rider.account.state.name()}" />
             </div>

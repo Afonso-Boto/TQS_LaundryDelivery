@@ -1,7 +1,6 @@
 package com.qourier.qourier_app.cucumber.steps;
 
-import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.qourier.qourier_app.controller.WebController;
@@ -10,18 +9,16 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.*;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class ProfileStatsSteps {
 
-    private final WebDriver driver = new HtmlUnitDriver(true);
+    private final WebDriver driver;
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -39,8 +36,10 @@ public class ProfileStatsSteps {
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
 
-        sampleRider = createSampleRider("riderino@gmail.com");
-        sampleCustomer = createSampleCustomer("customerino@gmail.com");
+        sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
+        sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
+
+        driver = WebDriverHolder.initDriver();
     }
 
     private AccountRole currentRole;
@@ -136,11 +135,6 @@ public class ProfileStatsSteps {
         driver.findElement(By.id("register")).click();
     }
 
-    @When("I go to the {section} section")
-    public void goToSection(String section) {
-        driver.findElement(By.linkText(section)).click();
-    }
-
     @Then("my status is {accountState}")
     public void statusIs(AccountState accountState) {
         String state = accountState.name().toLowerCase();
@@ -182,31 +176,6 @@ public class ProfileStatsSteps {
 
         if (not) assertThat(statsElements).allMatch(List::isEmpty);
         else assertThat(statsElements).noneMatch(List::isEmpty);
-    }
-
-    @ParameterType("Login|Main")
-    public String page(String pageName) {
-        return (pageName.equals("Main")) ? "" : "login";
-    }
-
-    @ParameterType("'(pending|refused|active|suspended)'")
-    public AccountState accountState(String accountStateStr) {
-        return AccountState.valueOf(accountStateStr.toUpperCase());
-    }
-
-    @ParameterType("Rider|Customer")
-    public AccountRole accountRole(String accountRoleStr) {
-        return AccountRole.valueOf(accountRoleStr.toUpperCase());
-    }
-
-    @ParameterType("Profile")
-    public String section(String section) {
-        return section;
-    }
-
-    @ParameterType("not |")
-    public boolean not(String not) {
-        return !not.isEmpty();
     }
 
     private void startOn(String pagePath) {

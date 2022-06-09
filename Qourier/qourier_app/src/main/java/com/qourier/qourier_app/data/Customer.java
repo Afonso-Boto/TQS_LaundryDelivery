@@ -22,7 +22,6 @@ public class Customer {
     private String servType;
 
     public Customer(Account account, String servType) {
-        account.setState(AccountState.PENDING);
         account.setRole(AccountRole.CUSTOMER);
         this.account = account;
         this.servType = servType;

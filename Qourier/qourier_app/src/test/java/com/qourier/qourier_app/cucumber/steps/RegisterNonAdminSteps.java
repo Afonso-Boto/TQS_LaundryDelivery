@@ -8,15 +8,17 @@ import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class RegisterNonAdminSteps {
 
-    private WebDriver driver;
+    private final WebDriver driver;
+
+    public RegisterNonAdminSteps() {
+        driver = WebDriverHolder.initDriver();
+    }
 
     @When("I navigate to {string}")
     public void iNavigateTo(String url) {
-        driver = new HtmlUnitDriver();
         driver.get(url);
     }
 
