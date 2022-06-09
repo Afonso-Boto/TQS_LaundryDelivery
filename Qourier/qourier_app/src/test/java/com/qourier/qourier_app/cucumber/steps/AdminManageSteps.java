@@ -77,7 +77,6 @@ public class AdminManageSteps {
     @When("I filter for {accountsFilterType} accounts")
     public void filterActive(AccountState state) {
         WebElement activeFilter = driver.findElement(By.id("filter-active"));
-//        activeFilter.click();
         if (
                 (state == AccountState.ACTIVE && !activeFilter.isSelected())
                 || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
