@@ -1,6 +1,5 @@
 package com.qourier.qourier_app.cucumber.steps;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.openqa.selenium.WebDriver;
