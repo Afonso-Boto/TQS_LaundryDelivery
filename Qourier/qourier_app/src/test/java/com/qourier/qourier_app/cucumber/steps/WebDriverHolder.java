@@ -12,8 +12,7 @@ public class WebDriverHolder {
     private static WebDriver driver;
 
     static WebDriver initDriver() {
-//        driver = new HtmlUnitDriver(true);
-        driver = WebDriverManager.firefoxdriver().create();
+        driver = new HtmlUnitDriver(true);
         return driver;
     }
 }
