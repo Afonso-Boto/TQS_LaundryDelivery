@@ -15,7 +15,6 @@ import io.cucumber.java.en.When;
 import java.util.ArrayList;
 import java.util.List;
 import org.openqa.selenium.*;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class ProfileStatsSteps {
 

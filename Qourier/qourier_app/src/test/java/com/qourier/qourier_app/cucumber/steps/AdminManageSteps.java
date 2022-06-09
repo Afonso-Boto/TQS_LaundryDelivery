@@ -1,5 +1,8 @@
 package com.qourier.qourier_app.cucumber.steps;
 
+import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.AccountRole;
@@ -11,14 +14,10 @@ import com.qourier.qourier_app.repository.RiderRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.*;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.openqa.selenium.*;
 
 public class AdminManageSteps {
 
