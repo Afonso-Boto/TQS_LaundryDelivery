@@ -121,7 +121,8 @@ public class DeliveriesManager {
         return deliveryRepository.findAll();
     }
 
-    public List<Delivery> getToDoDeliveries() { return deliveryRepository.findAll().stream().filter( delivery -> delivery.getDeliveryState() == DeliveryState.BID_CHECK).toList(); }
+    public List<Delivery> getToDoDeliveries() { return deliveryRepository.findAll().stream()
+            .filter( delivery -> delivery.getDeliveryState() == DeliveryState.BID_CHECK).toList(); }
 
     public List<Delivery> getDeliveriesFromCustomer(String customerId) {
         return deliveryRepository.findByCustomerId(customerId);

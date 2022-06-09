@@ -91,7 +91,18 @@ public class ApiControllerTest {
 
         String resultDeliveriesString = result.getResponse().getContentAsString();
         String expectedDeliveries =
-                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0 street\",\"originAddr\":\"Test0 origin street\",\"riderId\":null,\"latitude\":10.0,\"longitude\":20.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test1@email.com\",\"deliveryAddr\":\"Test1 street\",\"originAddr\":\"Test1 origin street\",\"riderId\":null,\"latitude\":11.0,\"longitude\":21.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test2@email.com\",\"deliveryAddr\":\"Test2 street\",\"originAddr\":\"Test2 origin street\",\"riderId\":null,\"latitude\":12.0,\"longitude\":22.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3 street\",\"originAddr\":\"Test3 origin street\",\"riderId\":null,\"latitude\":13.0,\"longitude\":23.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
+                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0 street\","
+                        + "\"originAddr\":\"Test0 origin street\",\"riderId\":null,\"latitude\":10.0,"
+                        + "\"longitude\":20.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
+                        + "{\"customerId\":\"test1@email.com\",\"deliveryAddr\":\"Test1 street\","
+                        + "\"originAddr\":\"Test1 origin street\",\"riderId\":null,\"latitude\":11.0,"
+                        + "\"longitude\":21.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
+                        + "{\"customerId\":\"test2@email.com\",\"deliveryAddr\":\"Test2 street\","
+                        + "\"originAddr\":\"Test2 origin street\",\"riderId\":null,\"latitude\":12.0,"
+                        + "\"longitude\":22.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
+                        + "{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3 street\","
+                        + "\"originAddr\":\"Test3 origin street\",\"riderId\":null,\"latitude\":13.0,"
+                        + "\"longitude\":23.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
         assertEquals(expectedDeliveries, resultDeliveriesString);
     }
 
@@ -105,7 +116,11 @@ public class ApiControllerTest {
 
         String resultDeliveriesString = result.getResponse().getContentAsString();
         String expectedDeliveries =
-                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0 street\",\"originAddr\":\"Test0 origin street\",\"riderId\":null,\"latitude\":10.0,\"longitude\":20.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3 street\",\"originAddr\":\"Test3 origin street\",\"riderId\":null,\"latitude\":13.0,\"longitude\":23.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
+                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0 street\",\"originAddr\":"
+                        + "\"Test0 origin street\",\"riderId\":null,\"latitude\":10.0,\"longitude\":20.0,"
+                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test0@email.com\","
+                        + "\"deliveryAddr\":\"Test3 street\",\"originAddr\":\"Test3 origin street\",\"riderId\":null,"
+                        + "\"latitude\":13.0,\"longitude\":23.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
         assertEquals(expectedDeliveries, resultDeliveriesString);
     }
 
