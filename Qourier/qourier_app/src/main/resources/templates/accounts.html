@@ -19,13 +19,13 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <label for="filter-active">Active</label>
-                            <input id="filter-active" type="checkbox" name="active" checked th:value="${filterActive}" />
+                            <input id="filter-active" type="checkbox" name="active" value="true" th:checked="${filterActive}" />
                         </div>
                         <div>
                             <label for="filter-type">Type</label>
                             <select id="filter-type" name="type" th:value="${filterType}">
-                                <option value="RIDER" selected>Rider</option>
-                                <option value="CUSTOMER">Customer</option>
+                                <option value="RIDER" selected th:selected="${filterType == 'RIDER'}">Rider</option>
+                                <option value="CUSTOMER" th:selected="${filterType == 'CUSTOMER'}">Customer</option>
                             </select>
                         </div>
                         <div>
@@ -45,11 +45,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="riderAcc : ${riderAccList}">
+                        <tr th:each="riderAcc : ${riderList}">
                             <td th:text="${riderAcc.account.email}">0</td>
                             <td th:text="${riderAcc.account.name}">Diego</td>
                             <td>
-                                <a href="profile_rider.html?role=admin" th:href="@{/profile/{id}(id=${riderAcc.account.email})}">
+                                <a href="profile_rider.html?role=admin" th:href="@{/profile/id/{id}(id=${riderAcc.account.email})}">
                                     <button type="button" class="btn btn-primary">
                                         <i class="fa fa-eye"></i>
                                     </button>
@@ -69,12 +69,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="customerAcc : ${customerAccList}">
+                    <tr th:each="customerAcc : ${customerList}">
                         <td th:text="${customerAcc.account.email}">1</td>
                         <td th:text="${customerAcc.account.name}">Cristina Laundry</td>
                         <td th:text="${customerAcc.servType}">Laundry</td>
                         <td>
-                            <a href="profile_customer.html?role=admin" th:href="@{/profile/{id}(id=${customerAcc.account.email})}">
+                            <a href="profile_customer.html?role=admin" th:href="@{/profile/id/{id}(id=${customerAcc.account.email})}">
                                 <button type="button" class="btn btn-primary">
                                     <i class="fa fa-eye"></i>
                                 </button>

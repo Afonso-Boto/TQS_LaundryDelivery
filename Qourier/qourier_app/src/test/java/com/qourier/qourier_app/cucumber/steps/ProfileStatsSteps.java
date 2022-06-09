@@ -3,7 +3,6 @@ package com.qourier.qourier_app.cucumber.steps;
 import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
 import static com.qourier.qourier_app.TestUtils.createSampleRider;
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.qourier.qourier_app.cucumber.steps.WebDriverHolder.driver;
 
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
@@ -21,6 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class ProfileStatsSteps {
 
+    private final WebDriver driver;
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -41,7 +41,7 @@ public class ProfileStatsSteps {
         sampleRider = createSampleRider("riderino@gmail.com");
         sampleCustomer = createSampleCustomer("customerino@gmail.com");
 
-        driver = new HtmlUnitDriver(true);
+        driver = WebDriverHolder.initDriver();
     }
 
     private AccountRole currentRole;

@@ -21,6 +21,8 @@ Feature: Manage accounts of Riders/Customers
   Scenario: Activate Customer account
     When I go to the Accounts section
     * I filter for suspended accounts
+    * I filter for Customer accounts
+    * I apply the filters
     * I go to the 'kustomer@kustom.com' profile
     * I activate their account
     Then the status of 'kustomer@kustom.com' is active

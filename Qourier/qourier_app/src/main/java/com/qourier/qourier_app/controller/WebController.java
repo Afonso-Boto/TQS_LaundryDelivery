@@ -222,7 +222,7 @@ public class WebController {
             @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "rider", name = "type")
             AccountRole accountRole,
-            @RequestParam(required = false, defaultValue = "true", name = "active")
+            @RequestParam(required = false, defaultValue = "false", name = "active")
             boolean active) {
         AccountRole role = ADMIN;
 
@@ -239,10 +239,11 @@ public class WebController {
                 Map.of(
                         "role", role,
                         "filterActive", active));
+        log.info(model.toString());
         return "accounts";
     }
 
-    @GetMapping("/profile/{id}")
+    @GetMapping("/profile/id/{id}")
     public String profileById(Model model, HttpServletRequest request, @PathVariable String id) {
 
         // Verify if cookie role is right or not
@@ -256,15 +257,16 @@ public class WebController {
 
         AccountDTO account = accountManager.getAccount(id);
         String profileView = REDIRECT_INDEX;
-        if (account.getRole().equals(RIDER)) {
+        if (account.getRole() == RIDER) {
             profileView = "profile_rider";
             model.addAttribute("rider", accountManager.getRiderAccount(id));
-        } else if (account.getRole().equals(CUSTOMER)) {
+        } else if (account.getRole() == CUSTOMER) {
             profileView = "profile_customer";
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
         }
 
-        model.addAttribute("role", getRoleFromCookie(request));
+        model.addAttribute("role", role);
+        model.addAttribute("active", account.getState() == AccountState.ACTIVE);
         return profileView;
     }
 
@@ -278,18 +280,18 @@ public class WebController {
 
         String email = getIdFromCookie(request);
         AccountDTO account;
-        String view;
+        String profileView;
 
         AccountRole cookieRole = getRoleFromCookie(request);
         if (cookieRole == RIDER) {
             RiderDTO riderProfile = accountManager.getRiderAccount(email);
             model.addAttribute("rider", riderProfile);
-            view = "profile_rider";
+            profileView = "profile_rider";
             account = riderProfile.getAccount();
         } else if (cookieRole == CUSTOMER) {
             CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
             model.addAttribute("customer", customerProfile);
-            view = "profile_customer";
+            profileView = "profile_customer";
             account = customerProfile.getAccount();
         } else return REDIRECT_INDEX;
 
@@ -298,10 +300,10 @@ public class WebController {
                 "accepted",
                 account.getState().equals(AccountState.ACTIVE)
                         || account.getState().equals(AccountState.SUSPENDED));
-        return view;
+        return profileView;
     }
 
-    @PostMapping("profile/activate/{id}")
+    @PostMapping("/profile/activate/{id}")
     public String profileActivateById(
             Model model,
             HttpServletRequest request,
@@ -312,7 +314,7 @@ public class WebController {
         return profileById(model, request, id);
     }
 
-    @PostMapping("profile/suspend/{id}")
+    @PostMapping("/profile/suspend/{id}")
     public String profileSuspendById(
             Model model,
             HttpServletRequest request,
@@ -413,8 +415,8 @@ public class WebController {
 
         model.addAllAttributes(
                 Map.of(
-                        "riderAppList", riderList,
-                        "customerAppList", customerList,
+                        "riderList", riderList,
+                        "customerList", customerList,
                         "filterType", accountRole.name(),
                         "filterPage", pageNumber,
                         "filterPageMax", pageNumberMax));

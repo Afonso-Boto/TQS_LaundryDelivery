@@ -12,7 +12,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.*;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,10 @@ import java.util.Optional;
 
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.qourier.qourier_app.cucumber.steps.WebDriverHolder.driver;
 
 public class AdminManageSteps {
 
+    private final WebDriver driver;
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -39,14 +38,16 @@ public class AdminManageSteps {
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
 
-        driver = new HtmlUnitDriver(true);
+        driver = WebDriverHolder.initDriver();
     }
 
     @Given("the following accounts exist:")
     public void initializeAccounts(List<Map<String, String>> dataTable) {
         for (Map<String, String> accountDetails : dataTable) {
-            AccountRole role = AccountRole.valueOf(accountDetails.get("role").toUpperCase());
             String email = accountDetails.get("email");
+            if (accountRepository.existsById(email)) continue;
+
+            AccountRole role = AccountRole.valueOf(accountDetails.get("role").toUpperCase());
             AccountState state = AccountState.valueOf(accountDetails.get("state").toUpperCase());
 
             SampleAccountBuilder accountBuilder = new SampleAccountBuilder(role, email).state(state);
@@ -75,13 +76,20 @@ public class AdminManageSteps {
 
     @When("I filter for {accountsFilterType} accounts")
     public void filterActive(AccountState state) {
-        WebElement activeLabel = driver.findElement(By.cssSelector("label[for='filter-active']"));
         WebElement activeFilter = driver.findElement(By.id("filter-active"));
+//        activeFilter.click();
         if (
-                (state.equals(AccountState.ACTIVE) && !activeFilter.isSelected())
-                || (state.equals(AccountState.SUSPENDED) && activeFilter.isSelected())) {
-            driver.findElement(By.id("filter-active")).click();
+                (state == AccountState.ACTIVE && !activeFilter.isSelected())
+                || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
+            activeFilter.click();
         }
+    }
+
+    @When("I filter for {accountRole} accounts")
+    public void filterRole(AccountRole role) {
+        WebElement roleDropdown = driver.findElement(By.id("filter-type"));
+        String optionLabel = role.name().charAt(0) + role.name().substring(1).toLowerCase();
+        roleDropdown.findElement(By.xpath("//option[. = '" + optionLabel + "']")).click();
     }
 
     @When("I apply the filters")

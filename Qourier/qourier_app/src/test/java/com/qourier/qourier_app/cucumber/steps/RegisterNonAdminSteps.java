@@ -1,20 +1,24 @@
 package com.qourier.qourier_app.cucumber.steps;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static com.qourier.qourier_app.cucumber.steps.WebDriverHolder.driver;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.WebDriver;
 
 public class RegisterNonAdminSteps {
 
+    private final WebDriver driver;
+
+    public RegisterNonAdminSteps() {
+        driver = WebDriverHolder.initDriver();
+    }
+
     @When("I navigate to {string}")
     public void iNavigateTo(String url) {
-        driver = new HtmlUnitDriver();
         driver.get(url);
     }
 

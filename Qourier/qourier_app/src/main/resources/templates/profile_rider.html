@@ -35,18 +35,11 @@
             <div class="col-12">
                 <h3>Other</h3>
 
-                <div id="toggle-account">
-                    <a href="#" th:href="@{/profile/activate/{id}(id=${rider.account.email})}" th:unless="${rider.account.state.name().equals('ACTIVE')}">
-                        <button type="button" class="btn btn-primary">
-                            Activate account
-                        </button>
-                    </a>
-                    <a href="#" th:href="@{/profile/suspend/{id}(id=${rider.account.email})}" th:if="${rider.account.state.name().equals('ACTIVE')}">
-                        <button type="button" class="btn btn-primary">
-                            Suspend account
-                        </button>
-                    </a>
-                </div>
+                <form method="POST" href="#" th:action="@{/profile/{action}/{id}(action=${active ? 'suspend' : 'activate'},id=${rider.account.email})}">
+                    <button id="toggle-account" type="submit" class="btn btn-primary">
+                        <span th:text="${active ? 'Suspend' : 'Activate'}">Activate</span> account
+                    </button>
+                </form>
 
                 <input id="attrs-state" type="hidden" value="SUSPENDED" th:value="${rider.account.state.name()}" />
             </div>

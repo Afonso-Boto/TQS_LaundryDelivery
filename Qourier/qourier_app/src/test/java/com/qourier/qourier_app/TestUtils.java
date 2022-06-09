@@ -44,7 +44,7 @@ public class TestUtils {
             if (!role.equals(AccountRole.CUSTOMER))
                 return null;
 
-            return new Customer(buildAccount(), "123456789");
+            return new Customer(buildAccount(), "Laundry");
         }
 
         public Admin buildAdmin() {
@@ -56,8 +56,8 @@ public class TestUtils {
 
         private Account buildAccount() {
             Account account =
-                    new Account("riderz", email, hashPassword(password));
-            account.setRole(AccountRole.RIDER);
+                    new Account("Sample Name", email, hashPassword(password));
+            account.setRole(role);
             account.setState(state);
             return account;
         }

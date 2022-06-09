@@ -38,6 +38,8 @@ public class Account {
         this.name = name;
         this.email = email;
         this.password = password;
+
+        state = AccountState.PENDING;
     }
 
     public Account() {
