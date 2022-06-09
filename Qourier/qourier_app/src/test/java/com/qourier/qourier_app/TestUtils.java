@@ -9,30 +9,46 @@ public class TestUtils {
 
     public static Gson gson = new GsonBuilder().create();
 
-    public static Rider createSampleRider(String riderAccountEmail, String riderAccountPassword) {
-        Account riderAccount =
-                new Account("riderz", riderAccountEmail, hashPassword(riderAccountPassword));
-        riderAccount.setRole(AccountRole.RIDER);
-        riderAccount.setState(AccountState.SUSPENDED);
-        return new Rider(riderAccount, "123456789");
-    }
+    public static class SampleAccountBuilder {
 
-    public static Rider createSampleRider(String riderAccountEmail) {
-        return createSampleRider(riderAccountEmail, "rider_passs");
-    }
+        private String email;
+        private String password;
+        private AccountState state;
 
-    public static Customer createSampleCustomer(
-            String customerAccountEmail, String customerAccountPassword) {
-        Account customerAccount =
-                new Account(
-                        "customerss", customerAccountEmail, hashPassword(customerAccountPassword));
-        customerAccount.setRole(AccountRole.CUSTOMER);
-        customerAccount.setState(AccountState.ACTIVE);
-        return new Customer(customerAccount, "Food");
-    }
+        public SampleAccountBuilder(String email) {
+            this.email = email;
+            password = "rider_passs";
+            state = AccountState.SUSPENDED;
+        }
 
-    public static Customer createSampleCustomer(String customerAccountEmail) {
-        return createSampleCustomer(customerAccountEmail, "pass_custommer");
+        public SampleAccountBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public SampleAccountBuilder state(AccountState state) {
+            this.state = state;
+            return this;
+        }
+
+        public Rider buildRider() {
+            return new Rider(buildAccount(AccountRole.RIDER), "123456789");
+        }
+
+        public Customer buildCustomer() {
+            return new Customer(buildAccount(AccountRole.CUSTOMER), "Laundry");
+        }
+
+        public Admin buildAdmin() {
+            return new Admin(buildAccount(AccountRole.ADMIN));
+        }
+
+        private Account buildAccount(AccountRole role) {
+            Account account = new Account("Sample Name", email, hashPassword(password));
+            account.setRole(role);
+            account.setState(state);
+            return account;
+        }
     }
 
     private static String hashPassword(String password) {

@@ -1,7 +1,6 @@
 package com.qourier.qourier_app.account;
 
-import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -218,9 +217,9 @@ class AccountManagerTest {
     @Test
     void whenGetAccountDetails_thenGetCorrectDetails() {
         String riderAccountEmail = "the.email@mail.com";
-        Rider rider = createSampleRider(riderAccountEmail);
+        Rider rider = new SampleAccountBuilder(riderAccountEmail).buildRider();
         String customerAccountEmail = "email@email.com";
-        Customer customer = createSampleCustomer(customerAccountEmail);
+        Customer customer = new SampleAccountBuilder(customerAccountEmail).buildCustomer();
 
         when(accountRepository.findById(riderAccountEmail))
                 .thenReturn(Optional.of(rider.getAccount()));
@@ -252,9 +251,9 @@ class AccountManagerTest {
     @Test
     void givenRiderAndCustomerExist_whenGetWrongAccountEmail_thenThrow() {
         String riderAccountEmail = "ngoisa@gioa.com";
-        Rider rider = createSampleRider(riderAccountEmail);
+        Rider rider = new SampleAccountBuilder(riderAccountEmail).buildRider();
         String customerAccountEmail = "h9agija@hjd90bs.org";
-        Customer customer = createSampleCustomer(customerAccountEmail);
+        Customer customer = new SampleAccountBuilder(customerAccountEmail).buildCustomer();
 
         when(riderRepository.findById(customer.getAccount().getEmail()))
                 .thenReturn(Optional.empty());

@@ -28,7 +28,7 @@ jobs:
       with:
         files: "Qourier/qourier_app/**/*.java"
         skipCommit: true
-        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports"
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
     - name: Google Java Format import structure fixer
       uses: axel-op/googlejavaformat-action@v3
       if: always()

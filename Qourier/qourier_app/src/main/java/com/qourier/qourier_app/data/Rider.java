@@ -24,7 +24,6 @@ public class Rider {
     private Long currentDelivery;
 
     public Rider(Account account, String citizenId) {
-        account.setState(AccountState.PENDING);
         account.setRole(AccountRole.RIDER);
         this.account = account;
         this.citizenId = citizenId;

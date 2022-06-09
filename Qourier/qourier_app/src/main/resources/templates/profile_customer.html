@@ -38,9 +38,11 @@
                 <h3>Other</h3>
 
                 <th:block id="admin-space" th:if="${role.name() == 'ADMIN'}">
-                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${customer.getState().name().equals('ACTIVE') ? 'Suspend account' : 'Activate account'}">
-                        Suspend account
-                    </button>
+                    <form method="POST" href="#" th:action="@{/profile/{action}/{id}(action=${active ? 'suspend' : 'activate'},id=${customer.account.email})}">
+                        <button id="toggle-account" type="submit" class="btn btn-primary">
+                            <span th:text="${active ? 'Suspend' : 'Activate'}">Activate</span> account
+                        </button>
+                    </form>
                 </th:block>
 
                 <th:block id="customer-space" th:if="${role.name() == 'CUSTOMER'}">
@@ -49,7 +51,7 @@
                     </button>
                     <div class="collapse" id="api-key-spoiler">
                         <div class="card card-body">
-                            <span th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
+                            <span id="api-key" th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
                         </div>
                     </div>
                 </th:block>
@@ -61,36 +63,6 @@
 
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
-
-    <script>
-
-        let activeAccount = $('#attrs-state').val() === 'ACTIVE';
-        let toggleAccountButton = $('#toggle-account');
-        let detailsState = $('#details-state');
-
-        toggleAccountButton.click(function () {
-            activeAccount = !activeAccount;
-            if (activeAccount) {
-                toggleAccountButton.text('Suspend account');
-                detailsState.text('active');
-                activateAccount();
-            }
-            else {
-                toggleAccountButton.text('Activate account');
-                detailsState.text('suspended');
-                suspendAccount();
-            }
-        })
-
-        function activateAccount() {
-            // TODO fill with implementation
-        }
-
-        function suspendAccount() {
-            // TODO fill with implementation
-        }
-
-    </script>
 
 </body>
 </html>

@@ -1,6 +1,6 @@
 package com.qourier.qourier_app;
 
-import static com.qourier.qourier_app.TestUtils.*;
+import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
@@ -77,7 +77,7 @@ class WebOperationsIntegrationTest {
         String riderPass = "********";
         LoginRequest request = new LoginRequest(riderEmail, riderPass);
 
-        riderRepository.save(createSampleRider(riderEmail, riderPass));
+        riderRepository.save(new SampleAccountBuilder(riderEmail).password(riderPass).buildRider());
 
         mvc.perform(
                         post("/login")
@@ -93,7 +93,8 @@ class WebOperationsIntegrationTest {
         String riderPass = "asterisks";
         LoginRequest request = new LoginRequest(riderEmail, riderPass);
 
-        riderRepository.save(createSampleRider(riderEmail, riderPass + "oops"));
+        riderRepository.save(
+                new SampleAccountBuilder(riderEmail).password(riderPass + "oops").buildRider());
 
         mvc.perform(
                         post("/login")
@@ -110,9 +111,13 @@ class WebOperationsIntegrationTest {
         String customerAccountEmail = "goasg@jg90aw.pls";
         String customerAccountPass = "g9a0wga9";
 
-        Rider rider = createSampleRider(riderAccountEmail, riderAccountPass);
+        Rider rider =
+                new SampleAccountBuilder(riderAccountEmail).password(riderAccountPass).buildRider();
         riderRepository.save(rider);
-        Customer customer = createSampleCustomer(customerAccountEmail, customerAccountPass);
+        Customer customer =
+                new SampleAccountBuilder(customerAccountEmail)
+                        .password(customerAccountPass)
+                        .buildCustomer();
         customerRepository.save(customer);
 
         RiderRegisterRequest riderRegister =
@@ -158,8 +163,12 @@ class WebOperationsIntegrationTest {
         String customerAccountEmail = "goasg@jg90aw.pls";
         String customerAccountPass = "g9a0wga9";
 
-        Rider rider = createSampleRider(riderAccountEmail, riderAccountPass);
-        Customer customer = createSampleCustomer(customerAccountEmail, customerAccountPass);
+        Rider rider =
+                new SampleAccountBuilder(riderAccountEmail).password(riderAccountPass).buildRider();
+        Customer customer =
+                new SampleAccountBuilder(customerAccountEmail)
+                        .password(customerAccountPass)
+                        .buildCustomer();
 
         RiderRegisterRequest riderRegister =
                 new RiderRegisterRequest(

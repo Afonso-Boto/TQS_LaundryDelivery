@@ -1,7 +1,6 @@
-package com.qourier.qourier_app.cucumber.steps;
+package com.qourier.qourier_app.cucumber;
 
-import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.qourier.qourier_app.bids.DeliveriesManager;
@@ -11,20 +10,21 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
-import io.cucumber.java.ParameterType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class CucumberSteps {
 
-    private final WebDriver driver = new HtmlUnitDriver(true);
-
+    private final WebDriver driver;
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -47,9 +47,11 @@ public class CucumberSteps {
         this.accountRepository = accountRepository;
         this.deliveriesManager = deliveriesManager;
 
-        sampleRider = createSampleRider("riderino@gmail.com");
-        sampleCustomer = createSampleCustomer("customerino@gmail.com");
+        sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
+        sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
         deliveriesManager.setNewAuctionSpan(2);
+
+        driver = new HtmlUnitDriver(true);
     }
 
     @Given("I am in the {page} page")
@@ -116,6 +118,51 @@ public class CucumberSteps {
         }
     }
 
+    @Given("the following accounts exist:")
+    public void initializeAccounts(List<Map<String, String>> dataTable) {
+        for (Map<String, String> accountDetails : dataTable) {
+            String email = accountDetails.get("email");
+            if (accountRepository.existsById(email)) continue;
+
+            AccountRole role = AccountRole.valueOf(accountDetails.get("role").toUpperCase());
+            AccountState state = AccountState.valueOf(accountDetails.get("state").toUpperCase());
+
+            SampleAccountBuilder accountBuilder = new SampleAccountBuilder(email).state(state);
+            switch (role) {
+                case RIDER -> riderRepository.save(accountBuilder.buildRider());
+                case CUSTOMER -> customerRepository.save(accountBuilder.buildCustomer());
+                case ADMIN -> adminRepository.save(accountBuilder.buildAdmin());
+            }
+        }
+    }
+
+    @Given("I am logged in as {string}")
+    public void loggedInAs(String email) {
+        Account account = accountRepository.findById(email)
+                .orElseThrow();
+
+        // Two calls have to be made because the document has to be initialized before a cookie can
+        // be set
+        driver.get("http://localhost:8080/");
+        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
+        driver.get("http://localhost:8080/");
+        driver.manage().window().setSize(new Dimension(1916, 1076));
+    }
+
+    @Given("a delivery was already created")
+    public void deliveryAlreadyCreated() {
+        Delivery delivery =
+                new Delivery(
+                        "test0@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveriesManager.createDelivery(delivery);
+        deliveriesManager.setNewAuctionSpan(10);
+    }
+
+    @When("I go to the {section} section")
+    public void goToSection(String section) {
+        driver.findElement(By.linkText(section)).click();
+    }
+
     @When("I go to register myself as a(n) {accountRole}")
     public void registerAs(AccountRole accountRole) {
         String role = accountRole.name().toLowerCase();
@@ -143,10 +190,61 @@ public class CucumberSteps {
         driver.findElement(By.id("register")).click();
     }
 
-    @When("I go to the {section} section")
-    public void goToSection(String section) {
-        driver.findElement(By.linkText(section)).click();
+    @When("I filter for {accountsFilterType} accounts")
+    public void filterActive(AccountState state) {
+        WebElement activeFilter = driver.findElement(By.id("filter-active"));
+        if (
+                (state == AccountState.ACTIVE && !activeFilter.isSelected())
+                        || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
+            activeFilter.click();
+        }
     }
+
+    @When("I filter for {accountRole} accounts")
+    public void filterRole(AccountRole role) {
+        WebElement roleDropdown = driver.findElement(By.id("filter-type"));
+        String optionLabel = role.name().charAt(0) + role.name().substring(1).toLowerCase();
+        roleDropdown.findElement(By.xpath("//option[. = '" + optionLabel + "']")).click();
+    }
+
+    @When("I apply the filters")
+    public void applyFilters() {
+        driver.findElement(By.id("filter-apply")).click();
+    }
+
+    @When("I go to the {string} profile")
+    public void goToProfile(String email) {
+        List<WebElement> tableRows = driver.findElements(By.cssSelector("tbody > tr"));
+        for (WebElement row : tableRows) {
+            WebElement idCell = row.findElement(By.cssSelector("td:first-child"));
+            if (idCell.getText().equals(email)) {
+                row.findElement(By.cssSelector("a")).click();
+                break;
+            }
+        }
+    }
+
+    @When("I {accountAction} their account")
+    public void accountApplyAction(String action) {
+        WebElement toggleButton = driver.findElement(By.id("toggle-account"));
+        if (action.equals("activate"))
+            assertThat(toggleButton.getText()).startsWith("Activate");
+        else
+            assertThat(toggleButton.getText()).startsWith("Suspend");
+        toggleButton.click();
+    }
+
+    @When("I go to check {endpoint} status")
+    public void iGoToCheckDeliveriesStatus(String endpoint) {
+        startOn("api/v1/deliveries");
+    }
+
+    @When("I navigate to {string}")
+    public void iNavigateTo(String url) {
+        driver.get(url);
+    }
+
+
 
     @Then("my status is {accountState}")
     public void statusIs(AccountState accountState) {
@@ -191,49 +289,45 @@ public class CucumberSteps {
         else assertThat(statsElements).noneMatch(List::isEmpty);
     }
 
-    @ParameterType("Login|Main")
-    public String page(String pageName) {
-        return (pageName.equals("Main")) ? "" : "login";
+    @Then("My id should be assigned to the delivery")
+    public void myIdShouldBeAssignedToTheDelivery() {
+        assertThat(driver.getPageSource()).contains("riderino@gmail.com");
+        driver.quit();
     }
 
-    @ParameterType("'(pending|refused|active|suspended)'")
-    public AccountState accountState(String accountStateStr) {
-        return AccountState.valueOf(accountStateStr.toUpperCase());
+    @Then("I should see in the page body the pattern {string}")
+    public void iShouldBeSeeInThePageBodyThePattern(String pattern) {
+        try {
+            assertThat(driver.findElement(By.id("non-permitted-message")).getText())
+                    .isEqualTo(pattern);
+        } catch (NoSuchElementException e) {
+            throw new AssertionError("\"" + pattern + "\" not available in results");
+        } finally {
+            driver.quit();
+        }
     }
 
-    @ParameterType("Rider|Customer")
-    public AccountRole accountRole(String accountRoleStr) {
-        return AccountRole.valueOf(accountRoleStr.toUpperCase());
+    @Then("the status of {string} is {accountsFilterType}")
+    public void assertAccountState(String email, AccountState state) {
+        String detailsState = driver.findElement(By.id("details-state")).getText();
+        assertThat(AccountState.valueOf(detailsState.toUpperCase())).isEqualTo(state);
+
+        Optional<Account> accountOptional = accountRepository.findById(email);
+        assertThat(accountOptional).isPresent();
+        Account account = accountOptional.get();
+        assertThat(account.getState()).isEqualTo(state);
     }
 
-    @ParameterType("\\w+")
-    public String section(String section) {
-        return section;
+    @Then("I can {accountAction} their account")
+    public void accountCanAction(String action) {
+        WebElement toggleButton = driver.findElement(By.id("toggle-account"));
+        if (action.equals("activate"))
+            assertThat(toggleButton.getText()).startsWith("Activate");
+        else
+            assertThat(toggleButton.getText()).startsWith("Suspend");
     }
 
-    @ParameterType("not |")
-    public boolean not(String not) {
-        return !not.isEmpty();
-    }
 
-    @ParameterType("\\w+")
-    public String endpoint(String endpoint) {
-        return endpoint;
-    }
-
-    private void startOn(String pagePath) {
-        driver.get("http://localhost:8080/" + pagePath);
-        driver.manage().window().setSize(new Dimension(1916, 1076));
-    }
-
-    @Given("a delivery was already created")
-    public void deliveryAlreadyCreated() {
-        Delivery delivery =
-                new Delivery(
-                        "test0@email.com", 99.99, 99.99, "test address", "test origin address");
-        deliveriesManager.createDelivery(delivery);
-        deliveriesManager.setNewAuctionSpan(10);
-    }
 
     @And("I wait {int} seconds for the auction to end")
     public void iWaitSecondsForTheAuctionToEnd(int secondsToWait) {
@@ -242,12 +336,6 @@ public class CucumberSteps {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @Then("My id should be assigned to the delivery")
-    public void myIdShouldBeAssignedToTheDelivery() {
-        assertThat(driver.getPageSource()).contains("riderino@gmail.com");
-        driver.quit();
     }
 
     @And("I click the check button on the line of the first delivery presented")
@@ -260,8 +348,53 @@ public class CucumberSteps {
         driver.findElement(By.id("modal-btn-confirm")).click();
     }
 
-    @When("I go to check {endpoint} status")
-    public void iGoToCheckDeliveriesStatus(String endpoint) {
-        startOn("api/v1/deliveries");
+    @And("I click the register account button for the type Rider")
+    public void iClickTheRegisterAccountButtonForTheType() {
+        driver.findElement(By.cssSelector("div:nth-child(5) .btn")).click();
+    }
+
+    @And("I click the register account button for the type Customer")
+    public void iClickTheRegisterAccountButtonForTheTypeCustomer() {
+        driver.findElement(By.cssSelector("div:nth-child(7) .btn")).click();
+    }
+
+    @And("I set the Email as {string}")
+    public void iSetTheEmailAs(String email) {
+        driver.findElement(By.id("email")).sendKeys(email);
+    }
+
+    @And("I set the Password as {string}")
+    public void iSetThePasswordAs(String password) {
+        driver.findElement(By.id("password")).sendKeys(password);
+    }
+
+    @And("I set the Name as {string}")
+    public void iSetTheNameAs(String name) {
+        driver.findElement(By.id("name")).sendKeys(name);
+    }
+
+    @And("I set the Citizen ID as {string}")
+    public void iSetTheCitizenIDAs(String CID) {
+        driver.findElement(By.id("citizen_id")).sendKeys(CID);
+    }
+
+    @And("I set the Service Type as {string}")
+    public void iSetTheServiceTypeAs(String servType) {
+        driver.findElement(By.id("service_type")).sendKeys(servType);
+    }
+
+    @And("I click the register button")
+    public void iClickRegister() {
+        driver.findElement(By.id("register")).click();
+    }
+
+    @And("I click the {string} tab")
+    public void iClickTheTab(String tab) {
+        driver.findElement(By.linkText("Deliveries")).click();
+    }
+
+    private void startOn(String pagePath) {
+        driver.get("http://localhost:8080/" + pagePath);
+        driver.manage().window().setSize(new Dimension(1916, 1076));
     }
 }
