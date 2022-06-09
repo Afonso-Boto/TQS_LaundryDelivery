@@ -1,8 +1,7 @@
 package com.qourier.qourier_app.data;
 
-import javax.persistence.*;
-
 import com.qourier.qourier_app.data.dto.DeliveryDTO;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
