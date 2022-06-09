@@ -17,6 +17,12 @@ jobs:
       with:
           ref: ${{ github.event.pull_request.head.ref }}    # for Google Java Format auto format commits
           fetch-depth: 0    # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Set up OpenJDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+        cache: maven
     - name: Google Java Format enforcer, without imports
       uses: axel-op/googlejavaformat-action@v3
       with:
@@ -30,12 +36,6 @@ jobs:
         files: "Qourier/qourier_app/**/*.java"
         commitMessage: Google Java Format import ordering
         args: "--fix-imports-only --replace"
-    - name: Set up OpenJDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'zulu'
-        cache: maven
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
       with:
