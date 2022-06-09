@@ -44,6 +44,7 @@ public class WebController {
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
+
     @Value("${spring.datasource.adminpass}")
     private String adminPass;
 

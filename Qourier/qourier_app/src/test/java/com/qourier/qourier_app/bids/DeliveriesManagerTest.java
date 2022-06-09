@@ -21,16 +21,17 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 @TestPropertySource("/application-test.properties")
 public class DeliveriesManagerTest {
 
+    private final int AuctionSpan = 2;
     @Autowired private DeliveriesManager deliveryManager;
     @Autowired private AccountManager accountManager;
-    private final int AuctionSpan = 2;
 
     @BeforeEach
     public void setUp() {
         deliveryManager.setNewAuctionSpan(AuctionSpan);
     }
 
-    @AfterEach public void cleanUp() {
+    @AfterEach
+    public void cleanUp() {
         deliveryManager.deleteAll();
     }
 
@@ -156,7 +157,10 @@ public class DeliveriesManagerTest {
                         "test0@email.com", 99.99, 99.99, "test address", "test origin address");
         deliveryManager.createDelivery(delivery);
         // Wait until auction is finished
-        assertThat(deliveryManager.getDeliveryState(deliveryManager.getAllDeliveries().get(0).getDeliveryId())).isEqualTo(BID_CHECK);
+        assertThat(
+                        deliveryManager.getDeliveryState(
+                                deliveryManager.getAllDeliveries().get(0).getDeliveryId()))
+                .isEqualTo(BID_CHECK);
     }
 
     @Test
@@ -174,6 +178,7 @@ public class DeliveriesManagerTest {
         deliveryManager.createDelivery(deliveryToDo);
 
         // Wait until auction is finished
-        assertThat(deliveryManager.getToDoDeliveries().get(0).getCustomerId()).isEqualTo(deliveryToDo.getCustomerId());
+        assertThat(deliveryManager.getToDoDeliveries().get(0).getCustomerId())
+                .isEqualTo(deliveryToDo.getCustomerId());
     }
 }

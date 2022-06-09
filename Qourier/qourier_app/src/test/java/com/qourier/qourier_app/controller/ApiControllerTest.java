@@ -87,8 +87,8 @@ public class ApiControllerTest {
         when(deliveriesManager.getAllDeliveries()).thenReturn(deliveryList);
         when(deliveriesManager.getDeliveriesFromCustomer("test0@email.com"))
                 .thenReturn(filteredDeliveryList);
-        when(deliveriesManager.getDeliveryState(any())).thenReturn(deliveryList.get(0).getDeliveryState());
-
+        when(deliveriesManager.getDeliveryState(any()))
+                .thenReturn(deliveryList.get(0).getDeliveryState());
     }
 
     @Test
@@ -156,8 +156,7 @@ public class ApiControllerTest {
     @DisplayName("Update progress for delivery")
     void whenUpdatingProgress_thenProgressShouldUpdate() throws Exception {
         // Update progress
-        mvc.perform(
-                        post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com"))
+        mvc.perform(post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com"))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -169,9 +168,7 @@ public class ApiControllerTest {
     void whenCreatingBid_thenProgressShouldUpdate() throws Exception {
         // Create Bid
         ObjectMapper objectMapper = new ObjectMapper();
-        String json =
-                objectMapper.writeValueAsString(
-                        new Bid("rider@email.com", 1L, null));
+        String json = objectMapper.writeValueAsString(new Bid("rider@email.com", 1L, null));
         System.out.println(json);
         MvcResult result =
                 mvc.perform(
