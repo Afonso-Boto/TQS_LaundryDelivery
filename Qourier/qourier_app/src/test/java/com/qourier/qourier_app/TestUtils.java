@@ -44,13 +44,11 @@ public class TestUtils {
         }
 
         private Account buildAccount(AccountRole role) {
-            Account account =
-                    new Account("Sample Name", email, hashPassword(password));
+            Account account = new Account("Sample Name", email, hashPassword(password));
             account.setRole(role);
             account.setState(state);
             return account;
         }
-
     }
 
     private static String hashPassword(String password) {

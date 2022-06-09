@@ -77,9 +77,7 @@ class WebOperationsIntegrationTest {
         String riderPass = "********";
         LoginRequest request = new LoginRequest(riderEmail, riderPass);
 
-        riderRepository.save(new SampleAccountBuilder(riderEmail)
-                .password(riderPass)
-                .buildRider());
+        riderRepository.save(new SampleAccountBuilder(riderEmail).password(riderPass).buildRider());
 
         mvc.perform(
                         post("/login")
@@ -95,9 +93,8 @@ class WebOperationsIntegrationTest {
         String riderPass = "asterisks";
         LoginRequest request = new LoginRequest(riderEmail, riderPass);
 
-        riderRepository.save(new SampleAccountBuilder(riderEmail)
-                .password(riderPass + "oops")
-                .buildRider());
+        riderRepository.save(
+                new SampleAccountBuilder(riderEmail).password(riderPass + "oops").buildRider());
 
         mvc.perform(
                         post("/login")
@@ -114,13 +111,13 @@ class WebOperationsIntegrationTest {
         String customerAccountEmail = "goasg@jg90aw.pls";
         String customerAccountPass = "g9a0wga9";
 
-        Rider rider = new SampleAccountBuilder(riderAccountEmail)
-                .password(riderAccountPass)
-                .buildRider();
+        Rider rider =
+                new SampleAccountBuilder(riderAccountEmail).password(riderAccountPass).buildRider();
         riderRepository.save(rider);
-        Customer customer = new SampleAccountBuilder(customerAccountEmail)
-                .password(customerAccountPass)
-                .buildCustomer();
+        Customer customer =
+                new SampleAccountBuilder(customerAccountEmail)
+                        .password(customerAccountPass)
+                        .buildCustomer();
         customerRepository.save(customer);
 
         RiderRegisterRequest riderRegister =
@@ -166,12 +163,12 @@ class WebOperationsIntegrationTest {
         String customerAccountEmail = "goasg@jg90aw.pls";
         String customerAccountPass = "g9a0wga9";
 
-        Rider rider = new SampleAccountBuilder(riderAccountEmail)
-                .password(riderAccountPass)
-                .buildRider();
-        Customer customer = new SampleAccountBuilder(customerAccountEmail)
-                .password(customerAccountPass)
-                .buildCustomer();
+        Rider rider =
+                new SampleAccountBuilder(riderAccountEmail).password(riderAccountPass).buildRider();
+        Customer customer =
+                new SampleAccountBuilder(customerAccountEmail)
+                        .password(customerAccountPass)
+                        .buildCustomer();
 
         RiderRegisterRequest riderRegister =
                 new RiderRegisterRequest(

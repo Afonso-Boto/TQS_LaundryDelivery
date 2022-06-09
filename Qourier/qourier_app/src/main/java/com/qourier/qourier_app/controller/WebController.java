@@ -58,8 +58,6 @@ public class WebController {
         this.accountManager = accountManager;
     }
 
-
-
     @PostMapping("/login")
     public String loginPost(@ModelAttribute LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
@@ -221,9 +219,9 @@ public class WebController {
             HttpServletRequest request,
             @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "rider", name = "type")
-            AccountRole accountRole,
+                    AccountRole accountRole,
             @RequestParam(required = false, defaultValue = "false", name = "active")
-            boolean active) {
+                    boolean active) {
         AccountRole role = ADMIN;
 
         // Verify if cookie role is right or not
@@ -305,9 +303,7 @@ public class WebController {
 
     @PostMapping("/profile/activate/{id}")
     public String profileActivateById(
-            Model model,
-            HttpServletRequest request,
-            @PathVariable String id) {
+            Model model, HttpServletRequest request, @PathVariable String id) {
 
         accountManager.activateAccount(id);
 
@@ -316,9 +312,7 @@ public class WebController {
 
     @PostMapping("/profile/suspend/{id}")
     public String profileSuspendById(
-            Model model,
-            HttpServletRequest request,
-            @PathVariable String id) {
+            Model model, HttpServletRequest request, @PathVariable String id) {
 
         accountManager.suspendAccount(id);
 
