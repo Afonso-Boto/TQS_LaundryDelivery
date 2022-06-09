@@ -21,7 +21,7 @@ public class DeliveriesManager {
     private final BidsRepository bidsRepository;
     private final DeliveryRepository deliveryRepository;
     private final AccountManager accountManager;
-    private long AuctionSpan;
+    private long auctionSpan;
 
     @Autowired
     public DeliveriesManager(
@@ -31,7 +31,7 @@ public class DeliveriesManager {
         this.bidsRepository = bidsrepository;
         this.deliveryRepository = deliveryRepository;
         this.accountManager = accountManager;
-        this.AuctionSpan = 600000;
+        this.auctionSpan = 600000;
     }
 
     public Delivery createDelivery(Delivery newDelivery) {
@@ -69,11 +69,11 @@ public class DeliveriesManager {
                                 }
                             }
                         },
-                        AuctionSpan);
+                        auctionSpan);
     }
 
     public void setNewAuctionSpan(int seconds) {
-        AuctionSpan = seconds * 1000L;
+        auctionSpan = seconds * 1000L;
     }
 
     public Bid createBid(Bid bid) {

@@ -46,10 +46,10 @@ public class ApiController {
     @PostMapping("/deliveries/progress")
     public HttpStatus deliveryProgressPost(@RequestParam List<String> data) {
         // Get data from params
-        String delivery_id = data.get(0);
-        String rider_id = data.get(1);
+        String deliveryId = data.get(0);
+        String riderId = data.get(1);
 
-        deliveriesManager.setDeliveryState(Long.valueOf(delivery_id), rider_id);
+        deliveriesManager.setDeliveryState(Long.valueOf(deliveryId), riderId);
 
         return HttpStatus.OK;
     }
