@@ -4,10 +4,9 @@ import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
-import java.util.List;
-
 import com.qourier.qourier_app.data.dto.BidDTO;
 import com.qourier.qourier_app.data.dto.DeliveryDTO;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

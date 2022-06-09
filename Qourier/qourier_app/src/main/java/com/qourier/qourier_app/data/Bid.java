@@ -1,8 +1,7 @@
 package com.qourier.qourier_app.data;
 
-import javax.persistence.*;
-
 import com.qourier.qourier_app.data.dto.BidDTO;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
