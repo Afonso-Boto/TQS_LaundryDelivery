@@ -1,9 +1,6 @@
 package com.qourier.qourier_app.cucumber.steps;
 
-import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
-import static com.qourier.qourier_app.TestUtils.createSampleRider;
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.repository.AccountRepository;
@@ -11,17 +8,25 @@ import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
 import io.cucumber.java.ParameterType;
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.ArrayList;
-import java.util.List;
 import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
-public class ProfileStatsSteps {
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.qourier.qourier_app.TestUtils.createSampleCustomer;
+import static com.qourier.qourier_app.TestUtils.createSampleRider;
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class CucumberSteps {
 
     private final WebDriver driver = new HtmlUnitDriver(true);
+
     private final RiderRepository riderRepository;
     private final CustomerRepository customerRepository;
     private final AdminRepository adminRepository;
@@ -29,21 +34,25 @@ public class ProfileStatsSteps {
     private final Rider sampleRider;
     private final Customer sampleCustomer;
 
-    public ProfileStatsSteps(
+    private final DeliveriesManager deliveriesManager;
+    private AccountRole currentRole;
+
+    public CucumberSteps(
             RiderRepository riderRepository,
             CustomerRepository customerRepository,
             AdminRepository adminRepository,
-            AccountRepository accountRepository) {
+            AccountRepository accountRepository,
+            DeliveriesManager deliveriesManager) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
+        this.deliveriesManager = deliveriesManager;
 
         sampleRider = createSampleRider("riderino@gmail.com");
         sampleCustomer = createSampleCustomer("customerino@gmail.com");
+        deliveriesManager.setNewAuctionSpan(2);
     }
-
-    private AccountRole currentRole;
 
     @Given("I am in the {page} page")
     public void IAmInPage(String page) {
@@ -199,7 +208,7 @@ public class ProfileStatsSteps {
         return AccountRole.valueOf(accountRoleStr.toUpperCase());
     }
 
-    @ParameterType("Profile")
+    @ParameterType("\\w+")
     public String section(String section) {
         return section;
     }
@@ -209,8 +218,52 @@ public class ProfileStatsSteps {
         return !not.isEmpty();
     }
 
+    @ParameterType("\\w+")
+    public String endpoint(String endpoint) {
+        return endpoint;
+    }
+
     private void startOn(String pagePath) {
         driver.get("http://localhost:8080/" + pagePath);
         driver.manage().window().setSize(new Dimension(1916, 1076));
+    }
+
+    @Given("a delivery was already created")
+    public void deliveryAlreadyCreated() {
+        Delivery delivery =
+                new Delivery(
+                        "test0@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveriesManager.createDelivery(delivery);
+        deliveriesManager.setNewAuctionSpan(10);
+    }
+
+    @And("I wait {int} seconds for the auction to end")
+    public void iWaitSecondsForTheAuctionToEnd(int secondsToWait) {
+        try {
+            Thread.sleep(secondsToWait * 1000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("My id should be assigned to the delivery")
+    public void myIdShouldBeAssignedToTheDelivery() {
+        assertThat(driver.getPageSource()).contains("riderino@gmail.com");
+        driver.quit();
+    }
+
+    @And("I click the check button on the line of the first delivery presented")
+    public void iClickTheCheckButtonOnTheLineOfTheFirstDeliveryPresented() {
+        driver.findElement(By.id("btn-delivery-1")).click();
+    }
+
+    @And("I click confirm")
+    public void iClickConfirm() {
+        driver.findElement(By.id("modal-btn-confirm")).click();
+    }
+
+    @When("I go to check {endpoint} status")
+    public void iGoToCheckDeliveriesStatus(String endpoint) {
+        startOn("api/v1/deliveries");
     }
 }

@@ -70,7 +70,7 @@
     <input id="rider-id" type="hidden" th:value="${riderId}" />
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -84,7 +84,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal" onclick="bidDelivery()">Confirm</button>
+                <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
             </div>
 
             <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/api/v1/deliveries/bid}" />

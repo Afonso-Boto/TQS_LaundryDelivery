@@ -39,15 +39,13 @@ public class WebController {
     public static final String COOKIE_ID = "id";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
+    private final AccountManager accountManager;
+    private final DeliveriesManager deliveriesManager;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
-
     @Value("${spring.datasource.adminpass}")
     private String adminPass;
-
-    private final AccountManager accountManager;
-    private final DeliveriesManager deliveriesManager;
 
     @Autowired
     public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager) {
