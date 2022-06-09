@@ -1,20 +1,19 @@
 package com.qourier.qourier_app.bids;
 
+import static com.qourier.qourier_app.data.DeliveryState.*;
+
 import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.qourier.qourier_app.data.DeliveryState.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Service
 public class DeliveriesManager {
