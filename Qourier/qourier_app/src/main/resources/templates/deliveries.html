@@ -53,7 +53,7 @@
                                         <td th:text="${delivery.originAddr}"></td>
                                         <td th:text="${delivery.deliveryAddr}"></td>
                                         <td>
-                                            <button id="btn-delivery-4" th:id="'btn-delivery-' ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                            <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
                                                 <i class="fa fa-duotone fa-check"></i>
                                             </button>
                                         </td>
@@ -70,7 +70,7 @@
     <input id="rider-id" type="hidden" th:value="${riderId}" />
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -84,10 +84,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal" onclick="bidDelivery()">Confirm</button>
+                <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
             </div>
 
-            <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/deliveries/bid}" />
+            <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/api/v1/deliveries/bid}" />
             <input id="modal-attrs-delivery" type="hidden" value="4" />
         </div>
         </div>
@@ -108,9 +108,16 @@
 
         $('#modal-btn-confirm').click(function (event) {
             let url = $('#modal-attrs-url').val();
-            $.post(url, {
-                ridersId: $('#rider-id').val(),
-                deliveryId: $('#modal-attrs-delivery').val()
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({
+                    ridersId: $('#rider-id').val(),
+                    deliveryId: $('#modal-attrs-delivery').val(),
+                    distance: null
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
             });
         });
 

@@ -9,10 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RiderRegisterRequest extends RegisterRequest {
 
+    private String citizenId;
+
     public RiderRegisterRequest(String email, String password, String name, String citizenId) {
         super(email, password, name);
         this.citizenId = citizenId;
     }
-
-    private String citizenId;
 }

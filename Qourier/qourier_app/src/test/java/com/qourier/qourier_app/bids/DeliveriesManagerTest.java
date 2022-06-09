@@ -3,6 +3,7 @@ package com.qourier.qourier_app.bids;
 import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.data.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,18 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 @TestPropertySource("/application-test.properties")
 public class DeliveriesManagerTest {
 
+    private final int AuctionSpan = 2;
     @Autowired private DeliveriesManager deliveryManager;
     @Autowired private AccountManager accountManager;
-    private final int AuctionSpan = 2;
 
     @BeforeEach
     public void setUp() {
         deliveryManager.setNewAuctionSpan(AuctionSpan);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        deliveryManager.deleteAll();
     }
 
     @Test
@@ -151,11 +157,10 @@ public class DeliveriesManagerTest {
                         "test0@email.com", 99.99, 99.99, "test address", "test origin address");
         deliveryManager.createDelivery(delivery);
         // Wait until auction is finished
-        await().atMost(AuctionSpan + 1, SECONDS)
-                .untilAsserted(
-                        () ->
-                                assertThat(deliveryManager.getDeliveryState(1L))
-                                        .isEqualTo(BID_CHECK));
+        assertThat(
+                        deliveryManager.getDeliveryState(
+                                deliveryManager.getAllDeliveries().get(0).getDeliveryId()))
+                .isEqualTo(BID_CHECK);
     }
 
     @Test
@@ -173,15 +178,7 @@ public class DeliveriesManagerTest {
         deliveryManager.createDelivery(deliveryToDo);
 
         // Wait until auction is finished
-        assertThat(
-                        deliveryManager.getToDoDeliveries().stream()
-                                .filter(
-                                        delivery ->
-                                                Objects.equals(
-                                                        delivery.getCustomerId(),
-                                                        deliveryToDo.getCustomerId()))
-                                .toList()
-                                .size())
-                .isEqualTo(1);
+        assertThat(deliveryManager.getToDoDeliveries().get(0).getCustomerId())
+                .isEqualTo(deliveryToDo.getCustomerId());
     }
 }

@@ -138,20 +138,6 @@ public class AccountManager {
         riderRepository.save(rider);
     }
 
-    @Data
-    public static class RiderDTOQueryResult {
-
-        private List<RiderDTO> result;
-        private int totalPages;
-    }
-
-    @Data
-    public static class CustomerDTOQueryResult {
-
-        private List<CustomerDTO> result;
-        private int totalPages;
-    }
-
     private boolean updateState(String email, AccountState startState, AccountState endState) {
         Account account =
                 accountRepository
@@ -175,5 +161,19 @@ public class AccountManager {
 
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
+    }
+
+    @Data
+    public static class RiderDTOQueryResult {
+
+        private List<RiderDTO> result;
+        private int totalPages;
+    }
+
+    @Data
+    public static class CustomerDTOQueryResult {
+
+        private List<CustomerDTO> result;
+        private int totalPages;
     }
 }
