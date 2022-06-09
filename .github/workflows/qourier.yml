@@ -24,10 +24,10 @@ jobs:
         distribution: 'zulu'
         cache: maven
     - name: Google Java Format enforcer, without imports
-      uses: axel-op/googlejavaformat-action@v3
+      uses: axel-op/googlejavaformat-action@v3.6.0
       with:
         files: "Qourier/qourier_app/**/*.java"
-        skipCommit: false
+        commitMessage: Google Java Format formatting without imports
         args: "--aosp --skip-sorting-imports --skip-removing-unused-imports"
     - name: Google Java Format import structure fixer
       uses: axel-op/googlejavaformat-action@v3

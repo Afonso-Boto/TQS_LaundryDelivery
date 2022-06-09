@@ -8,6 +8,7 @@ import com.qourier.qourier_app.account.login.LoginResult;
 import com.qourier.qourier_app.account.register.AdminRegisterRequest;
 import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
+import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.dto.AccountDTO;
@@ -40,17 +41,19 @@ public class WebController {
     private static final String REDIRECT_INDEX = "redirect:/index";
     private static final int TABLE_SIZE = 10;
 
+    private final AccountManager accountManager;
+    private final DeliveriesManager deliveriesManager;
+
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
 
     @Value("${spring.datasource.adminpass}")
     private String adminPass;
 
-    private final AccountManager accountManager;
-
     @Autowired
-    public WebController(AccountManager accountManager) {
+    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager) {
         this.accountManager = accountManager;
+        this.deliveriesManager = deliveriesManager;
     }
 
     @PostMapping("/login")
@@ -161,7 +164,11 @@ public class WebController {
                 model.addAttribute("msg", "An error has occurred");
         }
         model.addAttribute("role", role);
+        model.addAttribute("riderId", getIdFromCookie(request));
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+
+        // Add Deliveries
+        model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());
         return "deliveries";
     }
 

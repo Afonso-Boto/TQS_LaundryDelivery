@@ -21,10 +21,13 @@ public class Rider {
 
     private String citizenId;
 
+    private Long currentDelivery;
+
     public Rider(Account account, String citizenId) {
         account.setRole(AccountRole.RIDER);
         this.account = account;
         this.citizenId = citizenId;
+        this.currentDelivery = null;
     }
 
     public Rider() {}

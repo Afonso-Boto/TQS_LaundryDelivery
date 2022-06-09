@@ -131,6 +131,16 @@ public class AccountManager {
         return accountRepository.existsById(email);
     }
 
+    public void assignWork(String riderId, Long deliveryId) {
+        Rider rider =
+                riderRepository
+                        .findById(riderId)
+                        .orElseThrow(() -> new AccountDoesNotExistException(riderId));
+
+        rider.setCurrentDelivery(deliveryId);
+        riderRepository.save(rider);
+    }
+
     public RiderDTOQueryResult queryRidersByState(
             Pageable pageable, Collection<AccountState> states) {
         RiderDTOQueryResult queryResult = new RiderDTOQueryResult();
@@ -157,20 +167,6 @@ public class AccountManager {
         return queryResult;
     }
 
-    @Data
-    public static class RiderDTOQueryResult {
-
-        private List<RiderDTO> result;
-        private int totalPages;
-    }
-
-    @Data
-    public static class CustomerDTOQueryResult {
-
-        private List<CustomerDTO> result;
-        private int totalPages;
-    }
-
     private boolean updateState(String email, AccountState startState, AccountState endState) {
         Account account =
                 accountRepository
@@ -194,5 +190,19 @@ public class AccountManager {
 
     private String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
+    }
+
+    @Data
+    public static class RiderDTOQueryResult {
+
+        private List<RiderDTO> result;
+        private int totalPages;
+    }
+
+    @Data
+    public static class CustomerDTOQueryResult {
+
+        private List<CustomerDTO> result;
+        private int totalPages;
     }
 }

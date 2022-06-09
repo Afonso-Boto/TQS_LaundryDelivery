@@ -1,4 +1,4 @@
-package com.qourier.qourier_app.cucumber.steps;
+package com.qourier.qourier_app.cucumber;
 
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
@@ -39,5 +39,10 @@ public class ParameterTypes {
     @ParameterType("Rider|Customer")
     public AccountRole accountRole(String accountRoleStr) {
         return AccountRole.valueOf(accountRoleStr.toUpperCase());
+    }
+
+    @ParameterType("\\w+")
+    public String endpoint(String endpoint) {
+        return endpoint;
     }
 }
