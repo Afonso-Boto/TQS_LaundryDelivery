@@ -1,6 +1,8 @@
 package com.qourier.qourier_app.data;
 
 import javax.persistence.*;
+
+import com.qourier.qourier_app.data.dto.DeliveryDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,4 +35,14 @@ public class Delivery {
     }
 
     public Delivery() {}
+
+    public static Delivery fromDto(DeliveryDTO deliveryDTO) {
+        return new Delivery(
+                deliveryDTO.getCustomerId(),
+                deliveryDTO.getLatitude(),
+                deliveryDTO.getLongitude(),
+                deliveryDTO.getDeliveryAddr(),
+                deliveryDTO.getOriginAddr()
+        );
+    }
 }

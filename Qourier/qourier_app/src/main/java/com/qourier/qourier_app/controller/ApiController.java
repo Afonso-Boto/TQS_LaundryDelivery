@@ -5,6 +5,9 @@ import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
 import java.util.List;
+
+import com.qourier.qourier_app.data.dto.BidDTO;
+import com.qourier.qourier_app.data.dto.DeliveryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +36,14 @@ public class ApiController {
     }
 
     @PostMapping("/deliveries")
-    public ResponseEntity<Delivery> deliveriesPost(@RequestBody Delivery newDelivery) {
-        Delivery delivery = deliveriesManager.createDelivery(newDelivery);
+    public ResponseEntity<Delivery> deliveriesPost(@RequestBody DeliveryDTO newDelivery) {
+        Delivery delivery = deliveriesManager.createDelivery(Delivery.fromDto(newDelivery));
         return new ResponseEntity<>(delivery, HttpStatus.CREATED);
     }
 
-    @GetMapping("/deliveries/progress/{delivery_id}")
-    public DeliveryState deliveriesProgressGet(@PathVariable String delivery_id) {
-        return deliveriesManager.getDeliveryState(Long.valueOf(delivery_id));
+    @GetMapping("/deliveries/progress/{deliveryId}")
+    public DeliveryState deliveriesProgressGet(@PathVariable String deliveryId) {
+        return deliveriesManager.getDeliveryState(Long.valueOf(deliveryId));
     }
 
     @PostMapping("/deliveries/progress")
@@ -55,8 +58,8 @@ public class ApiController {
     }
 
     @PostMapping("/deliveries/bid")
-    public ResponseEntity<Bid> deliveriesBidPost(@RequestBody Bid newBid) {
-        Bid bid = deliveriesManager.createBid(newBid);
+    public ResponseEntity<Bid> deliveriesBidPost(@RequestBody BidDTO newBid) {
+        Bid bid = deliveriesManager.createBid(Bid.fromDto(newBid));
         return new ResponseEntity<>(bid, HttpStatus.CREATED);
     }
 }
