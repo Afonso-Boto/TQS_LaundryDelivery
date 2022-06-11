@@ -1,6 +1,7 @@
 package tqs.project.laundryplatform.service;
 
 import java.util.List;
+import org.json.JSONObject;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.model.OrderType;
@@ -14,7 +15,7 @@ public interface OrderService {
 
     List<Item> getItemTypes();
 
-    boolean makeOrder(long itemTypeId, List<Item> items);
+    boolean makeOrder(long orderID, JSONObject items);
 
     long initOrder(long orderTypeId, String cookieID);
 }

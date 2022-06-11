@@ -2,8 +2,12 @@ package tqs.project.laundryplatform.model;
 
 import java.util.Set;
 import javax.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "ItemType")
 public class ItemType {
 
