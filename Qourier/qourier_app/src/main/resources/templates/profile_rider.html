@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Rider - Qourier</title>
+</head>
+<body>
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 id="details-name" th:text="${rider.account.name}">Diego</h2>
+                <h4><i id="account-type">Rider</i></h4>
+
+                <p>State: <span id="details-state" th:text="${rider.account.state.name().toLowerCase()}">suspended</span></p>
+                <p>Email: <span id="details-email" th:text="${rider.account.email}">diego@mail.com</span></p>
+                <p>Citizen ID: <span id="details-citizen-id" th:text="${rider.citizenId}">123456789</span></p>
+            </div>
+        </div>
+        <div id="statistics-section" class="row" th:if="${accepted}">
+            <div class="col-12">
+                <h3>Statistics</h3>
+
+                <h5 id="statistics-deliveries-over-time">Deliveries done over time</h5>
+                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for deliveries done over time" />
+
+                <h5 id="statistics-average-time-spent">Average time spent on each delivery</h5>
+                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for average time spent" />
+            </div>
+        </div>
+        <div id="admin-space" class="row" th:if="${role.name() == 'ADMIN'}">
+            <div class="col-12">
+                <h3>Other</h3>
+
+                <form method="POST" href="#" th:action="@{/profile/{action}/{id}(action=${active ? 'suspend' : 'activate'},id=${rider.account.email})}">
+                    <button id="toggle-account" type="submit" class="btn btn-primary">
+                        <span th:text="${active ? 'Suspend' : 'Activate'}">Activate</span> account
+                    </button>
+                </form>
+
+                <input id="attrs-state" type="hidden" value="SUSPENDED" th:value="${rider.account.state.name()}" />
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+</body>
+</html>
