@@ -9,10 +9,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CustomerRegisterRequest extends RegisterRequest {
 
+    private String servType;
+
     public CustomerRegisterRequest(String email, String password, String name, String servType) {
         super(email, password, name);
         this.servType = servType;
     }
-
-    private String servType;
 }

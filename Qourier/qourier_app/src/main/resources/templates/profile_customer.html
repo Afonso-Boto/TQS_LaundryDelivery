@@ -12,8 +12,8 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <h2 id="details-name">Cristina Laundry</h2>
-                <h4><i>Customer</i></h4>
+                <h2 id="details-name" th:text="${customer.account.name}">Cristina Laundry</h2>
+                <h4><i id="account-type">Customer</i></h4>
 
                 <h3>Details</h3>
 
@@ -22,16 +22,14 @@
                 <p>Service type: <span id="details-service-type" th:text="${customer.servType}">Laundry</span></p>
             </div>
         </div>
-        <div class="row">
+        <div id="statistics-section" class="row" th:if="${accepted}">
             <div class="col-12">
                 <h3>Statistics</h3>
 
-                <!-- TODO grafana -->
-                <h5>Rate of delivery requests</h5>
+                <h5 id="statistics-delivery-request-rate">Rate of delivery requests</h5>
                 <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for request rate" />
 
-                <!-- TODO grafana -->
-                <h5>Average time until delivery</h5>
+                <h5 id="statistics-delivery-average-time">Average time until delivery</h5>
                 <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for time until delivery" />
             </div>
         </div>
@@ -40,9 +38,11 @@
                 <h3>Other</h3>
 
                 <th:block id="admin-space" th:if="${role.name() == 'ADMIN'}">
-                    <button id="toggle-account" type="button" class="btn btn-primary" th:text="${customer.getState().name().equals('ACTIVE') ? 'Suspend account' : 'Activate account'}">
-                        Suspend account
-                    </button>
+                    <form method="POST" href="#" th:action="@{/profile/{action}/{id}(action=${active ? 'suspend' : 'activate'},id=${customer.account.email})}">
+                        <button id="toggle-account" type="submit" class="btn btn-primary">
+                            <span th:text="${active ? 'Suspend' : 'Activate'}">Activate</span> account
+                        </button>
+                    </form>
                 </th:block>
 
                 <th:block id="customer-space" th:if="${role.name() == 'CUSTOMER'}">
@@ -51,7 +51,7 @@
                     </button>
                     <div class="collapse" id="api-key-spoiler">
                         <div class="card card-body">
-                            <span th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
+                            <span id="api-key" th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
                         </div>
                     </div>
                 </th:block>
@@ -63,36 +63,6 @@
 
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
-
-    <script>
-
-        let activeAccount = $('#attrs-state').val() === 'ACTIVE';
-        let toggleAccountButton = $('#toggle-account');
-        let detailsState = $('#details-state');
-
-        toggleAccountButton.click(function () {
-            activeAccount = !activeAccount;
-            if (activeAccount) {
-                toggleAccountButton.text('Suspend account');
-                detailsState.text('active');
-                activateAccount();
-            }
-            else {
-                toggleAccountButton.text('Activate account');
-                detailsState.text('suspended');
-                suspendAccount();
-            }
-        })
-
-        function activateAccount() {
-            // TODO fill with implementation
-        }
-
-        function suspendAccount() {
-            // TODO fill with implementation
-        }
-
-    </script>
 
 </body>
 </html>

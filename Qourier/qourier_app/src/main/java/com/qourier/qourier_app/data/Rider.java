@@ -3,10 +3,12 @@ package com.qourier.qourier_app.data;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
 @Setter
+@ToString
 @Table(name = "rider")
 public class Rider {
 
@@ -19,11 +21,13 @@ public class Rider {
 
     private String citizenId;
 
+    private Long currentDelivery;
+
     public Rider(Account account, String citizenId) {
-        account.setState(AccountState.PENDING);
         account.setRole(AccountRole.RIDER);
         this.account = account;
         this.citizenId = citizenId;
+        this.currentDelivery = null;
     }
 
     public Rider() {}
