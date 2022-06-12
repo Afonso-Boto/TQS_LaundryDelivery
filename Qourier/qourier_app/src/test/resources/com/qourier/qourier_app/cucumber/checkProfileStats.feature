@@ -6,7 +6,7 @@ Feature: Check profile and stats (Rider and Customer)
     * I fill the registration details
     * I register
     And I go to the Profile section
-    Then my status is 'pending'
+    Then my status is pending
     * the details are the same as the ones in the registration form
     * there are not statistics
 
@@ -19,7 +19,7 @@ Feature: Check profile and stats (Rider and Customer)
     Given I am logged in as a <role>
     And my application has been refused
     When I go to the Profile section
-    Then my status is 'refused'
+    Then my status is refused
     And there are not statistics
 
     Examples:
@@ -32,7 +32,7 @@ Feature: Check profile and stats (Rider and Customer)
     * I have already been accepted to the platform
     * my account is not suspended
     When I go to the Profile section
-    Then my status is 'active'
+    Then my status is active
     And there are statistics
 
     Examples:
@@ -45,7 +45,7 @@ Feature: Check profile and stats (Rider and Customer)
     * I have already been accepted to the platform
     * my account is suspended
     When I go to the Profile section
-    Then my status is 'suspended'
+    Then my status is suspended
     And there are statistics
 
     Examples:

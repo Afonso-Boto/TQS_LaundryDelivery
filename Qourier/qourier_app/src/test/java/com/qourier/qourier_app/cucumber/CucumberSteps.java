@@ -157,6 +157,8 @@ public class CucumberSteps {
         deliveriesManager.setNewAuctionSpan(10);
     }
 
+
+
     @When("I go to the {section} section")
     public void goToSection(String section) {
         driver.findElement(By.linkText(section)).click();
@@ -199,7 +201,17 @@ public class CucumberSteps {
         }
     }
 
-    @When("I filter for {accountRole} accounts")
+    @When("I filter for {applicationsFilterType} applications")
+    public void filterPending(AccountState state) {
+        WebElement pendingFilter = driver.findElement(By.id("filter-pending"));
+        if (
+                (state == AccountState.PENDING && !pendingFilter.isSelected())
+                        || (state == AccountState.REFUSED && pendingFilter.isSelected())) {
+            pendingFilter.click();
+        }
+    }
+
+    @When("I filter for {accountRole} accounts/applications")
     public void filterRole(AccountRole role) {
         WebElement roleDropdown = driver.findElement(By.id("filter-type"));
         String optionLabel = role.name().charAt(0) + role.name().substring(1).toLowerCase();
@@ -223,6 +235,11 @@ public class CucumberSteps {
         }
     }
 
+    @When("I open the {string} application")
+    public void openApplication(String email) {
+        // TODO
+    }
+
     @When("I {accountAction} their account")
     public void accountApplyAction(String action) {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
@@ -231,6 +248,17 @@ public class CucumberSteps {
         else
             assertThat(toggleButton.getText()).startsWith("Suspend");
         toggleButton.click();
+    }
+
+    @When("I {applicationAction} their application")
+    public void applicationApplyAction(String action) {
+        // TODO
+        switch (action) {
+            case "accept": break;
+            case "refuse": break;
+            case "reconsider": break;
+            default:
+        }
     }
 
     @When("I go to check {endpoint} status")
@@ -306,7 +334,7 @@ public class CucumberSteps {
         }
     }
 
-    @Then("the status of {string} is {accountsFilterType}")
+    @Then("the status of {string} is {accountState}")
     public void assertAccountState(String email, AccountState state) {
         String detailsState = driver.findElement(By.id("details-state")).getText();
         assertThat(AccountState.valueOf(detailsState.toUpperCase())).isEqualTo(state);
