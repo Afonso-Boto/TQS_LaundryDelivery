@@ -3,6 +3,7 @@ package com.qourier.qourier_app.cucumber;
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.qourier.qourier_app.TestUtils;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
@@ -237,7 +238,8 @@ public class CucumberSteps {
 
     @When("I open the {string} application")
     public void openApplication(String email) {
-        // TODO
+        WebElement applicationButton = driver.findElement(By.id("btn-form-rider-" + TestUtils.hasher(email)));
+        applicationButton.click();
     }
 
     @When("I {accountAction} their account")
@@ -252,13 +254,11 @@ public class CucumberSteps {
 
     @When("I {applicationAction} their application")
     public void applicationApplyAction(String action) {
-        // TODO
-        switch (action) {
-            case "accept": break;
-            case "refuse": break;
-            case "reconsider": break;
-            default:
-        }
+        WebElement actionForm = driver.findElement(By.id("rider-form-link-" + action));
+        if (!actionForm.isDisplayed())
+            actionForm = driver.findElement(By.id("customer-form-link-" + action));
+
+        actionForm.findElement(By.tagName("button")).click();
     }
 
     @When("I go to check {endpoint} status")

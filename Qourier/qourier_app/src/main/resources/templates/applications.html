@@ -27,22 +27,20 @@
                     <p>Time: <span id="rider-form-details-time"></span></p>
                     <p>State: <span id="rider-form-details-state"></span></p>
                 </div>
-                <div class="modal-footer">
-                    <div id="rider-form-buttons-pending">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form id="rider-form-link-refuse" method="POST" action="#">
-                            <button type="submit" class="btn btn-danger">Refuse</button>
-                        </form>
-                        <form id="rider-form-link-accept" method="POST" action="#">
-                            <button type="submit" class="btn btn-success">Accept</button>
-                        </form>
-                    </div>
-                    <div id="rider-form-buttons-refused">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form id="rider-form-link-reconsider" method="POST" action="#">
-                            <button type="submit" class="btn btn-primary">Reconsider</button>
-                        </form>
-                    </div>
+                <div id="rider-form-buttons-pending" class="modal-footer" style="display: none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form id="rider-form-link-refuse" method="POST" action="#">
+                        <button type="submit" class="btn btn-danger">Refuse</button>
+                    </form>
+                    <form id="rider-form-link-accept" method="POST" action="#">
+                        <button type="submit" class="btn btn-success">Accept</button>
+                    </form>
+                <div id="rider-form-buttons-refused" class="modal-footer" style="display: none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form id="rider-form-link-reconsider" method="POST" action="#">
+                        <button type="submit" class="btn btn-primary">Reconsider</button>
+                    </form>
+                </div>
                 </div>
             </div>
         </div>
