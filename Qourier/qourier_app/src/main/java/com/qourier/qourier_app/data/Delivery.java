@@ -10,8 +10,12 @@ import lombok.Setter;
 @Setter
 @Table(name = "delivery")
 public class Delivery {
-    private String customerId, deliveryAddr, originAddr, riderId;
-    private double latitude, longitude;
+    private String customerId;
+    private String deliveryAddr;
+    private String originAddr;
+    private String riderId;
+    private double latitude;
+    private double longitude;
     private DeliveryState deliveryState;
 
     @Id
@@ -41,7 +45,6 @@ public class Delivery {
                 deliveryDTO.getLatitude(),
                 deliveryDTO.getLongitude(),
                 deliveryDTO.getDeliveryAddr(),
-                deliveryDTO.getOriginAddr()
-        );
+                deliveryDTO.getOriginAddr());
     }
 }
