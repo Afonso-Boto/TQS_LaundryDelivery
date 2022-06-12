@@ -90,42 +90,5 @@
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
 
-    <script>
-
-        let filterActive = $('#filter-active');
-        let filterType = $('#filter-type');
-
-        // $('#filter-riders-apply').click(function () {
-        //     let active = filterActive.prop('checked');
-        //     let type = filterType.val();
-        //     applyFilters(active, type);
-        // })
-
-        function applyFilters(active, type) {
-            // TODO prototype, fill with implementation
-
-            if (active) {
-                $('#table-riders > tbody > tr').hide();
-                $('#table-customers > tbody > tr').show();
-            }
-            else {
-                $('#table-riders > tbody > tr').show();
-                $('#table-customers > tbody > tr').hide();
-            }
-
-            if (type === 'rider') {
-                $('#table-riders').show();
-                $('#table-customers').hide();
-                $('#header-account-type').text('Rider');
-            }
-            else {
-                $('#table-riders').hide();
-                $('#table-customers').show();
-                $('#header-account-type').text('Customer');
-            }
-        }
-
-    </script>
-
 </body>
 </html>
