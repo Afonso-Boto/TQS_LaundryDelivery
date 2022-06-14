@@ -23,13 +23,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 @WebMvcTest(ApiController.class)
-public class ApiControllerTest {
+class ApiControllerTest {
 
     @Autowired private MockMvc mvc;
 
     @MockBean private DeliveriesManager deliveriesManager;
 
-    private List<Delivery> deliveryList, filteredDeliveryList;
+    private List<Delivery> deliveryList;
+    private List<Delivery> filteredDeliveryList;
 
     @BeforeEach
     void setUp() {

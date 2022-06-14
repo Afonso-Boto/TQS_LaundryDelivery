@@ -54,7 +54,7 @@ public class CucumberSteps {
     }
 
     @Given("I am in the {page} page")
-    public void IAmInPage(String page) {
+    public void iAmInPage(String page) {
         startOn(page);
     }
 
@@ -77,9 +77,9 @@ public class CucumberSteps {
 
         // Two calls have to be made because the document has to be initialized before a cookie can
         // be set
-        IAmInPage("");
+        iAmInPage("");
         driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
-        IAmInPage("");
+        iAmInPage("");
     }
 
     @Given("my application has been refused")
@@ -331,6 +331,7 @@ public class CucumberSteps {
     @And("I wait {int} seconds for the auction to end")
     public void iWaitSecondsForTheAuctionToEnd(int secondsToWait) {
         try {
+            // TODO: use awaitility
             Thread.sleep(secondsToWait * 1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();

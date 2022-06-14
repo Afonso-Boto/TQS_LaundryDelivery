@@ -22,7 +22,6 @@ public class DeliveriesManager {
     private final AccountManager accountManager;
     private long auctionSpan;
 
-    @SuppressWarnings("checkstyle:Indentation")
     @Autowired
     public DeliveriesManager(
             BidsRepository bidsrepository,
