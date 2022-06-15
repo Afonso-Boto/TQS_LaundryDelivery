@@ -8,10 +8,18 @@ function submitOrder() {
         url: "http://" + location.hostname + ":81/order/make-order",
         contentType: "application/json",
         data: JSON.stringify(items),
-        dataType: 'json',
         success: function (data) {
             console.log('success', data);
+            alert("Order submitted successfully!");
+
+            window.location.href = "http://" + location.hostname + ":81/ok";
         },
+        error: function (data) {
+            console.log('error', data);
+            alert("Error submitting order!");
+
+            window.location.href = "http://" + location.hostname + ":81/error";
+        }
     });
 }
 
@@ -27,6 +35,7 @@ function addItem() {
     obj['isDark'] = document.getElementById("color").value;
     obj['number'] = document.getElementById("number").value;
     items.its.push(obj);
+    console.log(JSON.stringify(items));
 
 
     // Add to HTML Table
