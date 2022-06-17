@@ -1,4 +1,4 @@
-package tqs.project.laundryplatform;
+package tqs.project.laundryplatform.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

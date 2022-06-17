@@ -1,4 +1,4 @@
-package tqs.project.laundryplatform.services;
+package tqs.project.laundryplatform.service;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +13,6 @@ import tqs.project.laundryplatform.model.Complaint;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.ComplaintRepository;
 import tqs.project.laundryplatform.repository.OrderRepository;
-import tqs.project.laundryplatform.service.OrderServiceImpl;
 
 import java.sql.Date;
 import java.util.Optional;
@@ -39,10 +38,8 @@ public class OrderServiceTest {
     void setUp() {
         Order order = new Order(1L, new Date(2022, 12, 12), 20.99);
 
-
         Mockito.when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         Mockito.when(complaintRepository.save(Mockito.any(Complaint.class))).thenReturn(new Complaint());
-
     }
 
     @Test
