@@ -108,11 +108,12 @@
 
         $('#modal-btn-confirm').click(function (event) {
             let url = $('#modal-attrs-url').val();
+            let ridersIdVal = $('#rider-id').val();
             $.ajax({
                 type: "POST",
-                url: url,
+                url: url + "?basicAuth=" + btoa(ridersIdVal),
                 data: JSON.stringify({
-                    ridersId: $('#rider-id').val(),
+                    ridersId: ridersIdVal,
                     deliveryId: $('#modal-attrs-delivery').val(),
                     distance: null
                 }),

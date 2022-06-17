@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
+
+import java.util.Base64;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -144,9 +146,33 @@ class ApiControllerTest {
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries")
+                                        .param("basicAuth", Base64.getEncoder().encodeToString("test0@email.com".getBytes()))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(json))
                         .andExpect(status().isCreated())
+                        .andReturn();
+    }
+
+    @Test
+    @DisplayName("Try to create delivery through post but fail Auth")
+    void whenPostDeliveryWithWrongCreds_thenDeliveryIsntCreated() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json =
+                objectMapper.writeValueAsString(
+                        new Delivery(
+                                "test0@email.com",
+                                99.00,
+                                99.00,
+                                "Test3 street",
+                                "Test3 origin street"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/deliveries")
+                                        .param("basicAuth", Base64.getEncoder().encodeToString("wrong@email.com".getBytes()))
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isForbidden())
                         .andReturn();
     }
 
@@ -167,11 +193,22 @@ class ApiControllerTest {
     @DisplayName("Update progress for delivery")
     void whenUpdatingProgress_thenProgressShouldUpdate() throws Exception {
         // Update progress
-        mvc.perform(post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com"))
+        mvc.perform(post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com", Base64.getEncoder().encodeToString("rider@email.com".getBytes())))
                 .andExpect(status().isOk())
                 .andReturn();
 
         verify(deliveriesManager, times(1)).setDeliveryState(1L, "rider@email.com");
+    }
+
+    @Test
+    @DisplayName("Try to update progress for delivery but fail Auth")
+    void whenUpdatingProgressWithWrongCreds_thenProgressShouldntUpdate() throws Exception {
+        // Update progress
+        mvc.perform(post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com", Base64.getEncoder().encodeToString("wrong@email.com".getBytes())))
+                .andExpect(status().isForbidden())
+                .andReturn();
+
+        verify(deliveriesManager, times(0)).setDeliveryState(1L, "rider@email.com");
     }
 
     @Test
@@ -184,11 +221,31 @@ class ApiControllerTest {
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries/bid")
+                                        .param("basicAuth", Base64.getEncoder().encodeToString("rider@email.com".getBytes()))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(json))
                         .andExpect(status().isCreated())
                         .andReturn();
 
         verify(deliveriesManager, times(1)).createBid(any());
+    }
+
+    @Test
+    @DisplayName("Create bid for delivery")
+    void whenCreatingBidWithWrongCreds_thenProgressShouldntUpdate() throws Exception {
+        // Create Bid
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new Bid("rider@email.com", 1L, null));
+        System.out.println(json);
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/deliveries/bid")
+                                        .param("basicAuth", Base64.getEncoder().encodeToString("wrong@email.com".getBytes()))
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isForbidden())
+                        .andReturn();
+
+        verify(deliveriesManager, times(0)).createBid(any());
     }
 }
