@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired ItemTypeRepository itemTypeRepository;
     @Autowired ItemRepository itemRepository;
     @Autowired UserRepository userRepository;
+    @Autowired ComplaintRepository complaintRepository;
 
     @Override
     public List<Order> getOrder(int userID) {
@@ -104,5 +106,38 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(newOrder);
         return newOrder.getId();
+    }
+
+    @Override
+    public boolean complaint(JSONObject json) {
+        long orderId;
+        String title, description;
+
+        try {
+            orderId = Long.parseLong(json.getString("orderId"));
+            title = json.getString("title");
+            description = json.getString("description");
+        } catch (JSONException e) {
+            return false;
+        }
+
+        if (orderId == -1 || title == null || description == null) return false;
+
+        Complaint complaint =
+                new Complaint(title, description, orderRepository.findById(orderId).orElse(null));
+        complaintRepository.save(complaint);
+
+        return true;
+    }
+
+    @Override
+    public boolean cancelOrder(long orderId) {
+        if (orderId == -1) return false;
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) return false;
+
+        orderRepository.delete(order);
+        return true;
     }
 }

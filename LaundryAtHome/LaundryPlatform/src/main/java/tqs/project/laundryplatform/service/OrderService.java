@@ -18,4 +18,8 @@ public interface OrderService {
     boolean makeOrder(long orderID, JSONObject items);
 
     long initOrder(long orderTypeId, String cookieID);
+
+    boolean complaint(JSONObject json);
+
+    boolean cancelOrder(long orderId);
 }

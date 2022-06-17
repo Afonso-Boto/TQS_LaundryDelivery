@@ -62,4 +62,34 @@ public class Order {
     }
 
     public Order() {}
+
+    public Order(Long id, Date date, double totalPrice) {
+        this.id = id;
+        this.date = date;
+        this.totalPrice = totalPrice;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public String getDeliveryLocation() {
+        return deliveryLocation;
+    }
+
+    public Date getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
 }

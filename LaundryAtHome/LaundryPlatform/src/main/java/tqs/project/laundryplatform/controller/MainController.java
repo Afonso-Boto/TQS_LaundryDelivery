@@ -2,14 +2,19 @@ package tqs.project.laundryplatform.controller;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
+import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
+import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.repository.OrderRepository;
 
 @Controller
 @RequestMapping("/")
@@ -20,6 +25,7 @@ public class MainController {
     private static final String REDIRECT_REGISTER = "redirect:/register";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
+    @Autowired OrderRepository orderRepository;
 
     @GetMapping("/")
     public String mainPage() {
@@ -97,5 +103,13 @@ public class MainController {
     @GetMapping("/error")
     public String error(Model model, HttpServletRequest request) {
         return "error";
+    }
+
+    @GetMapping("/tracking")
+    public ModelAndView tracking(Model model, HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView("tracking");
+        mav.addObject("order", new Order(1L, new Date(2022, 12, 12), 20.99));
+
+        return mav;
     }
 }
