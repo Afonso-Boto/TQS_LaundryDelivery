@@ -8,6 +8,7 @@ function submitOrder() {
         url: "http://" + location.hostname + ":81/order/make-order",
         contentType: "application/json",
         data: JSON.stringify(items),
+        async: false,
         success: function (data) {
             console.log('success', data);
             alert("Order submitted successfully!");
@@ -52,6 +53,6 @@ function addItem() {
 
     // Clear inputs
     document.getElementById("type").value = "";
-    document.getElementById("number").value = "1";
+    document.getElementById("number").value = "";
     document.getElementById("color").value = "";
 }
