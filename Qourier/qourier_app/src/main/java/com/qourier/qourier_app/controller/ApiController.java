@@ -1,5 +1,10 @@
 package com.qourier.qourier_app.controller;
 
+import com.qourier.qourier_app.account.AccountManager;
+import com.qourier.qourier_app.account.login.LoginRequest;
+import com.qourier.qourier_app.account.login.LoginResult;
+import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
+import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
@@ -19,10 +24,12 @@ import org.springframework.web.bind.annotation.*;
 public class ApiController {
 
     private final DeliveriesManager deliveriesManager;
+    private final AccountManager accountManager;
 
     @Autowired
-    public ApiController(DeliveriesManager deliveriesManager) {
+    public ApiController(DeliveriesManager deliveriesManager, AccountManager accountManager) {
         this.deliveriesManager = deliveriesManager;
+        this.accountManager = accountManager;
     }
 
     @GetMapping("/deliveries")
@@ -79,6 +86,28 @@ public class ApiController {
             Bid bid = deliveriesManager.createBid(Bid.fromDto(newBid));
             return new ResponseEntity<>(bid, HttpStatus.CREATED);
         }
+
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping("/accounts/login")
+    public ResponseEntity<String> accountsLoginPost(@RequestBody LoginRequest request) {
+        LoginResult result = accountManager.login(request);
+        if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<String>(Base64.getEncoder().encodeToString(request.getEmail().getBytes()), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/accounts/register/rider")
+    public ResponseEntity<String> accountsRegisterRiderPost(@RequestBody RiderRegisterRequest request) {
+        if (accountManager.registerRider(request)) return new ResponseEntity<String>(Base64.getEncoder().encodeToString(request.getEmail().getBytes()), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping("/accounts/register/customer")
+    public ResponseEntity<String> accountsRegisterCustomerPost(@RequestBody CustomerRegisterRequest request) {
+        if (accountManager.registerCustomer(request)) return new ResponseEntity<String>(Base64.getEncoder().encodeToString(request.getEmail().getBytes()), HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }

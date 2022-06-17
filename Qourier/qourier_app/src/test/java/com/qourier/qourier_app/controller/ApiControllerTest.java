@@ -1,5 +1,6 @@
 package com.qourier.qourier_app.controller;
 
+import static com.qourier.qourier_app.account.login.LoginResult.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -8,6 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qourier.qourier_app.account.AccountManager;
+import com.qourier.qourier_app.account.login.LoginRequest;
+import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
+import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
@@ -30,6 +35,8 @@ class ApiControllerTest {
     @Autowired private MockMvc mvc;
 
     @MockBean private DeliveriesManager deliveriesManager;
+
+    @MockBean private AccountManager accountManager;
 
     private List<Delivery> deliveryList;
     private List<Delivery> filteredDeliveryList;
@@ -217,7 +224,7 @@ class ApiControllerTest {
         // Create Bid
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(new Bid("rider@email.com", 1L, null));
-        System.out.println(json);
+
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries/bid")
@@ -236,7 +243,7 @@ class ApiControllerTest {
         // Create Bid
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(new Bid("rider@email.com", 1L, null));
-        System.out.println(json);
+
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries/bid")
@@ -247,5 +254,135 @@ class ApiControllerTest {
                         .andReturn();
 
         verify(deliveriesManager, times(0)).createBid(any());
+    }
+
+    @Test
+    @DisplayName("Create rider account")
+    void whenCreatingRiderAccount_thenAccountAuthTokenShouldBeGiven() throws Exception {
+        when(accountManager.registerRider(any())).thenReturn(true);
+
+        // Create Rider account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new RiderRegisterRequest("rider@email.com", "password", "Diego", "134567890"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/register/rider")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isCreated())
+                        .andReturn();
+        assertEquals(result.getResponse().getContentAsString(),Base64.getEncoder().encodeToString("rider@email.com".getBytes()));
+    }
+
+    @Test
+    @DisplayName("Try to create rider account but already exists")
+    void whenCreatingRiderAccountThatExists_thenAccountAuthTokenShouldntBeGiven() throws Exception {
+        when(accountManager.registerRider(any())).thenReturn(false);
+
+        // Create Rider account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new RiderRegisterRequest("rider@email.com", "password", "Diego", "134567890"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/register/rider")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isForbidden())
+                        .andReturn();
+    }
+
+    @Test
+    @DisplayName("Create customer account")
+    void whenCreatingCustomerAccount_thenAccountAuthTokenShouldBeGiven() throws Exception {
+        when(accountManager.registerCustomer(any())).thenReturn(true);
+
+        // Create Customer Account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new CustomerRegisterRequest("customer@email.com", "password", "notDiego", "Fruits"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/register/customer")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isCreated())
+                        .andReturn();
+        assertEquals(result.getResponse().getContentAsString(),Base64.getEncoder().encodeToString("customer@email.com".getBytes()));
+    }
+
+    @Test
+    @DisplayName("Try to create customer account but already exists")
+    void whenCreatingCustomerAccountThatExists_thenAccountAuthTokenShouldntBeGiven() throws Exception {
+        when(accountManager.registerCustomer(any())).thenReturn(false);
+
+        // Create Customer Account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new CustomerRegisterRequest("customer@email.com", "password", "notDiego", "Fruits"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/register/customer")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isForbidden())
+                        .andReturn();
+    }
+
+    @Test
+    @DisplayName("Login to account")
+    void whenLogingInWithRightCreds_thenAccountAuthTokenShouldBeGiven() throws Exception {
+        when(accountManager.login(any())).thenReturn(LOGGED_IN);
+
+        // Create Customer Account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/login")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isAccepted())
+                        .andReturn();
+
+        assertEquals(result.getResponse().getContentAsString(),Base64.getEncoder().encodeToString("account@gmail.com".getBytes()));
+    }
+
+    @Test
+    @DisplayName("Try to login to account but with wrong creds")
+    void whenLogingInWithWrongCreds_thenAccountAuthTokenShouldntBeGiven() throws Exception {
+        when(accountManager.login(any())).thenReturn(WRONG_CREDENTIALS);
+
+        // Create Customer Account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/login")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isForbidden())
+                        .andReturn();
+    }
+
+    @Test
+    @DisplayName("Try to login to account but account doesnt exist")
+    void whenLogingInNonExistentAccount_thenAccountAuthTokenShouldntBeGiven() throws Exception {
+        when(accountManager.login(any())).thenReturn(NON_EXISTENT_ACCOUNT);
+
+        // Create Customer Account
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
+
+        MvcResult result =
+                mvc.perform(
+                                post("/api/v1/accounts/login")
+                                        .contentType(MediaType.APPLICATION_JSON)
+                                        .content(json))
+                        .andExpect(status().isForbidden())
+                        .andReturn();
     }
 }
