@@ -19,6 +19,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired ItemTypeRepository itemTypeRepository;
     @Autowired ItemRepository itemRepository;
     @Autowired UserRepository userRepository;
+    @Autowired ComplaintRepository complaintRepository;
 
     @Override
     public List<Order> getOrder(int userID) {
@@ -104,5 +105,34 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(newOrder);
         return newOrder.getId();
+    }
+
+    @Override
+    public boolean complaint(JSONObject json) {
+        System.out.println("------>complaint");
+
+        long orderId = Long.parseLong(json.getString("orderId"));
+        String title = json.getString("title");
+        String description = json.getString("description");
+
+        if ( orderId == -1 || title == null || description == null) return false;
+
+        Complaint complaint = new Complaint(title, description, orderRepository.findById(orderId).orElse(null));
+        complaintRepository.save(complaint);
+
+        System.out.println("------>complaint");
+
+        return true;
+    }
+
+    @Override
+    public boolean cancelOrder(long orderId) {
+        if (orderId == -1) return false;
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order == null) return false;
+
+        orderRepository.delete(order);
+        return true;
     }
 }

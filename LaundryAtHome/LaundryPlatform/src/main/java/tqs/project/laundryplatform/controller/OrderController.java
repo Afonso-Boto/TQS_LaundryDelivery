@@ -13,15 +13,40 @@ import org.springframework.web.bind.annotation.*;
 import tqs.project.laundryplatform.service.OrderService;
 
 @Controller
+@CrossOrigin(origins = "*")
 @RequestMapping("/order")
 public class OrderController {
 
     @Autowired OrderService orderService;
     @Autowired MainController mainController;
 
-    private static final String REDIRECT_ORDER = "redirect:/new_order";
+    private static final String REDIRECT_NEW_ORDER = "redirect:/new_order";
+    private static final String REDIRECT_ORDERS = "redirect:/orders";
+    private static final String REDIRECT_ERROR = "redirect:/error";
+    private static final String REDIRECT_LOGIN = "redirect:/login";
 
     private HashMap<String, Long> ordersUncompleted = new HashMap<>();
+
+    @PostMapping("/cancelOrder/{id}")
+    public String cancelOrder(@PathVariable("id") Long id, HttpServletRequest request) {
+        if (!hasCookie(request)) return REDIRECT_LOGIN;
+
+        orderService.cancelOrder(id);
+        return REDIRECT_ORDERS;
+    }
+
+    @PostMapping("/complaint")
+    public String complaint(@RequestBody String body, HttpServletRequest request, Model model) {
+        System.out.println("------>complaint");
+        JSONObject json = new JSONObject(body);
+
+        if (hasCookie(request)){
+            orderService.complaint(json);
+            return REDIRECT_ORDERS;
+        }
+
+        return REDIRECT_ERROR;
+    }
 
     @PostMapping("/make-order")
     public String makeOrder(
@@ -65,6 +90,6 @@ public class OrderController {
 
         ordersUncompleted.put(cookieID, orderID);
 
-        return REDIRECT_ORDER;
+        return REDIRECT_NEW_ORDER;
     }
 }

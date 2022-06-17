@@ -30,4 +30,10 @@ public class Complaint {
     }
 
     public Complaint() {}
+
+    public Complaint(String title, String description, Order order) {
+        this.title = title;
+        this.description = description;
+        this.order = order;
+    }
 }
