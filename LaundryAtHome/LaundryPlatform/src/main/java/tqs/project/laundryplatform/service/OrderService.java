@@ -20,5 +20,6 @@ public interface OrderService {
     long initOrder(long orderTypeId, String cookieID);
 
     boolean complaint(JSONObject json);
+
     boolean cancelOrder(long orderId);
 }

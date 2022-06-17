@@ -109,18 +109,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean complaint(JSONObject json) {
-        System.out.println("------>complaint");
 
         long orderId = Long.parseLong(json.getString("orderId"));
         String title = json.getString("title");
         String description = json.getString("description");
 
-        if ( orderId == -1 || title == null || description == null) return false;
+        if (orderId == -1 || title == null || description == null) return false;
 
-        Complaint complaint = new Complaint(title, description, orderRepository.findById(orderId).orElse(null));
+        Complaint complaint =
+                new Complaint(title, description, orderRepository.findById(orderId).orElse(null));
         complaintRepository.save(complaint);
-
-        System.out.println("------>complaint");
 
         return true;
     }

@@ -37,10 +37,9 @@ public class OrderController {
 
     @PostMapping("/complaint")
     public String complaint(@RequestBody String body, HttpServletRequest request, Model model) {
-        System.out.println("------>complaint");
         JSONObject json = new JSONObject(body);
 
-        if (hasCookie(request)){
+        if (hasCookie(request)) {
             orderService.complaint(json);
             return REDIRECT_ORDERS;
         }
