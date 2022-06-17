@@ -123,8 +123,7 @@ public class CucumberSteps {
         for (Map<String, String> accountDetails : dataTable) {
             String email = accountDetails.get("email");
             if (accountRepository.existsById(email)) {
-                Account account = accountRepository.findById(email)
-                        .orElseThrow();
+                Account account = accountRepository.findById(email).orElseThrow();
 
                 switch (account.getRole()) {
                     case RIDER -> riderRepository.deleteById(email);
@@ -147,8 +146,7 @@ public class CucumberSteps {
 
     @Given("I am logged in as {string}")
     public void loggedInAs(String email) {
-        Account account = accountRepository.findById(email)
-                .orElseThrow();
+        Account account = accountRepository.findById(email).orElseThrow();
 
         // Two calls have to be made because the document has to be initialized before a cookie can
         // be set
@@ -166,8 +164,6 @@ public class CucumberSteps {
         deliveriesManager.createDelivery(delivery);
         deliveriesManager.setNewAuctionSpan(10);
     }
-
-
 
     @When("I go to the {section} section")
     public void goToSection(String section) {
@@ -204,9 +200,8 @@ public class CucumberSteps {
     @When("I filter for {accountsFilterType} accounts")
     public void filterActive(AccountState state) {
         WebElement activeFilter = driver.findElement(By.id("filter-active"));
-        if (
-                (state == AccountState.ACTIVE && !activeFilter.isSelected())
-                        || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
+        if ((state == AccountState.ACTIVE && !activeFilter.isSelected())
+                || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
             activeFilter.click();
         }
     }
@@ -214,9 +209,8 @@ public class CucumberSteps {
     @When("I filter for {applicationsFilterType} applications")
     public void filterPending(AccountState state) {
         WebElement pendingFilter = driver.findElement(By.id("filter-pending"));
-        if (
-                (state == AccountState.PENDING && !pendingFilter.isSelected())
-                        || (state == AccountState.REFUSED && pendingFilter.isSelected())) {
+        if ((state == AccountState.PENDING && !pendingFilter.isSelected())
+                || (state == AccountState.REFUSED && pendingFilter.isSelected())) {
             pendingFilter.click();
         }
     }
@@ -249,9 +243,11 @@ public class CucumberSteps {
     public void openApplication(String email) {
         WebElement applicationButton;
         try {
-            applicationButton = driver.findElement(By.id("btn-form-rider-" + TestUtils.hasher(email)));
+            applicationButton =
+                    driver.findElement(By.id("btn-form-rider-" + TestUtils.hasher(email)));
         } catch (NoSuchElementException ex) {
-            applicationButton = driver.findElement(By.id("btn-form-customer-" + TestUtils.hasher(email)));
+            applicationButton =
+                    driver.findElement(By.id("btn-form-customer-" + TestUtils.hasher(email)));
         }
         applicationButton.click();
     }
@@ -259,10 +255,8 @@ public class CucumberSteps {
     @When("I {accountAction} their account")
     public void accountApplyAction(String action) {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
-        if (action.equals("activate"))
-            assertThat(toggleButton.getText()).startsWith("Activate");
-        else
-            assertThat(toggleButton.getText()).startsWith("Suspend");
+        if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
+        else assertThat(toggleButton.getText()).startsWith("Suspend");
         toggleButton.click();
     }
 
@@ -284,8 +278,6 @@ public class CucumberSteps {
     public void iNavigateTo(String url) {
         driver.get(url);
     }
-
-
 
     @Then("my status is {accountState}")
     public void statusIs(AccountState accountState) {
@@ -367,13 +359,9 @@ public class CucumberSteps {
     @Then("I can {accountAction} their account")
     public void accountCanAction(String action) {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
-        if (action.equals("activate"))
-            assertThat(toggleButton.getText()).startsWith("Activate");
-        else
-            assertThat(toggleButton.getText()).startsWith("Suspend");
+        if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
+        else assertThat(toggleButton.getText()).startsWith("Suspend");
     }
-
-
 
     @And("I wait {int} seconds for the auction to end")
     public void iWaitSecondsForTheAuctionToEnd(int secondsToWait) {

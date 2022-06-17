@@ -85,11 +85,12 @@ public class DeliveriesManager {
     }
 
     public DeliveryState setDeliveryState(Long deliveryId, String riderId) {
-        DeliveryState previousState = deliveryRepository.findByDeliveryId(deliveryId).getDeliveryState();
+        DeliveryState previousState =
+                deliveryRepository.findByDeliveryId(deliveryId).getDeliveryState();
         Delivery delivery = deliveryRepository.findByDeliveryId(deliveryId);
 
         // Iterate states if rider id is right
-        if(delivery.getRiderId().equals(riderId)){
+        if (delivery.getRiderId().equals(riderId)) {
             switch (previousState) {
                 case BID_CHECK -> delivery.setDeliveryState(FETCHING);
                 case FETCHING -> delivery.setDeliveryState(SHIPPED);
@@ -122,8 +123,8 @@ public class DeliveriesManager {
 
     public List<Delivery> getToDoDeliveries() {
         return deliveryRepository.findAll().stream()
-            .filter( delivery -> delivery.getDeliveryState() == DeliveryState.BID_CHECK)
-            .toList();
+                .filter(delivery -> delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                .toList();
     }
 
     public List<Delivery> getDeliveriesFromCustomer(String customerId) {
