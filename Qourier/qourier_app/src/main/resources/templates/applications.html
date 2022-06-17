@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Applications - Qourier</title>
+</head>
+<body>
+
+<!--  ADMIN  -->
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div class="modal fade" id="rider-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rider-form-label">Application form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Name: <span id="rider-form-details-name"></span></p>
+                    <p>Email: <span id="rider-form-details-email"></span></p>
+                    <p>Citizen ID: <span id="rider-form-details-citizenId"></span></p>
+                    <p>Time: <span id="rider-form-details-time"></span></p>
+                    <p>State: <span id="rider-form-details-state"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <div id="rider-form-buttons-pending">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a id="rider-form-link-refuse" href="#">
+                            <button type="button" class="btn btn-danger">Refuse</button>
+                        </a>
+                        <a id="rider-form-link-accept" href="#">
+                            <button type="button" class="btn btn-success">Accept</button>
+                        </a>
+                    </div>
+                    <div id="rider-form-buttons-refused">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a id="rider-form-link-reconsider" href="#">
+                            <button type="button" class="btn btn-primary">Reconsider</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="customer-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="customer-form-label">Application form</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Name: <span id="customer-form-details-name"></span></p>
+                    <p>Email: <span id="customer-form-details-email"></span></p>
+                    <p>Service type: <span id="customer-form-details-serviceType"></span></p>
+                    <p>Time: <span id="customer-form-details-time"></span></p>
+                    <p>State: <span id="customer-form-details-state"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <div id="customer-form-buttons-pending" style="display: none">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a id="customer-form-link-refuse" href="#">
+                            <button type="button" class="btn btn-danger">Refuse</button>
+                        </a>
+                        <a id="customer-form-link-accept" href="#">
+                            <button type="button" class="btn btn-success">Accept</button>
+                        </a>
+                    </div>
+                    <div id="customer-form-buttons-refused" style="display: none">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a id="customer-form-link-reconsider" href="#">
+                            <button type="button" class="btn btn-primary">Reconsider</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2><span id="header-account-type" th:text="${filterType.substring(0, 1) + filterType.substring(1).toLowerCase()}">Rider</span> applications</h2>
+                <form method="GET" action="#" th:action="@{/applications}">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label for="filter-pending">Pending</label>
+                            <input type="checkbox" id="filter-pending" name="pending" checked th:value="${filterPending}" />
+                        </div>
+                        <div>
+                            <label for="filter-type">Type</label>
+                            <select id="filter-type" name="type" th:value="${filterType}">
+                                <option value="RIDER" selected>Rider</option>
+                                <option value="CUSTOMER">Customer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filter-page">Page</label>
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax} - 1" />
+                        </div>
+
+                        <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+                <table id="table-riders" class="table table-hover" th:if="${filterType == 'RIDER'}">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Citizen ID</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Form</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="riderApp : ${riderList}">
+                        <td th:text="${riderApp.account.email}">5</td>
+                        <td th:text="${riderApp.account.name}">Manuel</td>
+                        <td th:text="${riderApp.citizenId}">987654321</td>
+                        <td th:text="${riderApp.account.registrationTime}">2022/05/11 19:00:00</td>
+                        <td>
+                            <button id="btn-form-rider-5" th:id="'btn-form-rider-' + ${hasher.apply(riderApp.account.email)}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#rider-form" th:class="${riderApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
+                        </td>
+
+                        <th:block th:with="baseId='attrs-rider-' + ${hasher.apply(riderApp.account.email)} + '-'">
+                            <input id="attrs-rider-5-name" th:id="${baseId} + name" type="hidden" value="Manuel" th:value="${riderApp.account.name}" />
+                            <input id="attrs-rider-5-email" th:id="${baseId} + email" type="hidden" value="manuel.rider@mail.com" th:value="${riderApp.account.email}" />
+                            <input id="attrs-rider-5-citizenId" th:id="${baseId} + citizenId" type="hidden" value="987654321" th:value="${riderApp.citizenId}" />
+                            <input id="attrs-rider-5-time" th:id="${baseId} + time" type="hidden" value="2022/05/11 19:00:00" th:value="${riderApp.account.registrationTime}" />
+                            <input id="attrs-rider-5-state" th:id="${baseId} + state" type="hidden" value="PENDING" th:value="${riderApp.account.state.name()}" />
+                        </th:block>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table id="table-customers" class="table table-hover" th:if="${filterType == 'CUSTOMER'}">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Service type</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Form</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customerApp : ${customerList}">
+                        <td th:text="${customerApp.account.email}">3</td>
+                        <td th:text="${customerApp.account.name}">Manuel Food Service</td>
+                        <td th:text="${customerApp.servType}">Food</td>
+                        <td th:text="${customerApp.account.registrationTime}">2021/01/23 11:30:01</td>
+                        <td>
+                            <button id="btn-form-customer-3" th:id="'btn-form-customer-' + ${hasher.apply(customerApp.account.email)}" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#customer-form" th:class="${customerApp.account.state.name() == 'PENDING'}? 'btn btn-primary' : 'btn btn-secondary'">
+                                <i class="fa fa-clipboard"></i>
+                            </button>
+                        </td>
+
+                        <th:block th:with="baseId='attrs-customer-' + ${hasher.apply(customerApp.account.email)} + '-'">
+                            <input id="attrs-customer-3-name" th:id="${baseId} + name" type="hidden" value="Manuel Food Service" th:value="${customerApp.account.name}" />
+                            <input id="attrs-customer-3-email" th:id="${baseId} + email" type="hidden" value="manuel@mail.com" th:value="${customerApp.account.email}" />
+                            <input id="attrs-customer-3-serviceType" th:id="${baseId} + serviceType" type="hidden" value="Food" th:value="${customerApp.servType}" />
+                            <input id="attrs-customer-3-time" th:id="${baseId} + time" type="hidden" value="2021/01/23 11:30:01" th:value="${customerApp.account.registrationTime}" />
+                            <input id="attrs-customer-3-state" th:id="${baseId} + state" type="hidden" value="REFUSED" th:value="${customerApp.account.state.name()}" />
+                        </th:block>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+    <script>
+
+        let baseApplicationAcceptLink = '/applications/accept/';
+        let baseApplicationRefuseLink = '/applications/refuse/';
+        let baseApplicationReconsiderLink = '/applications/reconsider/';
+
+        let filterPending = $('#filter-pending');
+        let filterType = $('#filter-type');
+
+        // $('#filter-riders-apply').click(function () {
+        //     let type = filterType.val();
+        //     applyFilters(type);
+        // })
+
+        function applyFilters(type) {
+            // TODO prototype, fill with implementation
+
+            let pending = filterPending.prop('checked');
+
+            if (type === 'rider') {
+                if (pending)
+                    $('#table-riders').show();
+                else
+                    $('#table-riders').hide();
+                $('#table-customers').hide();
+                $('#header-account-type').text('Rider');
+            }
+            else {
+                $('#table-riders').hide();
+                if (!pending)
+                    $('#table-customers').show();
+                else
+                    $('#table-customers').hide();
+                $('#header-account-type').text('Customer');
+            }
+
+        }
+
+        // Update modal with info from clicked row
+        let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
+        let customerDetails = ['name', 'email', 'serviceType', 'time', 'state'];
+        $('td > button').click(function (event) {
+            let clickedButton = event.delegateTarget;
+            let splitId = clickedButton.id.split('-');
+            let applicationType = splitId[splitId.length - 2];
+            let applicationId = splitId[splitId.length - 1];
+
+            console.log(event);
+            console.log(clickedButton);
+            console.log(splitId);
+
+            if (applicationType === 'rider') {
+                for (const detail of riderDetails)
+                    $('#rider-form-details-' + detail).text( $('#attrs-rider-' + applicationId + '-' + detail).val() );
+
+                let applicationState = $('#attrs-rider-' + applicationId + '-state').val();
+                if (applicationState === 'REFUSED') {
+                    $('#rider-form-buttons-pending').hide();
+                    $('#rider-form-buttons-refused').show();
+                }
+                else {
+                    $('#rider-form-buttons-pending').show();
+                    $('#rider-form-buttons-refused').hide();
+                }
+
+                $('#rider-form-link-refuse').attr('href', baseApplicationRefuseLink + applicationId);
+                $('#rider-form-link-accept').attr('href', baseApplicationAcceptLink + applicationId);
+                $('#rider-form-link-reconsider').attr('href', baseApplicationReconsiderLink + applicationId);
+            }
+            else if (applicationType === 'customer') {
+                for (const detail of customerDetails)
+                    $('#customer-form-details-' + detail).text( $('#attrs-customer-' + applicationId + '-' + detail).val() );
+
+                let applicationState = $('#attrs-customer-' + applicationId + '-state').val();
+                if (applicationState === 'REFUSED') {
+                    $('#customer-form-buttons-pending').hide();
+                    $('#customer-form-buttons-refused').show();
+                }
+                else {
+                    $('#customer-form-buttons-pending').show();
+                    $('#customer-form-buttons-refused').hide();
+                }
+
+                $('#customer-form-link-refuse').attr('href', baseApplicationRefuseLink + applicationId);
+                $('#customer-form-link-accept').attr('href', baseApplicationAcceptLink + applicationId);
+                $('#customer-form-link-reconsider').attr('href', baseApplicationReconsiderLink + applicationId);
+            }
+        })
+
+    </script>
+
+</body>
+</html>

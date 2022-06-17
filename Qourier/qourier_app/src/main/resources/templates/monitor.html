@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Monitor - Qourier</title>
+</head>
+<body>
+
+<!--  ADMIN  -->
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2>Revenue history</h2>
+                <p>Reveneu history over time:</p> 
+                <img src="../static/images/Revenue.png">
+                <br>
+                <br>
+                <br>
+                <br>
+                <h2>Network Monitoring</h2>
+                <p>History of deliveries:</p>
+                <img src="../static/images/cpu.png">
+                <img src="../static/images/logins.png">
+                <img src="../static/images/requests.png">
+                <br>
+                <br>
+                <br>
+                <br>
+                <h2>Riders statistics</h2>
+                <p>History of deliveries:</p> 
+                <img src="../static/images/ridersStats.png">
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+</body>
+</html>

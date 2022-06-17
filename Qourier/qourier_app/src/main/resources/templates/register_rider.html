@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Register as Rider - Qourier</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-12">
+                <div class="d-flex justify-content-center">
+                    <div>
+                        <h2>Register as Rider</h2>
+                        <br>
+
+                        <form method="POST" action="index.html" th:action="@{/register_rider}" th:object="${riderRegisterRequest}" class="login-register-form" id="login-register-form">
+                            <div class="form-group">
+                                <label for="email">Email: </label>
+                                <input type="text" th:field="*{email}" name="email" id="email" placeholder="Email"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password: </label>
+                                <input type="password" th:field="*{password}" name="password" id="password" placeholder="Password"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="name">Name: </label>
+                                <input type="text" th:field="*{name}" name="name" id="name" placeholder="Name"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="citizen_id">Citizen ID: </label>
+                                <input type="text" th:field="*{citizenId}" name="citizen_id" id="citizen_id" placeholder="Citizen ID"/>
+                            </div>
+
+                            <div class="form-group form-button">
+                                <input type="submit" name="register" id="register" class="form-submit" value="Register"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+
+</body>
+</html>

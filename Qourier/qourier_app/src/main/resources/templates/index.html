@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Qourier</title>
+</head>
+<body>
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                Main page
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+</body>
+</html>

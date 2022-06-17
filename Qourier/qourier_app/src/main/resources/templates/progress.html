@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Qourier</title>
+    <style>  
+        .checked {  
+            font-size : 20px;  
+        }  
+        .unchecked {  
+            color : rgb(156, 156, 156);  
+            font-size : 20px;  
+        }  
+    </style>  
+</head>
+<body>
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div class="container">
+        <h2>Rider's Progress</h2>
+        <p>Progress for each rider's delivery:</p> 
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Rider</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">Progress</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Cristina Laundry</td>
+                        <td>Mark</td>
+                        <td>25/5/22 10:22</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width:25%">
+                                  25% (Bid check)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Cristina Laundry</td>
+                        <td>Jacob</td>
+                        <td>25/5/22 09:12</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                    50% (Fetching)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Cristina Laundry</td>
+                        <td>Larry</td>
+                        <td>25/5/22 07:00</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:75%">
+                                75% (Shipped)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">4</th>
+                        <td>Cristina Laundry</td>
+                        <td>Diego</td>
+                        <td>25/5/22 05:49</td>
+                        <td>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                                    100% (Delivered)
+                                </div>
+                              </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Deliveries History</h2>
+        <p>History of deliveries:</p> 
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Rider</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Rating</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>25/5/22 10:22</td>
+                        <td>25/5/22 12:32</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Luis</td>
+                        <td>25/5/22 06:22</td>
+                        <td>25/5/22 11:37</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span> 
+                            <span class = "fa fa-star unchecked"></span> 
+                            <span class = "fa fa-star unchecked"></span> 
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Steve</td>
+                        <td>24/5/22 09:12</td>
+                        <td>25/5/22 13:38</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">4</th>
+                        <td>Ana</td>
+                        <td>23/5/22 23:42</td>
+                        <td>23/5/22 23:43</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                        </td>
+                      </tr>
+                      <tr>
+                        <th scope="row">5</th>
+                        <td>Petro</td>
+                        <td>22/5/22 03:05</td>
+                        <td>22/5/22 03:36</td>
+                        <td>
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star checked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                            <span class = "fa fa-star unchecked"></span>  
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+</body>
+</html>

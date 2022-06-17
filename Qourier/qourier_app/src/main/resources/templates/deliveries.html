@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Deliveries - Qourier</title>
+</head>
+<style>
+    .alert {
+        padding: 20px;
+        margin: auto;
+        float: right;
+        background-color: #b92e2e; /* Red */
+        color: white;
+    }
+</style>
+<body>
+
+<!--  RIDER  -->
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div style="position: absolute; z-index: 1; width: 100%;">
+        <ul id="alert-list" style="padding: 0">
+        </ul>
+    </div>
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div id="non-permitted-content" th:unless="${permitted}">
+                    <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
+                </div>
+                <div id="permitted-content" th:if="${permitted}" class="container">
+                    <h2>Deliveries to be processed</h2>
+                    <p>Progress for each delivery:</p> 
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                  <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">From</th>
+                                    <th scope="col">To</th>
+                                    <th scope="col">Interested</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="delivery : ${deliveries}">
+                                        <td th:text="${delivery.deliveryId}"></td>
+                                        <td th:text="${delivery.originAddr}"></td>
+                                        <td th:text="${delivery.deliveryAddr}"></td>
+                                        <td>
+                                            <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                                <i class="fa fa-duotone fa-check"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input id="rider-id" type="hidden" th:value="${riderId}" />
+
+    <!-- Modal -->
+    <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Beware</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                By clicking Confirm you hereby consent to the rules and conditions associated with the delivery task.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modal-btn-confirm" type="button" class="btn btn-primary" data-dismiss="modal">Confirm</button>
+            </div>
+
+            <input id="modal-attrs-url" type="hidden" value="#" th:value="@{/api/v1/deliveries/bid}" />
+            <input id="modal-attrs-delivery" type="hidden" value="4" />
+        </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+    <script>
+        // Update modal with info from clicked row
+        $('td > button').click(function (event) {
+            let clickedButton = event.delegateTarget;
+            let splitId = clickedButton.id.split('-');
+            let deliveryId = splitId[splitId.length - 1];
+
+            $('#modal-attrs-delivery').val(deliveryId);
+        });
+
+        $('#modal-btn-confirm').click(function (event) {
+            let url = $('#modal-attrs-url').val();
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: JSON.stringify({
+                    ridersId: $('#rider-id').val(),
+                    deliveryId: $('#modal-attrs-delivery').val(),
+                    distance: null
+                }),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8"
+            });
+        });
+
+        // function sleep(ms) {
+        //     return new Promise(resolve => setTimeout(resolve, ms));
+        // }
+        //
+        // async function demo() {
+        //     await sleep(5);
+        //     const alertList = document.getElementById('alert-list');
+        //     let alert = document.createElement('li');
+        //     alert.textContent = 'A job is ready for you ';
+        //     alert.className = 'alert';
+        //     let x = document.createElement('span');
+        //     x.className = 'btn btn-outline-dark';
+        //     x.onclick = function (event) {
+        //         this.parentElement.style.display='none';
+        //     }
+        //     x.innerHTML = '&times';
+        //     alert.appendChild(x);
+        //     alertList.appendChild(alert);
+        // }
+    </script>
+
+</body>
+</html>

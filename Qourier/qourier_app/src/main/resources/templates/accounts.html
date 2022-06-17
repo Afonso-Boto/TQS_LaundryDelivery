@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:include="base :: head"></th:block>
+
+    <title>Profile - Qourier</title>
+</head>
+<body>
+
+<!--  ADMIN  -->
+
+    <nav th:replace="base :: navbar"></nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2><span id="header-account-type" th:text="${filterType.substring(0, 1) + filterType.substring(1).toLowerCase()}">Rider</span> accounts</h2>
+                <form method="GET" action="#" th:action="@{/accounts}">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <label for="filter-active">Active</label>
+                            <input id="filter-active" type="checkbox" name="active" value="true" th:checked="${filterActive}" />
+                        </div>
+                        <div>
+                            <label for="filter-type">Type</label>
+                            <select id="filter-type" name="type" th:value="${filterType}">
+                                <option value="RIDER" selected th:selected="${filterType == 'RIDER'}">Rider</option>
+                                <option value="CUSTOMER" th:selected="${filterType == 'CUSTOMER'}">Customer</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="filter-page">Page</label>
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" />
+                        </div>
+
+                        <button id="filter-apply" type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+                <table id="table-riders" class="table table-hover" th:if="${filterType == 'RIDER'}">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Profile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="riderAcc : ${riderList}">
+                            <td th:text="${riderAcc.account.email}">0</td>
+                            <td th:text="${riderAcc.account.name}">Diego</td>
+                            <td>
+                                <a href="profile_rider.html?role=admin" th:href="@{/profile/id/{id}(id=${riderAcc.account.email})}">
+                                    <button type="button" class="btn btn-primary">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table id="table-customers" class="table table-hover" th:if="${filterType == 'CUSTOMER'}">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Service type</th>
+                        <th scope="col">Profile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="customerAcc : ${customerList}">
+                        <td th:text="${customerAcc.account.email}">1</td>
+                        <td th:text="${customerAcc.account.name}">Cristina Laundry</td>
+                        <td th:text="${customerAcc.servType}">Laundry</td>
+                        <td>
+                            <a href="profile_customer.html?role=admin" th:href="@{/profile/id/{id}(id=${customerAcc.account.email})}">
+                                <button type="button" class="btn btn-primary">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:include="base :: scripts"></th:block>
+    <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+    <script>
+
+        let filterActive = $('#filter-active');
+        let filterType = $('#filter-type');
+
+        // $('#filter-riders-apply').click(function () {
+        //     let active = filterActive.prop('checked');
+        //     let type = filterType.val();
+        //     applyFilters(active, type);
+        // })
+
+        function applyFilters(active, type) {
+            // TODO prototype, fill with implementation
+
+            if (active) {
+                $('#table-riders > tbody > tr').hide();
+                $('#table-customers > tbody > tr').show();
+            }
+            else {
+                $('#table-riders > tbody > tr').show();
+                $('#table-customers > tbody > tr').hide();
+            }
+
+            if (type === 'rider') {
+                $('#table-riders').show();
+                $('#table-customers').hide();
+                $('#header-account-type').text('Rider');
+            }
+            else {
+                $('#table-riders').hide();
+                $('#table-customers').show();
+                $('#header-account-type').text('Customer');
+            }
+        }
+
+    </script>
+
+</body>
+</html>
