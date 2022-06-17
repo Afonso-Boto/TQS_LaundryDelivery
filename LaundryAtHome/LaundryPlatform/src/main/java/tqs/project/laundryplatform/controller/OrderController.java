@@ -24,7 +24,8 @@ public class OrderController {
     private HashMap<String, Long> ordersUncompleted = new HashMap<>();
 
     @PostMapping("/make-order")
-    public String makeOrder(@RequestBody String formObject, Model model, HttpServletRequest request) {
+    public String makeOrder(
+            @RequestBody String formObject, Model model, HttpServletRequest request) {
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 

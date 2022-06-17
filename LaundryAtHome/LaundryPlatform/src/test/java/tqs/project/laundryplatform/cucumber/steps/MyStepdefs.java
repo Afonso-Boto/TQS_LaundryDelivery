@@ -61,41 +61,42 @@ public class MyStepdefs {
                 CoreMatchers.is("Laundry & Dry Cleaning"));
     }
 
-//    @And("I click the wash option")
-//    public void iClickTheWashOption() {
-//        driver.findElement(By.cssSelector(".col-lg-3:nth-child(1) .font-weight-bold")).click();
-//    }
-//
-//    @Then("I select the {string} for the type")
-//    public void iSelectTheForTheType(String arg0) {
-//        assertThat(driver.findElement(By.cssSelector(".mb-4")).getText(), is("Our Services"));
-//
-//        WebElement dropdown = driver.findElement(By.id("type"));
-//        dropdown.findElement(By.xpath("//option[. = '%s']".formatted(arg0))).click();
-//    }
-//
-//    @And("I select the {string} for the color")
-//    public void iSelectTheForTheColor(String arg0) {
-//        WebElement dropdown = driver.findElement(By.id("color"));
-//        dropdown.findElement(By.xpath("//option[. = '%s']".formatted(arg0))).click();
-//    }
-//
-//    @And("I select {string} as the number")
-//    public void iSelectAsTheNumber(String arg0) {
-//        driver.findElement(By.id("number")).click();
-//        driver.findElement(By.id("number")).sendKeys(arg0);
-//    }
-//
-//    @Then("I click the add button")
-//    public void iClickTheAddButton() {
-//        driver.findElement(By.id("btnAdd")).click();
-//    }
-//
-//    @Then("I click the make order button")
-//    public void iClickTheMakeOrderButton() {
-//        driver.findElement(By.id("btnMakeOrder")).click();
-//        assertThat(driver.switchTo().alert().getText(), is("Order submitted successfully!"));
-//    }
+    //    @And("I click the wash option")
+    //    public void iClickTheWashOption() {
+    //        driver.findElement(By.cssSelector(".col-lg-3:nth-child(1)
+    // .font-weight-bold")).click();
+    //    }
+    //
+    //    @Then("I select the {string} for the type")
+    //    public void iSelectTheForTheType(String arg0) {
+    //        assertThat(driver.findElement(By.cssSelector(".mb-4")).getText(), is("Our Services"));
+    //
+    //        WebElement dropdown = driver.findElement(By.id("type"));
+    //        dropdown.findElement(By.xpath("//option[. = '%s']".formatted(arg0))).click();
+    //    }
+    //
+    //    @And("I select the {string} for the color")
+    //    public void iSelectTheForTheColor(String arg0) {
+    //        WebElement dropdown = driver.findElement(By.id("color"));
+    //        dropdown.findElement(By.xpath("//option[. = '%s']".formatted(arg0))).click();
+    //    }
+    //
+    //    @And("I select {string} as the number")
+    //    public void iSelectAsTheNumber(String arg0) {
+    //        driver.findElement(By.id("number")).click();
+    //        driver.findElement(By.id("number")).sendKeys(arg0);
+    //    }
+    //
+    //    @Then("I click the add button")
+    //    public void iClickTheAddButton() {
+    //        driver.findElement(By.id("btnAdd")).click();
+    //    }
+    //
+    //    @Then("I click the make order button")
+    //    public void iClickTheMakeOrderButton() {
+    //        driver.findElement(By.id("btnMakeOrder")).click();
+    //        assertThat(driver.switchTo().alert().getText(), is("Order submitted successfully!"));
+    //    }
 
     @And("I set the your name as {string}")
     public void iSetTheYourNameAs(String arg0) {
@@ -120,14 +121,14 @@ public class MyStepdefs {
         driver.findElement(By.id("register")).click();
     }
 
-//    @Given("I am login as {string}")
-//    public void iAmLoginAs(String arg0) {
-//        User user = userRepository.findByUsername(arg0).orElseThrow();
-//
-//
-//        iNavigateTo("http://localhost:8080/");
-//        driver.manage().addCookie(new Cookie("id", user.getUsername()));
-//        iNavigateTo("http://localhost:8080/index");
-//        driver.manage().window().setSize(new Dimension(1512, 886));
-//    }
+    //    @Given("I am login as {string}")
+    //    public void iAmLoginAs(String arg0) {
+    //        User user = userRepository.findByUsername(arg0).orElseThrow();
+    //
+    //
+    //        iNavigateTo("http://localhost:8080/");
+    //        driver.manage().addCookie(new Cookie("id", user.getUsername()));
+    //        iNavigateTo("http://localhost:8080/index");
+    //        driver.manage().window().setSize(new Dimension(1512, 886));
+    //    }
 }
