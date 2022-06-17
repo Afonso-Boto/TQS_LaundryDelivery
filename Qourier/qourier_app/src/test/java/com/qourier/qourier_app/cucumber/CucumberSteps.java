@@ -11,6 +11,8 @@ import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
 import com.qourier.qourier_app.repository.RiderRepository;
+import io.cucumber.java.AfterAll;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -53,8 +55,7 @@ public class CucumberSteps {
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
         deliveriesManager.setNewAuctionSpan(2);
 
-//        driver = new HtmlUnitDriver(true);
-        driver = WebDriverManager.firefoxdriver().create();
+        driver = new HtmlUnitDriver(true);
     }
 
     @Given("I am in the {page} page")
@@ -125,7 +126,16 @@ public class CucumberSteps {
     public void initializeAccounts(List<Map<String, String>> dataTable) {
         for (Map<String, String> accountDetails : dataTable) {
             String email = accountDetails.get("email");
-            if (accountRepository.existsById(email)) continue;
+            if (accountRepository.existsById(email)) {
+                Account account = accountRepository.findById(email)
+                        .orElseThrow();
+
+                switch (account.getRole()) {
+                    case RIDER -> riderRepository.deleteById(email);
+                    case CUSTOMER -> customerRepository.deleteById(email);
+                    case ADMIN -> adminRepository.deleteById(email);
+                }
+            }
 
             AccountRole role = AccountRole.valueOf(accountDetails.get("role").toUpperCase());
             AccountState state = AccountState.valueOf(accountDetails.get("state").toUpperCase());
