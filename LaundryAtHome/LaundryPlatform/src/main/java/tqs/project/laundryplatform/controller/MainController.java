@@ -7,11 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
 
 @Controller
+@RequestMapping("/")
+@CrossOrigin(origins = "*")
 @Log4j2
 public class MainController {
 
@@ -33,8 +35,6 @@ public class MainController {
             return REDIRECT_LOGIN;
         }
 
-        System.err.println("cookie verified");
-        System.err.println(getIdFromCookie(request));
         return "index";
     }
 
@@ -86,5 +86,16 @@ public class MainController {
     @GetMapping("/pricing")
     public String pricing(Model model, HttpServletRequest request) {
         return "pricing";
+    }
+
+    @GetMapping("/ok")
+    public String ok(Model model, HttpServletRequest request) {
+        System.out.println("ok");
+        return "ok_page";
+    }
+
+    @GetMapping("/error")
+    public String error(Model model, HttpServletRequest request) {
+        return "error";
     }
 }

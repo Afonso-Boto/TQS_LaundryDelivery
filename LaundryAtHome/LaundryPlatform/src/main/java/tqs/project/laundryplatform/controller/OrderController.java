@@ -17,12 +17,15 @@ import tqs.project.laundryplatform.service.OrderService;
 public class OrderController {
 
     @Autowired OrderService orderService;
+    @Autowired MainController mainController;
+
     private static final String REDIRECT_ORDER = "redirect:/new_order";
 
     private HashMap<String, Long> ordersUncompleted = new HashMap<>();
 
     @PostMapping("/make-order")
-    public String makeOrder(@RequestBody String formObject, HttpServletRequest request) {
+    public String makeOrder(
+            @RequestBody String formObject, Model model, HttpServletRequest request) {
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 
@@ -34,11 +37,12 @@ public class OrderController {
         if (orderId == -1L) return "error";
 
         if (orderService.makeOrder(orderId, orderInfo)) {
+            System.out.println("Order made");
             ordersUncompleted.remove(cookieId);
-            return REDIRECT_ORDER;
+            return "redirect:/ok";
         }
 
-        return "error";
+        return "redirect:/error";
     }
 
     @GetMapping("/init-order")
