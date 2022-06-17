@@ -11,7 +11,6 @@ import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
 import com.qourier.qourier_app.data.dto.BidDTO;
 import com.qourier.qourier_app.data.dto.DeliveryDTO;
-
 import java.util.Base64;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

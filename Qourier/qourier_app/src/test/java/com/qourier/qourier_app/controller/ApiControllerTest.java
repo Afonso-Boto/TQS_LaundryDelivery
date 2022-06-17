@@ -16,7 +16,6 @@ import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
-
 import java.util.Base64;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
