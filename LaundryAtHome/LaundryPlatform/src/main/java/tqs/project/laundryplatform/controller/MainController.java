@@ -2,6 +2,7 @@ package tqs.project.laundryplatform.controller;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
+import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
@@ -14,9 +15,6 @@ import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.OrderRepository;
-
-import java.sql.Date;
-import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/")
