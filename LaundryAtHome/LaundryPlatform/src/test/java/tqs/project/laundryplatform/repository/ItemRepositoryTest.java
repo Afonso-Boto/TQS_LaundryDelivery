@@ -2,6 +2,7 @@ package tqs.project.laundryplatform.repository;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -11,6 +12,10 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import tqs.project.laundryplatform.model.Item;
+import tqs.project.laundryplatform.model.ItemType;
+import tqs.project.laundryplatform.model.Order;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
@@ -26,7 +31,11 @@ public class ItemRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private ItemRepository repository;
+    @Autowired private ItemRepository itemRepository;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private ItemTypeRepository itemTypeRepository;
+
+
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -37,12 +46,23 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        item = new Item();
-        repository.save(item);
+        Order order = new Order();
+        ItemType itemType = new ItemType("test_item_type", 300);
+        item = new Item(2, false, order, itemType);
+        orderRepository.saveAndFlush(order);
+        itemTypeRepository.saveAndFlush(itemType);
+        itemRepository.saveAndFlush(item);
     }
+
+    @Test
+    public void testFindById() {
+        assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
+    }
+
+
 
     @AfterEach
     public void tearDown() {
-        repository.deleteAll();
+        itemRepository.deleteAll();
     }
 }

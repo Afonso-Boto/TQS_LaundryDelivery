@@ -54,4 +54,17 @@ public class ItemType {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ItemType itemType = (ItemType) o;
+
+        if (Double.compare(itemType.price, price) != 0) return false;
+        if (id != null ? !id.equals(itemType.id) : itemType.id != null) return false;
+        return name != null ? name.equals(itemType.name) : itemType.name == null;
+    }
+
 }

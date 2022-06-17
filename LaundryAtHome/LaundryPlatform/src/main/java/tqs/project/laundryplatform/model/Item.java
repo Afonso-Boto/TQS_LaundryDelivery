@@ -41,4 +41,18 @@ public class Item {
     }
 
     public Item() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        if (number != item.number) return false;
+        if (isDark != item.isDark) return false;
+        if (!id.equals(item.id)) return false;
+        return itemType.equals(item.itemType);
+    }
+
 }
