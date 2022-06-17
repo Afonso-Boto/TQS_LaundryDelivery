@@ -1,23 +1,15 @@
 package tqs.project.laundryplatform.cucumber.steps;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import tqs.project.laundryplatform.controller.AuthController;
-import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
-
-import java.util.concurrent.TimeUnit;
 
 public class MyStepdefs {
 
