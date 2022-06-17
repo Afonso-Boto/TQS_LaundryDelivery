@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -109,10 +110,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public boolean complaint(JSONObject json) {
+        long orderId;
+        String title, description;
 
-        long orderId = Long.parseLong(json.getString("orderId"));
-        String title = json.getString("title");
-        String description = json.getString("description");
+        try{
+            orderId = Long.parseLong(json.getString("orderId"));
+            title = json.getString("title");
+            description = json.getString("description");
+        }catch (JSONException e){
+            return false;
+        }
+
 
         if (orderId == -1 || title == null || description == null) return false;
 
