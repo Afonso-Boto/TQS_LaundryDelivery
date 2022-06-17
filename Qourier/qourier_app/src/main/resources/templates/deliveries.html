@@ -20,12 +20,8 @@
 
     <nav th:replace="base :: navbar"></nav>
 
-    <div style="position: absolute; z-index: 1; width: 100%;">
-        <ul id="alert-list" style="padding: 0">
-        </ul>
+    <div id="delivery-notification" style="position: absolute; z-index: 1; width: 100%; display: none">
     </div>
-
-
 
     <div class="container">
         <div class="row">
@@ -34,33 +30,39 @@
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
                 <div id="permitted-content" th:if="${permitted}" class="container">
-                    <h2>Deliveries to be processed</h2>
-                    <p>Progress for each delivery:</p> 
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table">
-                                <thead class="thead-dark">
-                                  <tr>
-                                    <th scope="col">Id</th>
-                                    <th scope="col">From</th>
-                                    <th scope="col">To</th>
-                                    <th scope="col">Interested</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="delivery : ${deliveries}">
-                                        <td th:text="${delivery.deliveryId}"></td>
-                                        <td th:text="${delivery.originAddr}"></td>
-                                        <td th:text="${delivery.deliveryAddr}"></td>
-                                        <td>
-                                            <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                                <i class="fa fa-duotone fa-check"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div id="info-delivery-available">
+                        <h2>Deliveries to be processed</h2>
+                        <p>Progress for each delivery:</p>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">From</th>
+                                        <th scope="col">To</th>
+                                        <th scope="col">Interested</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="delivery : ${deliveries}">
+                                            <td th:text="${delivery.deliveryId}"></td>
+                                            <td th:text="${delivery.originAddr}"></td>
+                                            <td th:text="${delivery.deliveryAddr}"></td>
+                                            <td>
+                                                <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                                    <i class="fa fa-duotone fa-check"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    </div>
+
+                    <div id="info-delivery-assigned" style="display: none">
+                        A delivery has already been assigned
                     </div>
                 </div>
             </div>

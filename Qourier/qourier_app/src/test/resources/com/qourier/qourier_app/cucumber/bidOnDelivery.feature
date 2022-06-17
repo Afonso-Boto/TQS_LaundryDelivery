@@ -20,14 +20,14 @@ Feature: Bid on delivery and get assign to it
       | rider2@hotmail.com | rider | active |
       | rider3@hotmail.com | rider | active |
     * the following deliveries are up:
-      | customer | latitude | longitude | state |
-      | customer@gmail.com | 40 | 40 | bidding |
+      | customer | latitude | longitude |
+      | customer@gmail.com | 40 | 40 |
     * the following bids have been done:
-      | customer            | delivery_lat | delivery_lon | rider              |
-      | customer@gmail.com  | 40           | 40           | rider2@hotmail.com |
+      | customer            | latitude | longitude | rider              | distance |
+      | customer@gmail.com  | 40       | 40        | rider2@hotmail.com | 10       |
     And I am logged in as 'rider1@hotmail.com'
-    * I made a bid for the 'customer@gmail.com' delivery at (40, 40), for which I'm the most apt candidate
     When I go to the Deliveries section
+    And I make a bid for the 'customer@gmail.com' delivery at (40, 40), being 5 units of distance away from the destination
     And I wait for the auction to end
     Then I should receive a notification indicating that I have been accepted
     * I should be the assigned Rider for the delivery
@@ -42,16 +42,16 @@ Feature: Bid on delivery and get assign to it
       | rider2@hotmail.com | rider | active |
       | rider3@hotmail.com | rider | active |
     * the following deliveries are up:
-      | customer | latitude | longitude | state |
-      | customer@gmail.com | 40 | 40 | bidding |
+      | customer | latitude | longitude |
+      | customer@gmail.com | 40 | 40 |
     * the following bids have been done:
-      | customer            | delivery_lat | delivery_lon | rider              |
-      | customer@gmail.com  | 40           | 40           | rider2@hotmail.com |
+      | customer            | latitude | longitude | rider              | distance |
+      | customer@gmail.com  | 40       | 40        | rider2@hotmail.com | 10       |
     And I am logged in as 'rider1@hotmail.com'
-    * I made a bid for the 'customer@gmail.com' delivery at (40, 40), for which I'm the least apt candidate
     When I go to the Deliveries section
+    And I make a bid for the 'customer@gmail.com' delivery at (40.0, 40.0), being 20.0 units of distance away from the destination
     And I wait for the auction to end
     Then I should not receive a notification indicating that I have been accepted
     * I should not be the assigned Rider for the delivery
     * I can bid for another delivery
-    * the delivery job is up for bidding
+    * the delivery job is not up for bidding

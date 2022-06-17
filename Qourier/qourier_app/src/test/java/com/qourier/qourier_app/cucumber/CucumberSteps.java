@@ -2,6 +2,7 @@ package com.qourier.qourier_app.cucumber;
 
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import com.qourier.qourier_app.TestUtils;
 import com.qourier.qourier_app.bids.DeliveriesManager;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
@@ -31,9 +34,11 @@ public class CucumberSteps {
     private final AccountRepository accountRepository;
     private final Rider sampleRider;
     private final Customer sampleCustomer;
-
     private final DeliveriesManager deliveriesManager;
-    private AccountRole currentRole;
+    private final int auctionSpan;
+
+    private Account currentAccount;
+    private Delivery focusedDelivery;
 
     public CucumberSteps(
             RiderRepository riderRepository,
@@ -49,7 +54,8 @@ public class CucumberSteps {
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
-        deliveriesManager.setNewAuctionSpan(2);
+        auctionSpan = 2;
+        deliveriesManager.setNewAuctionSpan(auctionSpan);
 
         driver = new HtmlUnitDriver(true);
     }
@@ -61,34 +67,31 @@ public class CucumberSteps {
 
     @Given("I am logged in as a {accountRole}")
     public void loggedInAs(AccountRole accountRole) {
-        Account account;
         if (accountRole.equals(AccountRole.RIDER)) {
-            account = sampleRider.getAccount();
-            currentRole = account.getRole();
-            if (riderRepository.existsById(account.getEmail()))
-                riderRepository.deleteById(account.getEmail());
+            currentAccount = sampleRider.getAccount();
+            if (riderRepository.existsById(currentAccount.getEmail()))
+                riderRepository.deleteById(currentAccount.getEmail());
             riderRepository.save(sampleRider);
         } else if (accountRole.equals(AccountRole.CUSTOMER)) {
-            account = sampleCustomer.getAccount();
-            currentRole = account.getRole();
-            if (customerRepository.existsById(account.getEmail()))
-                customerRepository.deleteById(account.getEmail());
+            currentAccount = sampleCustomer.getAccount();
+            if (customerRepository.existsById(currentAccount.getEmail()))
+                customerRepository.deleteById(currentAccount.getEmail());
             customerRepository.save(sampleCustomer);
         } else return;
 
         // Two calls have to be made because the document has to be initialized before a cookie can
         // be set
         iAmInPage("");
-        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
+        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, currentAccount.getEmail()));
         iAmInPage("");
     }
 
     @Given("my application has been refused")
     public void applicationRefused() {
-        if (currentRole.equals(AccountRole.RIDER)) {
+        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
             sampleRider.getAccount().setState(AccountState.REFUSED);
             riderRepository.save(sampleRider);
-        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
             sampleCustomer.getAccount().setState(AccountState.REFUSED);
             customerRepository.save(sampleCustomer);
         }
@@ -96,10 +99,10 @@ public class CucumberSteps {
 
     @Given("I have already been accepted to the platform")
     public void applicationHasBeenAccepted() {
-        if (currentRole.equals(AccountRole.RIDER)) {
+        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
             sampleRider.getAccount().setState(AccountState.ACTIVE);
             riderRepository.save(sampleRider);
-        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
             sampleCustomer.getAccount().setState(AccountState.ACTIVE);
             customerRepository.save(sampleCustomer);
         }
@@ -107,11 +110,11 @@ public class CucumberSteps {
 
     @Given("my account is {not}suspended")
     public void accountSuspendedOrNot(boolean not) {
-        if (currentRole.equals(AccountRole.RIDER)) {
+        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
             if (not) sampleRider.getAccount().setState(AccountState.ACTIVE);
             else sampleRider.getAccount().setState(AccountState.SUSPENDED);
             riderRepository.save(sampleRider);
-        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
             if (not) sampleCustomer.getAccount().setState(AccountState.ACTIVE);
             else sampleCustomer.getAccount().setState(AccountState.SUSPENDED);
             customerRepository.save(sampleCustomer);
@@ -144,14 +147,44 @@ public class CucumberSteps {
         }
     }
 
+    @Given("the following deliveries are up:")
+    public void initializeDeliveries(List<Map<String, String>> dataTable) {
+        for (Map<String, String> deliveryDetails : dataTable) {
+            String customerId = deliveryDetails.get("customer");
+            double latitude = Double.parseDouble( deliveryDetails.get("latitude") );
+            double longitude = Double.parseDouble( deliveryDetails.get("longitude") );
+            Customer customer = customerRepository.findById(customerId)
+                    .orElseThrow();
+
+            Delivery delivery = new Delivery(
+                    customer.getEmail(), latitude, longitude, TestUtils.randomString(), TestUtils.randomString()
+            );
+            deliveriesManager.createDelivery(delivery);
+        }
+    }
+
+    @Given("the following bids have been done:")
+    public void initializeBids(List<Map<String, String>> dataTable) {
+        for (Map<String, String> bidDetails : dataTable) {
+            String customerEmail = bidDetails.get("customer");
+            double latitude = Double.parseDouble( bidDetails.get("latitude") );
+            double longitude = Double.parseDouble( bidDetails.get("longitude") );
+            String riderId = bidDetails.get("rider");
+            double distance = Double.parseDouble( bidDetails.get("distance") );
+
+            long deliveryId = getDeliveryId(customerEmail, latitude, longitude).getDeliveryId();
+            deliveriesManager.createBid(new Bid(riderId, deliveryId, distance));
+        }
+    }
+
     @Given("I am logged in as {string}")
     public void loggedInAs(String email) {
-        Account account = accountRepository.findById(email).orElseThrow();
+        currentAccount = accountRepository.findById(email).orElseThrow();
 
         // Two calls have to be made because the document has to be initialized before a cookie can
         // be set
         driver.get("http://localhost:8080/");
-        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, account.getEmail()));
+        driver.manage().addCookie(new Cookie(WebController.COOKIE_ID, currentAccount.getEmail()));
         driver.get("http://localhost:8080/");
         driver.manage().window().setSize(new Dimension(1916, 1076));
     }
@@ -174,17 +207,17 @@ public class CucumberSteps {
     public void registerAs(AccountRole accountRole) {
         String role = accountRole.name().toLowerCase();
         driver.findElement(By.id("btn-register-" + role)).click();
-        currentRole = accountRole;
+        currentAccount.setRole(accountRole);
     }
 
     @When("I fill the registration details")
     public void registerDetailsAs() {
-        if (currentRole.equals(AccountRole.RIDER)) {
+        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
             driver.findElement(By.id("email")).sendKeys("rider_example@mial.com");
             driver.findElement(By.id("password")).sendKeys("secret");
             driver.findElement(By.id("name")).sendKeys("Diegos");
             driver.findElement(By.id("citizen_id")).sendKeys("9901294");
-        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
             driver.findElement(By.id("email")).sendKeys("customer_example@mial.com");
             driver.findElement(By.id("password")).sendKeys("the_password");
             driver.findElement(By.id("name")).sendKeys("Christina Laundry");
@@ -279,6 +312,50 @@ public class CucumberSteps {
         driver.get(url);
     }
 
+    @When("I wait for the auction to end")
+    public void waitAuctionEnd() {
+        await().atLeast(auctionSpan, TimeUnit.SECONDS);
+    }
+
+    @When("I make a bid for the {string} delivery at \\({double}, {double}\\), being {double} units of distance away from the destination")
+    public void iMakeBidWithDistance(String customerEmail, double latitude, double longitude, double distance) {
+        focusedDelivery = getDeliveryId(customerEmail, latitude, longitude);
+        deliveriesManager.createBid(new Bid(currentAccount.getEmail(), focusedDelivery.getDeliveryId(), distance));
+    }
+
+    @Then("I should {not}receive a notification indicating that I have been accepted")
+    public void iShouldReceiveDeliveryAcceptedNotification(boolean not) {
+        WebElement alert = driver.findElement(By.id("delivery-notification"));
+        if (not) assertThat(alert.isDisplayed()).isFalse();
+        else assertThat(alert.isDisplayed()).isTrue();
+    }
+
+    @Then("I should {not}be the assigned Rider for the delivery")
+    public void iShouldBeDeliveryAssignedRider(boolean not) {
+        Delivery updatedDelivery = deliveriesManager.getDelivery(focusedDelivery.getDeliveryId());
+        if (not) assertThat(updatedDelivery.getRiderId()).isNotEqualTo(currentAccount.getEmail());
+        else assertThat(updatedDelivery.getRiderId()).isEqualTo(currentAccount.getEmail());
+    }
+
+    @Then("I can {not}bid for another delivery")
+    public void assertBidAbility(boolean not) {
+        WebElement infoDeliveriesAvailable = driver.findElement(By.id("info-delivery-available"));
+        WebElement infoDeliveryAlreadyAssigned = driver.findElement(By.id("info-delivery-assigned"));
+        if (not) {
+            assertThat(infoDeliveriesAvailable.isDisplayed()).isFalse();
+            assertThat(infoDeliveryAlreadyAssigned.isDisplayed()).isTrue();
+        } else {
+            assertThat(infoDeliveriesAvailable.isDisplayed()).isTrue();
+            assertThat(infoDeliveryAlreadyAssigned.isDisplayed()).isFalse();
+        }
+    }
+
+    @Then("the delivery job is not up for bidding")
+    public void assertDeliveryNotUpForBidding() {
+        assertThat(deliveriesManager.getDelivery(focusedDelivery.getDeliveryId()).getDeliveryState())
+                .isNotEqualTo(DeliveryState.BID_CHECK);
+    }
+
     @Then("my status is {accountState}")
     public void statusIs(AccountState accountState) {
         String state = accountState.name().toLowerCase();
@@ -287,14 +364,14 @@ public class CucumberSteps {
 
     @Then("the details are the same as the ones in the registration form")
     public void profileDetailsSameAsRegistration() {
-        if (currentRole.equals(AccountRole.RIDER)) {
+        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
             assertThat(driver.findElement(By.id("details-email")).getText())
                     .isEqualTo("rider_example@mial.com");
             assertThat(driver.findElement(By.id("details-citizen-id")).getText())
                     .isEqualTo("9901294");
             assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Diegos");
             assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Rider");
-        } else if (currentRole.equals(AccountRole.CUSTOMER)) {
+        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
             assertThat(driver.findElement(By.id("details-email")).getText())
                     .isEqualTo("customer_example@mial.com");
             assertThat(driver.findElement(By.id("details-service-type")).getText())
@@ -310,10 +387,10 @@ public class CucumberSteps {
         List<List<WebElement>> statsElements = new ArrayList<>();
 
         statsElements.add(driver.findElements(By.id("statistics-section")));
-        if (currentRole == AccountRole.RIDER) {
+        if (currentAccount.getRole() == AccountRole.RIDER) {
             statsElements.add(driver.findElements(By.id("statistics-deliveries-over-time")));
             statsElements.add(driver.findElements(By.id("statistics-average-time-spent")));
-        } else if (currentRole == AccountRole.CUSTOMER) {
+        } else if (currentAccount.getRole() == AccountRole.CUSTOMER) {
             statsElements.add(driver.findElements(By.id("statistics-delivery-request-rate")));
             statsElements.add(driver.findElements(By.id("statistics-delivery-average-time")));
         }
@@ -365,12 +442,7 @@ public class CucumberSteps {
 
     @And("I wait {int} seconds for the auction to end")
     public void iWaitSecondsForTheAuctionToEnd(int secondsToWait) {
-        try {
-            // TODO: use awaitility
-            Thread.sleep(secondsToWait * 1000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        await().atLeast(secondsToWait, TimeUnit.SECONDS);
     }
 
     @And("I click the check button on the line of the first delivery presented")
@@ -431,5 +503,13 @@ public class CucumberSteps {
     private void startOn(String pagePath) {
         driver.get("http://localhost:8080/" + pagePath);
         driver.manage().window().setSize(new Dimension(1916, 1076));
+    }
+
+    private Delivery getDeliveryId(String customerEmail, double latitude, double longitude) {
+        return deliveriesManager.getDeliveriesFromCustomer(customerEmail)
+                .stream()
+                .filter(delivery -> delivery.getLatitude() == latitude && delivery.getLongitude() == longitude)
+                .findFirst()
+                .orElseThrow();
     }
 }
