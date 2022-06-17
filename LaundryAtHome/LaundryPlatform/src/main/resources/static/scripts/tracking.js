@@ -2,7 +2,7 @@ function makeComplaint() {
     console.log("makeComplaint");
 
     if (document.getElementById("complaint_name").value === "" || document.getElementById("complaint_description").value === "") {
-        alert("Please enter a name and a description!");
+        alert("Please fill in all fields!");
         return;
     }
 
@@ -10,8 +10,6 @@ function makeComplaint() {
     complaint['orderId'] = document.getElementById("order_id").textContent;
     complaint['title'] = document.getElementById("complaint_name").value;
     complaint['description'] = document.getElementById("complaint_description").value;
-
-    console.log(complaint);
 
     $.ajax({
         type: 'POST',
@@ -33,7 +31,7 @@ function makeComplaint() {
 function cancelOrder() {
     console.log("cancelOrder");
 
-    var orderId = document.getElementById("order_id").value;
+    var orderId = document.getElementById("order_id").textContent;
 
     $.ajax({
         type: 'POST',
