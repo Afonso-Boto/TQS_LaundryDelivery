@@ -1,5 +1,9 @@
 package tqs.project.laundryplatform.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.sql.Date;
+import java.util.Optional;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +17,6 @@ import tqs.project.laundryplatform.model.Complaint;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.ComplaintRepository;
 import tqs.project.laundryplatform.repository.OrderRepository;
-
-import java.sql.Date;
-import java.util.Optional;
-
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
