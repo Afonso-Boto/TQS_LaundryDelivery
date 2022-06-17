@@ -44,7 +44,8 @@ public class ApiController {
     }
 
     @PostMapping("/deliveries")
-    public ResponseEntity<Delivery> deliveriesPost(@RequestBody DeliveryDTO newDelivery, @RequestParam String basicAuth) {
+    public ResponseEntity<Delivery> deliveriesPost(
+            @RequestBody DeliveryDTO newDelivery, @RequestParam String basicAuth) {
         String customerId = newDelivery.getCustomerId();
 
         // Check if auth is right
@@ -69,7 +70,7 @@ public class ApiController {
         String basicAuth = data.get(2);
 
         // Check if auth is right
-        if(basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes()))){
+        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes()))) {
             deliveriesManager.setDeliveryState(Long.valueOf(deliveryId), riderId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -78,7 +79,8 @@ public class ApiController {
     }
 
     @PostMapping("/deliveries/bid")
-    public ResponseEntity<Bid> deliveriesBidPost(@RequestBody BidDTO newBid, @RequestParam String basicAuth) {
+    public ResponseEntity<Bid> deliveriesBidPost(
+            @RequestBody BidDTO newBid, @RequestParam String basicAuth) {
         String riderId = newBid.getRidersId();
 
         // Check if auth is right
@@ -93,21 +95,32 @@ public class ApiController {
     @PostMapping("/accounts/login")
     public ResponseEntity<String> accountsLoginPost(@RequestBody LoginRequest request) {
         LoginResult result = accountManager.login(request);
-        if (result.equals(LoginResult.WRONG_CREDENTIALS) || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
+        if (result.equals(LoginResult.WRONG_CREDENTIALS)
+                || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        return new ResponseEntity<String>(Base64.getEncoder().encodeToString(request.getEmail().getBytes()), HttpStatus.ACCEPTED);
+        return new ResponseEntity<String>(
+                Base64.getEncoder().encodeToString(request.getEmail().getBytes()),
+                HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/accounts/register/rider")
-    public ResponseEntity<String> accountsRegisterRiderPost(@RequestBody RiderRegisterRequest request) {
-        if (accountManager.registerRider(request)) return new ResponseEntity<String>(Base64.getEncoder().encodeToString(request.getEmail().getBytes()), HttpStatus.CREATED);
+    public ResponseEntity<String> accountsRegisterRiderPost(
+            @RequestBody RiderRegisterRequest request) {
+        if (accountManager.registerRider(request))
+            return new ResponseEntity<String>(
+                    Base64.getEncoder().encodeToString(request.getEmail().getBytes()),
+                    HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/accounts/register/customer")
-    public ResponseEntity<String> accountsRegisterCustomerPost(@RequestBody CustomerRegisterRequest request) {
-        if (accountManager.registerCustomer(request)) return new ResponseEntity<String>(Base64.getEncoder().encodeToString(request.getEmail().getBytes()), HttpStatus.CREATED);
+    public ResponseEntity<String> accountsRegisterCustomerPost(
+            @RequestBody CustomerRegisterRequest request) {
+        if (accountManager.registerCustomer(request))
+            return new ResponseEntity<String>(
+                    Base64.getEncoder().encodeToString(request.getEmail().getBytes()),
+                    HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }

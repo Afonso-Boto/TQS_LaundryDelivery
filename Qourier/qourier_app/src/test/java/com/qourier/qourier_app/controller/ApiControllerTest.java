@@ -127,13 +127,13 @@ class ApiControllerTest {
         String resultDeliveriesString = result.getResponse().getContentAsString();
         String expectedDeliveries =
                 "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0"
-                    + " street\",\"originAddr\":\"Test0 origin street\",\"riderId\":null,"
-                    + "\"latitude\":10.0,\"longitude\":20.0,"
-                    + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
-                    + "{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3"
-                    + " street\",\"originAddr\":\"Test3 origin street\",\"riderId\":null,"
-                    + "\"latitude\":13.0,\"longitude\":23.0,"
-                    + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
+                        + " street\",\"originAddr\":\"Test0 origin street\",\"riderId\":null,"
+                        + "\"latitude\":10.0,\"longitude\":20.0,"
+                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
+                        + "{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3"
+                        + " street\",\"originAddr\":\"Test3 origin street\",\"riderId\":null,"
+                        + "\"latitude\":13.0,\"longitude\":23.0,"
+                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
         assertEquals(expectedDeliveries, resultDeliveriesString);
     }
 
@@ -153,7 +153,11 @@ class ApiControllerTest {
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries")
-                                        .param("basicAuth", Base64.getEncoder().encodeToString("test0@email.com".getBytes()))
+                                        .param(
+                                                "basicAuth",
+                                                Base64.getEncoder()
+                                                        .encodeToString(
+                                                                "test0@email.com".getBytes()))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(json))
                         .andExpect(status().isCreated())
@@ -176,7 +180,11 @@ class ApiControllerTest {
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries")
-                                        .param("basicAuth", Base64.getEncoder().encodeToString("wrong@email.com".getBytes()))
+                                        .param(
+                                                "basicAuth",
+                                                Base64.getEncoder()
+                                                        .encodeToString(
+                                                                "wrong@email.com".getBytes()))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(json))
                         .andExpect(status().isForbidden())
@@ -200,7 +208,14 @@ class ApiControllerTest {
     @DisplayName("Update progress for delivery")
     void whenUpdatingProgress_thenProgressShouldUpdate() throws Exception {
         // Update progress
-        mvc.perform(post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com", Base64.getEncoder().encodeToString("rider@email.com".getBytes())))
+        mvc.perform(
+                        post("/api/v1/deliveries/progress")
+                                .param(
+                                        "data",
+                                        "1",
+                                        "rider@email.com",
+                                        Base64.getEncoder()
+                                                .encodeToString("rider@email.com".getBytes())))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -211,7 +226,14 @@ class ApiControllerTest {
     @DisplayName("Try to update progress for delivery but fail Auth")
     void whenUpdatingProgressWithWrongCreds_thenProgressShouldntUpdate() throws Exception {
         // Update progress
-        mvc.perform(post("/api/v1/deliveries/progress").param("data", "1", "rider@email.com", Base64.getEncoder().encodeToString("wrong@email.com".getBytes())))
+        mvc.perform(
+                        post("/api/v1/deliveries/progress")
+                                .param(
+                                        "data",
+                                        "1",
+                                        "rider@email.com",
+                                        Base64.getEncoder()
+                                                .encodeToString("wrong@email.com".getBytes())))
                 .andExpect(status().isForbidden())
                 .andReturn();
 
@@ -228,7 +250,11 @@ class ApiControllerTest {
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries/bid")
-                                        .param("basicAuth", Base64.getEncoder().encodeToString("rider@email.com".getBytes()))
+                                        .param(
+                                                "basicAuth",
+                                                Base64.getEncoder()
+                                                        .encodeToString(
+                                                                "rider@email.com".getBytes()))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(json))
                         .andExpect(status().isCreated())
@@ -247,7 +273,11 @@ class ApiControllerTest {
         MvcResult result =
                 mvc.perform(
                                 post("/api/v1/deliveries/bid")
-                                        .param("basicAuth", Base64.getEncoder().encodeToString("wrong@email.com".getBytes()))
+                                        .param(
+                                                "basicAuth",
+                                                Base64.getEncoder()
+                                                        .encodeToString(
+                                                                "wrong@email.com".getBytes()))
                                         .contentType(MediaType.APPLICATION_JSON)
                                         .content(json))
                         .andExpect(status().isForbidden())
@@ -263,7 +293,10 @@ class ApiControllerTest {
 
         // Create Rider account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new RiderRegisterRequest("rider@email.com", "password", "Diego", "134567890"));
+        String json =
+                objectMapper.writeValueAsString(
+                        new RiderRegisterRequest(
+                                "rider@email.com", "password", "Diego", "134567890"));
 
         MvcResult result =
                 mvc.perform(
@@ -272,7 +305,9 @@ class ApiControllerTest {
                                         .content(json))
                         .andExpect(status().isCreated())
                         .andReturn();
-        assertEquals(result.getResponse().getContentAsString(),Base64.getEncoder().encodeToString("rider@email.com".getBytes()));
+        assertEquals(
+                result.getResponse().getContentAsString(),
+                Base64.getEncoder().encodeToString("rider@email.com".getBytes()));
     }
 
     @Test
@@ -282,7 +317,10 @@ class ApiControllerTest {
 
         // Create Rider account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new RiderRegisterRequest("rider@email.com", "password", "Diego", "134567890"));
+        String json =
+                objectMapper.writeValueAsString(
+                        new RiderRegisterRequest(
+                                "rider@email.com", "password", "Diego", "134567890"));
 
         MvcResult result =
                 mvc.perform(
@@ -300,7 +338,10 @@ class ApiControllerTest {
 
         // Create Customer Account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new CustomerRegisterRequest("customer@email.com", "password", "notDiego", "Fruits"));
+        String json =
+                objectMapper.writeValueAsString(
+                        new CustomerRegisterRequest(
+                                "customer@email.com", "password", "notDiego", "Fruits"));
 
         MvcResult result =
                 mvc.perform(
@@ -309,17 +350,23 @@ class ApiControllerTest {
                                         .content(json))
                         .andExpect(status().isCreated())
                         .andReturn();
-        assertEquals(result.getResponse().getContentAsString(),Base64.getEncoder().encodeToString("customer@email.com".getBytes()));
+        assertEquals(
+                result.getResponse().getContentAsString(),
+                Base64.getEncoder().encodeToString("customer@email.com".getBytes()));
     }
 
     @Test
     @DisplayName("Try to create customer account but already exists")
-    void whenCreatingCustomerAccountThatExists_thenAccountAuthTokenShouldntBeGiven() throws Exception {
+    void whenCreatingCustomerAccountThatExists_thenAccountAuthTokenShouldntBeGiven()
+            throws Exception {
         when(accountManager.registerCustomer(any())).thenReturn(false);
 
         // Create Customer Account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new CustomerRegisterRequest("customer@email.com", "password", "notDiego", "Fruits"));
+        String json =
+                objectMapper.writeValueAsString(
+                        new CustomerRegisterRequest(
+                                "customer@email.com", "password", "notDiego", "Fruits"));
 
         MvcResult result =
                 mvc.perform(
@@ -337,7 +384,8 @@ class ApiControllerTest {
 
         // Create Customer Account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
+        String json =
+                objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
 
         MvcResult result =
                 mvc.perform(
@@ -347,7 +395,9 @@ class ApiControllerTest {
                         .andExpect(status().isAccepted())
                         .andReturn();
 
-        assertEquals(result.getResponse().getContentAsString(),Base64.getEncoder().encodeToString("account@gmail.com".getBytes()));
+        assertEquals(
+                result.getResponse().getContentAsString(),
+                Base64.getEncoder().encodeToString("account@gmail.com".getBytes()));
     }
 
     @Test
@@ -357,7 +407,8 @@ class ApiControllerTest {
 
         // Create Customer Account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
+        String json =
+                objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
 
         MvcResult result =
                 mvc.perform(
@@ -375,7 +426,8 @@ class ApiControllerTest {
 
         // Create Customer Account
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
+        String json =
+                objectMapper.writeValueAsString(new LoginRequest("account@gmail.com", "password"));
 
         MvcResult result =
                 mvc.perform(
