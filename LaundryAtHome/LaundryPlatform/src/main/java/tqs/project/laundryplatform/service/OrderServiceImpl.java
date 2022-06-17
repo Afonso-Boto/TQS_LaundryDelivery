@@ -113,14 +113,13 @@ public class OrderServiceImpl implements OrderService {
         long orderId;
         String title, description;
 
-        try{
+        try {
             orderId = Long.parseLong(json.getString("orderId"));
             title = json.getString("title");
             description = json.getString("description");
-        }catch (JSONException e){
+        } catch (JSONException e) {
             return false;
         }
-
 
         if (orderId == -1 || title == null || description == null) return false;
 

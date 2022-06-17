@@ -17,29 +17,26 @@ import tqs.project.laundryplatform.repository.OrderRepository;
 import java.sql.Date;
 import java.util.Optional;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-    @InjectMocks
-    private OrderServiceImpl service;
+    @InjectMocks private OrderServiceImpl service;
 
-    @Mock( lenient = true)
+    @Mock(lenient = true)
     private ComplaintRepository complaintRepository;
 
-    @Mock( lenient = true)
+    @Mock(lenient = true)
     private OrderRepository orderRepository;
-
 
     @BeforeEach
     void setUp() {
         Order order = new Order(1L, new Date(2022, 12, 12), 20.99);
 
         Mockito.when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
-        Mockito.when(complaintRepository.save(Mockito.any(Complaint.class))).thenReturn(new Complaint());
+        Mockito.when(complaintRepository.save(Mockito.any(Complaint.class)))
+                .thenReturn(new Complaint());
     }
 
     @Test
@@ -71,5 +68,4 @@ public class OrderServiceTest {
     void testInvalidCancelOrder() {
         assertThat(service.cancelOrder(928373L)).isEqualTo(false);
     }
-
 }
