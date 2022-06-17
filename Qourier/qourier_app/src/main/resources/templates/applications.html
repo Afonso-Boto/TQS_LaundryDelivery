@@ -35,12 +35,12 @@
                     <form id="rider-form-link-accept" method="POST" action="#">
                         <button type="submit" class="btn btn-success">Accept</button>
                     </form>
+                </div>
                 <div id="rider-form-buttons-refused" class="modal-footer" style="display: none;">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <form id="rider-form-link-reconsider" method="POST" action="#">
                         <button type="submit" class="btn btn-primary">Reconsider</button>
                     </form>
-                </div>
                 </div>
             </div>
         </div>
@@ -70,12 +70,12 @@
                     <form id="customer-form-link-accept" method="POST" action="#">
                         <button type="submit" class="btn btn-success">Accept</button>
                     </form>
+                </div>
                 <div id="customer-form-buttons-refused" class="modal-footer" style="display: none">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <form id="customer-form-link-reconsider" method="POST" action="#">
                         <button type="submit" class="btn btn-primary">Reconsider</button>
                     </form>
-                </div>
                 </div>
             </div>
         </div>
@@ -103,7 +103,7 @@
                             <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" />
                         </div>
 
-                        <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>
+                        <button id="filter-apply" type="submit" class="btn btn-primary">Apply</button>
                     </div>
                 </form>
                 <table id="table-riders" class="table table-hover" th:if="${filterType == 'RIDER'}">

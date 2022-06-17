@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
@@ -51,7 +53,8 @@ public class CucumberSteps {
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
         deliveriesManager.setNewAuctionSpan(2);
 
-        driver = new HtmlUnitDriver(true);
+//        driver = new HtmlUnitDriver(true);
+        driver = WebDriverManager.firefoxdriver().create();
     }
 
     @Given("I am in the {page} page")
@@ -238,7 +241,12 @@ public class CucumberSteps {
 
     @When("I open the {string} application")
     public void openApplication(String email) {
-        WebElement applicationButton = driver.findElement(By.id("btn-form-rider-" + TestUtils.hasher(email)));
+        WebElement applicationButton;
+        try {
+            applicationButton = driver.findElement(By.id("btn-form-rider-" + TestUtils.hasher(email)));
+        } catch (NoSuchElementException ex) {
+            applicationButton = driver.findElement(By.id("btn-form-customer-" + TestUtils.hasher(email)));
+        }
         applicationButton.click();
     }
 
@@ -334,11 +342,16 @@ public class CucumberSteps {
         }
     }
 
-    @Then("the status of {string} is {accountState}")
-    public void assertAccountState(String email, AccountState state) {
+    @Then("the status of {string} on the profile is {accountState}")
+    public void assertAccountStateOnProfile(String email, AccountState state) {
         String detailsState = driver.findElement(By.id("details-state")).getText();
         assertThat(AccountState.valueOf(detailsState.toUpperCase())).isEqualTo(state);
 
+        assertAccountState(email, state);
+    }
+
+    @Then("the status of {string} is {accountState}")
+    public void assertAccountState(String email, AccountState state) {
         Optional<Account> accountOptional = accountRepository.findById(email);
         assertThat(accountOptional).isPresent();
         Account account = accountOptional.get();
