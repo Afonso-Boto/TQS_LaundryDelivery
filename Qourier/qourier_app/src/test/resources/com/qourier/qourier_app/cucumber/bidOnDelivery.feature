@@ -13,14 +13,15 @@ Feature: Bid on delivery and get assign to it
     Then My id should be assigned to the delivery
 
   Scenario: Delivery accepted and notified
-    Given the following deliveries are up:
-      | customer | latitude | longitude | state |
-      | customer@gmail.com | 40 | 40 | bidding |
-    * the following accounts exist:
+    Given the following accounts exist:
       | email | role | state |
+      | customer@gmail.com | customer | active |
       | rider1@hotmail.com | rider | active |
       | rider2@hotmail.com | rider | active |
       | rider3@hotmail.com | rider | active |
+    * the following deliveries are up:
+      | customer | latitude | longitude | state |
+      | customer@gmail.com | 40 | 40 | bidding |
     * the following bids have been done:
       | customer            | delivery_lat | delivery_lon | rider              |
       | customer@gmail.com  | 40           | 40           | rider2@hotmail.com |
@@ -34,14 +35,15 @@ Feature: Bid on delivery and get assign to it
     * the delivery job is not up for bidding
 
   Scenario: Delivery not accepted, and therefore not notified
-    Given the following deliveries are up:
-      | customer | latitude | longitude | state |
-      | customer@gmail.com | 40 | 40 | bidding |
-    * the following accounts exist:
+    Given the following accounts exist:
       | email | role | state |
+      | customer@gmail.com | customer | active |
       | rider1@hotmail.com | rider | active |
       | rider2@hotmail.com | rider | active |
       | rider3@hotmail.com | rider | active |
+    * the following deliveries are up:
+      | customer | latitude | longitude | state |
+      | customer@gmail.com | 40 | 40 | bidding |
     * the following bids have been done:
       | customer            | delivery_lat | delivery_lon | rider              |
       | customer@gmail.com  | 40           | 40           | rider2@hotmail.com |
