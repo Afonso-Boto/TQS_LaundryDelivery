@@ -21,8 +21,18 @@ public class ParameterTypes {
         return AccountState.valueOf(stateStr.toUpperCase());
     }
 
+    @ParameterType("pending|refused")
+    public AccountState applicationsFilterType(String stateStr) {
+        return AccountState.valueOf(stateStr.toUpperCase());
+    }
+
     @ParameterType("activate|suspend")
     public String accountAction(String action) {
+        return action;
+    }
+
+    @ParameterType("accept|refuse|reconsider")
+    public String applicationAction(String action) {
         return action;
     }
 
@@ -31,7 +41,7 @@ public class ParameterTypes {
         return (pageName.equals("Main")) ? "" : "login";
     }
 
-    @ParameterType("'(pending|refused|active|suspended)'")
+    @ParameterType("(pending|refused|active|suspended)")
     public AccountState accountState(String accountStateStr) {
         return AccountState.valueOf(accountStateStr.toUpperCase());
     }

@@ -18,10 +18,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,24 +73,6 @@ public class WebController {
         return REDIRECT_INDEX;
     }
 
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // See if we are logged in or not
-        if (hasCookie(request)) {
-            Cookie jwtTokenCookie = new Cookie(COOKIE_ID, "null");
-
-            jwtTokenCookie.setMaxAge(0);
-            jwtTokenCookie.setSecure(false);
-            jwtTokenCookie.setHttpOnly(true);
-
-            // Set cookie onto user
-            response.addCookie(jwtTokenCookie);
-            return REDIRECT_LOGIN;
-        } else {
-            return "error";
-        }
-    }
-
     @PostMapping("/register_customer")
     public String registerCustomerPost(
             @ModelAttribute CustomerRegisterRequest request, HttpServletResponse response) {
@@ -109,6 +93,24 @@ public class WebController {
         setCookie(response, request.getEmail());
 
         return REDIRECT_INDEX;
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // See if we are logged in or not
+        if (hasCookie(request)) {
+            Cookie jwtTokenCookie = new Cookie(COOKIE_ID, "null");
+
+            jwtTokenCookie.setMaxAge(0);
+            jwtTokenCookie.setSecure(false);
+            jwtTokenCookie.setHttpOnly(true);
+
+            // Set cookie onto user
+            response.addCookie(jwtTokenCookie);
+            return REDIRECT_LOGIN;
+        } else {
+            return "error";
+        }
     }
 
     @GetMapping("/")
@@ -243,6 +245,34 @@ public class WebController {
         return "accounts";
     }
 
+    @GetMapping("/applications")
+    public String applications(
+            Model model,
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "rider", name = "type")
+                    AccountRole accountRole,
+            @RequestParam(required = false, defaultValue = "false", name = "pending")
+                    boolean pending) {
+        AccountRole role = ADMIN;
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        fillModelWithRiderCustomerQueries(
+                model,
+                pageNumber,
+                accountRole,
+                pending ? List.of(AccountState.PENDING) : List.of(AccountState.REFUSED));
+
+        model.addAllAttributes(
+                Map.of(
+                        "role", role,
+                        "filterPending", pending,
+                        "hasher", (Function<String, String>) DigestUtils::sha256Hex));
+        return "applications";
+    }
+
     @GetMapping("/profile/id/{id}")
     public String profileById(Model model, HttpServletRequest request, @PathVariable String id) {
 
@@ -307,6 +337,8 @@ public class WebController {
     public String profileActivateById(
             Model model, HttpServletRequest request, @PathVariable String id) {
 
+        if (!verifyCookie(request, ADMIN)) return REDIRECT_INDEX;
+
         accountManager.activateAccount(id);
 
         return profileById(model, request, id);
@@ -316,9 +348,31 @@ public class WebController {
     public String profileSuspendById(
             Model model, HttpServletRequest request, @PathVariable String id) {
 
+        if (!verifyCookie(request, ADMIN)) return REDIRECT_INDEX;
+
         accountManager.suspendAccount(id);
 
         return profileById(model, request, id);
+    }
+
+    @PostMapping("/applications/{action}/{id}")
+    public String actionOnApplication(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable String action,
+            @PathVariable String id) {
+
+        if (!verifyCookie(request, ADMIN)) return REDIRECT_INDEX;
+
+        switch (action) {
+            case "accept" -> accountManager.acceptApplication(id);
+            case "refuse" -> accountManager.refuseApplication(id);
+            case "reconsider" -> accountManager.reconsiderApplication(id);
+        }
+
+        AccountDTO account = accountManager.getAccount(id);
+
+        return applications(model, request, 0, account.getRole(), true);
     }
 
     @Bean

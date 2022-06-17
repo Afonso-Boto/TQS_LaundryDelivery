@@ -11,7 +11,7 @@
 
     <nav th:replace="base :: navbar"></nav>
 
-    <div class="modal fade" id="rider-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
+    <div class="modal" id="rider-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -27,28 +27,26 @@
                     <p>Time: <span id="rider-form-details-time"></span></p>
                     <p>State: <span id="rider-form-details-state"></span></p>
                 </div>
-                <div class="modal-footer">
-                    <div id="rider-form-buttons-pending">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a id="rider-form-link-refuse" href="#">
-                            <button type="button" class="btn btn-danger">Refuse</button>
-                        </a>
-                        <a id="rider-form-link-accept" href="#">
-                            <button type="button" class="btn btn-success">Accept</button>
-                        </a>
-                    </div>
-                    <div id="rider-form-buttons-refused">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a id="rider-form-link-reconsider" href="#">
-                            <button type="button" class="btn btn-primary">Reconsider</button>
-                        </a>
-                    </div>
+                <div id="rider-form-buttons-pending" class="modal-footer" style="display: none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form id="rider-form-link-refuse" method="POST" action="#">
+                        <button type="submit" class="btn btn-danger">Refuse</button>
+                    </form>
+                    <form id="rider-form-link-accept" method="POST" action="#">
+                        <button type="submit" class="btn btn-success">Accept</button>
+                    </form>
+                </div>
+                <div id="rider-form-buttons-refused" class="modal-footer" style="display: none;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form id="rider-form-link-reconsider" method="POST" action="#">
+                        <button type="submit" class="btn btn-primary">Reconsider</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="customer-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
+    <div class="modal" id="customer-form" tabindex="-1" role="dialog" aria-labelledby="rider-form-label" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -64,22 +62,20 @@
                     <p>Time: <span id="customer-form-details-time"></span></p>
                     <p>State: <span id="customer-form-details-state"></span></p>
                 </div>
-                <div class="modal-footer">
-                    <div id="customer-form-buttons-pending" style="display: none">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a id="customer-form-link-refuse" href="#">
-                            <button type="button" class="btn btn-danger">Refuse</button>
-                        </a>
-                        <a id="customer-form-link-accept" href="#">
-                            <button type="button" class="btn btn-success">Accept</button>
-                        </a>
-                    </div>
-                    <div id="customer-form-buttons-refused" style="display: none">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <a id="customer-form-link-reconsider" href="#">
-                            <button type="button" class="btn btn-primary">Reconsider</button>
-                        </a>
-                    </div>
+                <div id="customer-form-buttons-pending" class="modal-footer" style="display: none">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form id="customer-form-link-refuse" method="POST" action="#">
+                        <button type="submit" class="btn btn-danger">Refuse</button>
+                    </form>
+                    <form id="customer-form-link-accept" method="POST" action="#">
+                        <button type="submit" class="btn btn-success">Accept</button>
+                    </form>
+                </div>
+                <div id="customer-form-buttons-refused" class="modal-footer" style="display: none">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form id="customer-form-link-reconsider" method="POST" action="#">
+                        <button type="submit" class="btn btn-primary">Reconsider</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -93,21 +89,21 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <label for="filter-pending">Pending</label>
-                            <input type="checkbox" id="filter-pending" name="pending" checked th:value="${filterPending}" />
+                            <input type="checkbox" id="filter-pending" name="pending" value="true" th:checked="${filterPending}" />
                         </div>
                         <div>
                             <label for="filter-type">Type</label>
                             <select id="filter-type" name="type" th:value="${filterType}">
-                                <option value="RIDER" selected>Rider</option>
-                                <option value="CUSTOMER">Customer</option>
+                                <option value="RIDER" selected th:selected="${filterType == 'RIDER'}">Rider</option>
+                                <option value="CUSTOMER" th:selected="${filterType == 'CUSTOMER'}">Customer</option>
                             </select>
                         </div>
                         <div>
                             <label for="filter-page">Page</label>
-                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" th:max="${filterPageMax} - 1" />
+                            <input id="filter-page" type="number" name="page" min="0" value="0" th:value="${filterPage}" />
                         </div>
 
-                        <button id="filter-riders-apply" type="submit" class="btn btn-primary">Apply</button>
+                        <button id="filter-apply" type="submit" class="btn btn-primary">Apply</button>
                     </div>
                 </form>
                 <table id="table-riders" class="table table-hover" th:if="${filterType == 'RIDER'}">
@@ -179,46 +175,19 @@
         </div>
     </div>
 
+    <input id="base-accept-link" type="hidden" value="/applications/accept/" th:value="@{/applications/accept/}" />
+    <input id="base-refuse-link" type="hidden" value="/applications/refuse/" th:value="@{/applications/refuse/}" />
+    <input id="base-reconsider-link" type="hidden" value="/applications/reconsider/" th:value="@{/applications/reconsider/}" />
+
+
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
 
     <script>
 
-        let baseApplicationAcceptLink = '/applications/accept/';
-        let baseApplicationRefuseLink = '/applications/refuse/';
-        let baseApplicationReconsiderLink = '/applications/reconsider/';
-
-        let filterPending = $('#filter-pending');
-        let filterType = $('#filter-type');
-
-        // $('#filter-riders-apply').click(function () {
-        //     let type = filterType.val();
-        //     applyFilters(type);
-        // })
-
-        function applyFilters(type) {
-            // TODO prototype, fill with implementation
-
-            let pending = filterPending.prop('checked');
-
-            if (type === 'rider') {
-                if (pending)
-                    $('#table-riders').show();
-                else
-                    $('#table-riders').hide();
-                $('#table-customers').hide();
-                $('#header-account-type').text('Rider');
-            }
-            else {
-                $('#table-riders').hide();
-                if (!pending)
-                    $('#table-customers').show();
-                else
-                    $('#table-customers').hide();
-                $('#header-account-type').text('Customer');
-            }
-
-        }
+        let baseApplicationAcceptLink = $('#base-accept-link').val();
+        let baseApplicationRefuseLink = $('#base-refuse-link').val();
+        let baseApplicationReconsiderLink = $('#base-reconsider-link').val();
 
         // Update modal with info from clicked row
         let riderDetails = ['name', 'email', 'citizenId', 'time', 'state'];
@@ -229,14 +198,11 @@
             let applicationType = splitId[splitId.length - 2];
             let applicationId = splitId[splitId.length - 1];
 
-            console.log(event);
-            console.log(clickedButton);
-            console.log(splitId);
-
             if (applicationType === 'rider') {
                 for (const detail of riderDetails)
                     $('#rider-form-details-' + detail).text( $('#attrs-rider-' + applicationId + '-' + detail).val() );
 
+                let applicationEmail = $('#attrs-rider-' + applicationId + '-email').val();
                 let applicationState = $('#attrs-rider-' + applicationId + '-state').val();
                 if (applicationState === 'REFUSED') {
                     $('#rider-form-buttons-pending').hide();
@@ -247,14 +213,15 @@
                     $('#rider-form-buttons-refused').hide();
                 }
 
-                $('#rider-form-link-refuse').attr('href', baseApplicationRefuseLink + applicationId);
-                $('#rider-form-link-accept').attr('href', baseApplicationAcceptLink + applicationId);
-                $('#rider-form-link-reconsider').attr('href', baseApplicationReconsiderLink + applicationId);
+                $('#rider-form-link-refuse').attr('action', baseApplicationRefuseLink + applicationEmail);
+                $('#rider-form-link-accept').attr('action', baseApplicationAcceptLink + applicationEmail);
+                $('#rider-form-link-reconsider').attr('action', baseApplicationReconsiderLink + applicationEmail);
             }
             else if (applicationType === 'customer') {
                 for (const detail of customerDetails)
                     $('#customer-form-details-' + detail).text( $('#attrs-customer-' + applicationId + '-' + detail).val() );
 
+                let applicationEmail = $('#attrs-customer-' + applicationId + '-email').val();
                 let applicationState = $('#attrs-customer-' + applicationId + '-state').val();
                 if (applicationState === 'REFUSED') {
                     $('#customer-form-buttons-pending').hide();
@@ -265,9 +232,9 @@
                     $('#customer-form-buttons-refused').hide();
                 }
 
-                $('#customer-form-link-refuse').attr('href', baseApplicationRefuseLink + applicationId);
-                $('#customer-form-link-accept').attr('href', baseApplicationAcceptLink + applicationId);
-                $('#customer-form-link-reconsider').attr('href', baseApplicationReconsiderLink + applicationId);
+                $('#customer-form-link-refuse').attr('action', baseApplicationRefuseLink + applicationEmail);
+                $('#customer-form-link-accept').attr('action', baseApplicationAcceptLink + applicationEmail);
+                $('#customer-form-link-reconsider').attr('action', baseApplicationReconsiderLink + applicationEmail);
             }
         })
 

@@ -15,7 +15,7 @@ Feature: Manage accounts of Riders/Customers
     * I apply the filters
     * I go to the 'riderino@hotmail.com' profile
     * I suspend their account
-    Then the status of 'riderino@hotmail.com' is suspended
+    Then the status of 'riderino@hotmail.com' on the profile is suspended
     And I can activate their account
 
   Scenario: Activate Customer account
@@ -25,5 +25,5 @@ Feature: Manage accounts of Riders/Customers
     * I apply the filters
     * I go to the 'kustomer@kustom.com' profile
     * I activate their account
-    Then the status of 'kustomer@kustom.com' is active
+    Then the status of 'kustomer@kustom.com' on the profile is active
     And I can suspend their account

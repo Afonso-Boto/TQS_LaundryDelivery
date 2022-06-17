@@ -3,6 +3,7 @@ package com.qourier.qourier_app.cucumber;
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.qourier.qourier_app.TestUtils;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
@@ -121,7 +122,15 @@ public class CucumberSteps {
     public void initializeAccounts(List<Map<String, String>> dataTable) {
         for (Map<String, String> accountDetails : dataTable) {
             String email = accountDetails.get("email");
-            if (accountRepository.existsById(email)) continue;
+            if (accountRepository.existsById(email)) {
+                Account account = accountRepository.findById(email).orElseThrow();
+
+                switch (account.getRole()) {
+                    case RIDER -> riderRepository.deleteById(email);
+                    case CUSTOMER -> customerRepository.deleteById(email);
+                    case ADMIN -> adminRepository.deleteById(email);
+                }
+            }
 
             AccountRole role = AccountRole.valueOf(accountDetails.get("role").toUpperCase());
             AccountState state = AccountState.valueOf(accountDetails.get("state").toUpperCase());
@@ -137,8 +146,7 @@ public class CucumberSteps {
 
     @Given("I am logged in as {string}")
     public void loggedInAs(String email) {
-        Account account = accountRepository.findById(email)
-                .orElseThrow();
+        Account account = accountRepository.findById(email).orElseThrow();
 
         // Two calls have to be made because the document has to be initialized before a cookie can
         // be set
@@ -192,14 +200,22 @@ public class CucumberSteps {
     @When("I filter for {accountsFilterType} accounts")
     public void filterActive(AccountState state) {
         WebElement activeFilter = driver.findElement(By.id("filter-active"));
-        if (
-                (state == AccountState.ACTIVE && !activeFilter.isSelected())
-                        || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
+        if ((state == AccountState.ACTIVE && !activeFilter.isSelected())
+                || (state == AccountState.SUSPENDED && activeFilter.isSelected())) {
             activeFilter.click();
         }
     }
 
-    @When("I filter for {accountRole} accounts")
+    @When("I filter for {applicationsFilterType} applications")
+    public void filterPending(AccountState state) {
+        WebElement pendingFilter = driver.findElement(By.id("filter-pending"));
+        if ((state == AccountState.PENDING && !pendingFilter.isSelected())
+                || (state == AccountState.REFUSED && pendingFilter.isSelected())) {
+            pendingFilter.click();
+        }
+    }
+
+    @When("I filter for {accountRole} accounts/applications")
     public void filterRole(AccountRole role) {
         WebElement roleDropdown = driver.findElement(By.id("filter-type"));
         String optionLabel = role.name().charAt(0) + role.name().substring(1).toLowerCase();
@@ -223,14 +239,34 @@ public class CucumberSteps {
         }
     }
 
+    @When("I open the {string} application")
+    public void openApplication(String email) {
+        WebElement applicationButton;
+        try {
+            applicationButton =
+                    driver.findElement(By.id("btn-form-rider-" + TestUtils.hasher(email)));
+        } catch (NoSuchElementException ex) {
+            applicationButton =
+                    driver.findElement(By.id("btn-form-customer-" + TestUtils.hasher(email)));
+        }
+        applicationButton.click();
+    }
+
     @When("I {accountAction} their account")
     public void accountApplyAction(String action) {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
-        if (action.equals("activate"))
-            assertThat(toggleButton.getText()).startsWith("Activate");
-        else
-            assertThat(toggleButton.getText()).startsWith("Suspend");
+        if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
+        else assertThat(toggleButton.getText()).startsWith("Suspend");
         toggleButton.click();
+    }
+
+    @When("I {applicationAction} their application")
+    public void applicationApplyAction(String action) {
+        WebElement actionForm = driver.findElement(By.id("rider-form-link-" + action));
+        if (!actionForm.isDisplayed())
+            actionForm = driver.findElement(By.id("customer-form-link-" + action));
+
+        actionForm.findElement(By.tagName("button")).click();
     }
 
     @When("I go to check {endpoint} status")
@@ -242,8 +278,6 @@ public class CucumberSteps {
     public void iNavigateTo(String url) {
         driver.get(url);
     }
-
-
 
     @Then("my status is {accountState}")
     public void statusIs(AccountState accountState) {
@@ -306,11 +340,16 @@ public class CucumberSteps {
         }
     }
 
-    @Then("the status of {string} is {accountsFilterType}")
-    public void assertAccountState(String email, AccountState state) {
+    @Then("the status of {string} on the profile is {accountState}")
+    public void assertAccountStateOnProfile(String email, AccountState state) {
         String detailsState = driver.findElement(By.id("details-state")).getText();
         assertThat(AccountState.valueOf(detailsState.toUpperCase())).isEqualTo(state);
 
+        assertAccountState(email, state);
+    }
+
+    @Then("the status of {string} is {accountState}")
+    public void assertAccountState(String email, AccountState state) {
         Optional<Account> accountOptional = accountRepository.findById(email);
         assertThat(accountOptional).isPresent();
         Account account = accountOptional.get();
@@ -320,13 +359,9 @@ public class CucumberSteps {
     @Then("I can {accountAction} their account")
     public void accountCanAction(String action) {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
-        if (action.equals("activate"))
-            assertThat(toggleButton.getText()).startsWith("Activate");
-        else
-            assertThat(toggleButton.getText()).startsWith("Suspend");
+        if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
+        else assertThat(toggleButton.getText()).startsWith("Suspend");
     }
-
-
 
     @And("I wait {int} seconds for the auction to end")
     public void iWaitSecondsForTheAuctionToEnd(int secondsToWait) {
