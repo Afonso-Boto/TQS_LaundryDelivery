@@ -14,7 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.OrderRepository;
+import tqs.project.laundryplatform.repository.UserRepository;
 
 @Controller
 @RequestMapping("/")
@@ -26,6 +28,7 @@ public class MainController {
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
     @Autowired OrderRepository orderRepository;
+    @Autowired UserRepository userRepository;
 
     @GetMapping("/")
     public String mainPage() {
@@ -80,8 +83,14 @@ public class MainController {
     }
 
     @GetMapping("/orders")
-    public String orders(Model model, HttpServletRequest request) {
-        return "orders";
+    public ModelAndView orders(Model model, HttpServletRequest request) {
+        System.err.println("orders");
+        ModelAndView modelAndView = new ModelAndView("orders");
+        modelAndView.addObject(
+                "orders",
+                orderRepository.findAllByUser(
+                        userRepository.findByUsername(getIdFromCookie(request)).orElse(null)));
+        return modelAndView;
     }
 
     @GetMapping("/service")
