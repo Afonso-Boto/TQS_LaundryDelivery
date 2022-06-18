@@ -36,4 +36,19 @@ public class Complaint {
         this.description = description;
         this.order = order;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Complaint complaint = (Complaint) o;
+
+        if (id != null ? !id.equals(complaint.id) : complaint.id != null) return false;
+        if (title != null ? !title.equals(complaint.title) : complaint.title != null) return false;
+        if (description != null
+                ? !description.equals(complaint.description)
+                : complaint.description != null) return false;
+        return order != null ? order.equals(complaint.order) : complaint.order == null;
+    }
 }
