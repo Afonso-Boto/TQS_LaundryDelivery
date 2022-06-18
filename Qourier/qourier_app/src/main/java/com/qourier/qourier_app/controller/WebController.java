@@ -174,6 +174,9 @@ public class WebController {
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
         model.addAttribute("notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
 
+        RiderDTO rider = accountManager.getRiderAccount(riderId);
+        model.addAttribute("alreadyDelivering", rider.getCurrentDelivery() != null);
+
         // Add Deliveries
         model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());
         return "deliveries";

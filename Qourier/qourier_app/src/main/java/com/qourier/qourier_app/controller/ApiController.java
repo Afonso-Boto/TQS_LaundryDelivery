@@ -34,10 +34,15 @@ public class ApiController {
     @GetMapping("/deliveries")
     public List<Delivery> deliveriesGet(
             @RequestParam(defaultValue = "", required = false, name = "customerId")
-                    String customerId) {
+                    String customerId,
+            @RequestParam(defaultValue = "", required = false, name = "id") String deliveryId) {
+
+        if (!deliveryId.isEmpty())
+            return List.of(deliveriesManager.getDelivery(Long.parseLong(deliveryId)));
 
         // Check if filter or not
-        if (!customerId.equals("")) return deliveriesManager.getDeliveriesFromCustomer(customerId);
+        if (!customerId.isEmpty())
+            return deliveriesManager.getDeliveriesFromCustomer(customerId);
 
         return deliveriesManager.getAllDeliveries();
     }

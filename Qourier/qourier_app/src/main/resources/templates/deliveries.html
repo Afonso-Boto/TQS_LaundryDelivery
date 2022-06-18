@@ -31,7 +31,7 @@
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
                 <div id="permitted-content" th:if="${permitted}" class="container">
-                    <div id="info-delivery-available">
+                    <div id="info-delivery-available" th:unless="${alreadyDelivering}">
                         <h2>Deliveries to be processed</h2>
                         <p>Progress for each delivery:</p>
                         <div class="row">
@@ -62,8 +62,19 @@
                         </div>
                     </div>
 
-                    <div id="info-delivery-assigned" style="display: none">
-                        A delivery has already been assigned
+                    <div id="info-delivery-assigned" style="display: none" th:if="${alreadyDelivering}">
+                        <h2>A delivery has already been assigned</h2>
+
+                        <p>Customer: <span id="assigned-delivery-customer"></span></p>
+                        <p>Origin: <span id="assigned-delivery-origin"></span></p>
+                        <ul>
+                            <li>Latitude: <span id="assigned-delivery-latitude"></span></li>
+                            <li>Longitude: <span id="assigned-delivery-longitude"></span></li>
+                        </ul>
+                        <p></p>
+                        <p>Destination: <span id="assigned-delivery-destination"></span></p>
+
+                        <p>State: <span id="assigned-delivery-state"></span></p>
                     </div>
                 </div>
             </div>
@@ -113,11 +124,29 @@
         const on_message = function(msg) {
             console.log('received: ' + msg);
             lastReceivedNotification = msg;
+            let deliveryId = lastReceivedNotification.body;
+
+            if (deliveryId.length === 0)
+                return;
 
             $('#info-delivery-available').hide();
             $('#info-delivery-assigned').show();
 
-
+            $.ajax({
+                type: "GET",
+                data: {
+                    id: deliveryId
+                },
+                contentType: "application/json; charset=utf-8",
+                success: function(data, textStatus, jqXHR) {
+                    $('#assigned-delivery-customer').text(data['customerId']);
+                    $('#assigned-delivery-origin').text(data['originAddr']);
+                    $('#assigned-delivery-destination').text(data['deliveryAddr']);
+                    $('#assigned-delivery-latitude').text(data['latitude']);
+                    $('#assigned-delivery-longitude').text(data['longitude']);
+                    $('#assigned-delivery-state').text(data['state']);
+                }
+            });
         };
 
         const on_connect = function() {

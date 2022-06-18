@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 public class CucumberSteps {
 
@@ -55,7 +54,7 @@ public class CucumberSteps {
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
-        auctionSpan = 2;
+        auctionSpan = 10;
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
 //        driver = new HtmlUnitDriver(true);
@@ -162,6 +161,8 @@ public class CucumberSteps {
                     customer.getEmail(), latitude, longitude, TestUtils.randomString(), TestUtils.randomString()
             );
             deliveriesManager.createDelivery(delivery);
+
+            focusedDelivery = delivery;
         }
     }
 
@@ -316,13 +317,9 @@ public class CucumberSteps {
 
     @When("I wait for the auction to end")
     public void waitAuctionEnd() {
-        await().atLeast(auctionSpan, TimeUnit.SECONDS);
-    }
-
-    @When("I make a bid for the {string} delivery at \\({double}, {double}\\), being {double} units of distance away from the destination")
-    public void iMakeBidWithDistance(String customerEmail, double latitude, double longitude, double distance) {
-        focusedDelivery = getDeliveryId(customerEmail, latitude, longitude);
-        deliveriesManager.createBid(new Bid(currentAccount.getEmail(), focusedDelivery.getDeliveryId(), distance));
+        await().atMost(auctionSpan, TimeUnit.SECONDS).until(
+                () -> deliveriesManager.getDeliveryState(focusedDelivery.getDeliveryId()) != DeliveryState.BID_CHECK
+        );
     }
 
     @Then("I should {not}receive a notification indicating that I have been accepted")
