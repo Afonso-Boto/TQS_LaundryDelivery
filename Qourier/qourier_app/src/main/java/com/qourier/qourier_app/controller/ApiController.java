@@ -88,7 +88,7 @@ public class ApiController {
         String riderId = newBid.getRidersId();
 
         // Check if auth is right
-        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes()))) {
+        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes())) && accountManager.getRiderAccount(riderId).getCurrentDelivery() == null) {
             Bid bid = deliveriesManager.createBid(Bid.fromDto(newBid));
             return new ResponseEntity<>(bid, HttpStatus.CREATED);
         }
