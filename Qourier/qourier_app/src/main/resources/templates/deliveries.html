@@ -144,7 +144,7 @@
             let url = $('#modal-attrs-url').val();
             $.ajax({
                 type: "POST",
-                url: url,
+                url: url + "?basicAuth=" + btoa(riderId),
                 data: JSON.stringify({
                     ridersId: riderId,
                     deliveryId: $('#modal-attrs-delivery').val(),
