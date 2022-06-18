@@ -31,30 +31,6 @@ public class ItemType {
 
     public ItemType() {}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,5 +42,4 @@ public class ItemType {
         if (id != null ? !id.equals(itemType.id) : itemType.id != null) return false;
         return name != null ? name.equals(itemType.name) : itemType.name == null;
     }
-
 }

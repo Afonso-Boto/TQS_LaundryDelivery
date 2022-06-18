@@ -28,11 +28,6 @@ public class Item {
     @JoinColumn(name = "item_type_id")
     ItemType itemType;
 
-    public Item(int number, boolean isDark) {
-        this.number = number;
-        this.isDark = isDark;
-    }
-
     public Item(int number, boolean isDark, Order order, ItemType itemType) {
         this.number = number;
         this.isDark = isDark;
@@ -54,5 +49,4 @@ public class Item {
         if (!id.equals(item.id)) return false;
         return itemType.equals(item.itemType);
     }
-
 }

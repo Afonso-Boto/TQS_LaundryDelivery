@@ -35,8 +35,6 @@ public class ItemRepositoryTest {
     @Autowired private OrderRepository orderRepository;
     @Autowired private ItemTypeRepository itemTypeRepository;
 
-
-
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", container::getJdbcUrl);
@@ -58,8 +56,6 @@ public class ItemRepositoryTest {
     public void testFindById() {
         assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
     }
-
-
 
     @AfterEach
     public void tearDown() {
