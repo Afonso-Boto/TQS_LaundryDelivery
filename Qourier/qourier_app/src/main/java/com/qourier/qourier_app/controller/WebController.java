@@ -22,6 +22,8 @@ import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.qourier.qourier_app.message.MessageCenter;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -45,6 +47,7 @@ public class WebController {
 
     private final AccountManager accountManager;
     private final DeliveriesManager deliveriesManager;
+    private final MessageCenter messageCenter;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
@@ -53,9 +56,10 @@ public class WebController {
     private String adminPass;
 
     @Autowired
-    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager) {
+    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager, MessageCenter messageCenter) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
+        this.messageCenter = messageCenter;
     }
 
     @PostMapping("/login")
@@ -147,7 +151,6 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        // TODO pass right message to show
         AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
 
         switch (state) {
@@ -165,9 +168,11 @@ public class WebController {
             default:
                 model.addAttribute("msg", "An error has occurred");
         }
+        String riderId = getIdFromCookie(request);
         model.addAttribute("role", role);
-        model.addAttribute("riderId", getIdFromCookie(request));
+        model.addAttribute("riderId", riderId);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+        model.addAttribute("notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
 
         // Add Deliveries
         model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());

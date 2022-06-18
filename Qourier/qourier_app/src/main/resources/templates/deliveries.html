@@ -20,7 +20,8 @@
 
     <nav th:replace="base :: navbar"></nav>
 
-    <div id="delivery-notification" style="position: absolute; z-index: 1; width: 100%; display: none">
+    <div id="delivery-notification" class="delivery-notification" style="display: none">
+        Your delivery bid has been accepted!
     </div>
 
     <div class="container">
@@ -70,6 +71,7 @@
     </div>
 
     <input id="rider-id" type="hidden" th:value="${riderId}" />
+    <input id="notification-topic" type="hidden" th:value="${notificationTopic}" />
 
     <!-- Modal -->
     <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -97,8 +99,33 @@
 
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
 
     <script>
+        const riderId = $('#rider-id').val();
+        const notificationTopic = $('#notification-topic').val();
+        let lastReceivedNotification;
+
+        const ws = new WebSocket('ws://' + window.location.hostname + ':15674/ws');
+        const client = StompJs.Stomp.over(ws);
+
+        const on_connect = function() {
+            console.log('connected');
+        };
+
+        const on_error = function() {
+            console.log('error');
+        };
+
+        const on_message = function(msg) {
+            console.log('received: ' + msg);
+            lastReceivedNotification = msg;
+        }
+
+        client.connect('guest', 'guest', on_connect, on_error, '/');
+        client.subscribe('/exchange/queue/' + notificationTopic, on_message);
+
         // Update modal with info from clicked row
         $('td > button').click(function (event) {
             let clickedButton = event.delegateTarget;
@@ -114,7 +141,7 @@
                 type: "POST",
                 url: url,
                 data: JSON.stringify({
-                    ridersId: $('#rider-id').val(),
+                    ridersId: riderId,
                     deliveryId: $('#modal-attrs-delivery').val(),
                     distance: null
                 }),
@@ -122,26 +149,6 @@
                 contentType: "application/json; charset=utf-8"
             });
         });
-
-        // function sleep(ms) {
-        //     return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-        //
-        // async function demo() {
-        //     await sleep(5);
-        //     const alertList = document.getElementById('alert-list');
-        //     let alert = document.createElement('li');
-        //     alert.textContent = 'A job is ready for you ';
-        //     alert.className = 'alert';
-        //     let x = document.createElement('span');
-        //     x.className = 'btn btn-outline-dark';
-        //     x.onclick = function (event) {
-        //         this.parentElement.style.display='none';
-        //     }
-        //     x.innerHTML = '&times';
-        //     alert.appendChild(x);
-        //     alertList.appendChild(alert);
-        // }
     </script>
 
 </body>
