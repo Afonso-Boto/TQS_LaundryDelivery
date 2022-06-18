@@ -30,4 +30,16 @@ public class OrderType {
     }
 
     public OrderType() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrderType type = (OrderType) o;
+
+        if (Double.compare(type.basePrice, basePrice) != 0) return false;
+        if (id != null ? !id.equals(type.id) : type.id != null) return false;
+        return name != null ? name.equals(type.name) : type.name == null;
+    }
 }
