@@ -42,10 +42,11 @@ services:
     image: rabbitmq
     ports:
       - 5672:5672
+      - 15672:15672
       - 15674:15674
     volumes:
       - ./volumes/rabbitmq/:/etc/rabbitmq/
-    command: [sh, -c, "rabbitmq-plugins enable rabbitmq_web_stomp && rabbitmq-server"]
+    command: [sh, -c, "rabbitmq-plugins enable rabbitmq_web_stomp rabbitmq_management && rabbitmq-server"]
 
   qourier_app:
     depends_on:

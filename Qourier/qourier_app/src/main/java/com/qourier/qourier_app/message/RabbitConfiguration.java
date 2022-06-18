@@ -19,12 +19,9 @@ public class RabbitConfiguration {
 
     public static final String RIDER_ASSIGNMENTS_ROUTING_KEY = "rider.assignments";
 
-    @Value("spring.rabbitmq.host")
-    public String rabbitHost;
-
     @Bean
     public Queue queue() {
-        return new Queue(QUEUE_NAME, false);
+        return new Queue(QUEUE_NAME, true);
     }
 
     @Bean
@@ -35,11 +32,6 @@ public class RabbitConfiguration {
     @Bean
     public Binding bindingRiderAssignments(Queue queue, TopicExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(RIDER_ASSIGNMENTS_ROUTING_KEY + ".#");
-    }
-
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory(rabbitHost);
     }
 
     @Bean

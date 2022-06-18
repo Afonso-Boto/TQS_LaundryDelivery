@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
@@ -57,7 +58,8 @@ public class CucumberSteps {
         auctionSpan = 2;
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
-        driver = new HtmlUnitDriver(true);
+//        driver = new HtmlUnitDriver(true);
+        driver = WebDriverManager.firefoxdriver().create();
     }
 
     @Given("I am in the {page} page")

@@ -110,21 +110,26 @@
         const ws = new WebSocket('ws://' + window.location.hostname + ':15674/ws');
         const client = StompJs.Stomp.over(ws);
 
+        const on_message = function(msg) {
+            console.log('received: ' + msg);
+            lastReceivedNotification = msg;
+
+            $('#info-delivery-available').hide();
+            $('#info-delivery-assigned').show();
+
+
+        };
+
         const on_connect = function() {
             console.log('connected');
+            client.subscribe('/exchange/spring-boot-exchange/' + notificationTopic, on_message);
         };
 
         const on_error = function() {
             console.log('error');
         };
 
-        const on_message = function(msg) {
-            console.log('received: ' + msg);
-            lastReceivedNotification = msg;
-        }
-
-        client.connect('guest', 'guest', on_connect, on_error, '/');
-        client.subscribe('/exchange/queue/' + notificationTopic, on_message);
+        client.connect('guest', 'guest', on_connect, on_error);
 
         // Update modal with info from clicked row
         $('td > button').click(function (event) {
