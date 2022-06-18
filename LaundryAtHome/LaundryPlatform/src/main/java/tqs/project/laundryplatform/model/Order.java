@@ -92,4 +92,8 @@ public class Order {
     public double getTotalPrice() {
         return totalPrice;
     }
+
+    public Set<Item> getItems() {
+        return items;
+    }
 }

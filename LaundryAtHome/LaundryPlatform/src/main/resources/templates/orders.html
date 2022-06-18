@@ -1,31 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
-    <meta charset="utf-8">
-    <title>LaundryAtHome</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
-
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.0/css/all.min.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link th:href="@{/scripts/owlcarousel/assets/owl.carousel.min.css}" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <th:block th:include="base :: head"></th:block>
 </head>
 
 <body>
+
 <!-- Topbar Start -->
 <div class="container-fluid bg-primary py-3">
     <div class="container">
@@ -50,20 +32,12 @@
 
 <!-- Navbar End -->
 
-
 <!-- Page Header Start -->
 <div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
     <div class="container py-5">
         <div class="row align-items-center py-4">
             <div class="col-md-6 text-center text-md-left">
-                <h1 class="mb-4 mb-md-0 text-white">Active & latest orders</h1>
-            </div>
-            <div class="col-md-6 text-center text-md-right">
-                <div class="d-inline-flex align-items-center">
-                    <a class="btn text-white" href="">Home</a>
-                    <i class="fas fa-angle-right text-white"></i>
-                    <a class="btn text-white disabled" href="">Orders</a>
-                </div>
+                <h1 class="mb-4 mb-md-0 text-white">Orders</h1>
             </div>
         </div>
     </div>
@@ -72,63 +46,60 @@
 
 
 <!-- Blog Start -->
-<div class="container py-5">
-    <div class="row">
-        <!-- Blog Grid Start -->
-        <div class="col-lg-8">
-            <div class="row">
-                <div class="col-md-6 mb-2">
-                    <div class="bg-light mb-4">
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
-                            <a href=""
-                               class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
-                               style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
-                                <h4 class="text-center text-white font-weight-medium mb-3">Order #261739</h4>
-                                <div class="d-flex text-light">
-                                    <small class="mr-2"><i class="fa fa-globe text-secondary"></i> Active</small>
-                                </div>
-                            </a>
-                        </div>
+<div class="container py-5" th:if="${orders!=null and !orders.isEmpty()}">
+    <div class="row" th:each="order : ${orders}">
+        <div class="col-lg-4">
+            <div class="bg-light mb-4">
+                <div class="p-4">
+                    <h4 class="mb-3"><p th:text="${'Order #' + order.getId()}"></p></h4>
+                    <!--p class="mb-3">
+                        <p th:text="${'Order date: ' + order.getDate().toString()}"></p>
+                    </p-->
+                    <div th:if="${order.isCompleted()}">
+                        <p class="mb-3">
+                        <p th:text="${'Order status: Completed'}"></p>
+                        <form action="/tracking" method="get" id="submitForDetails">
+                            <button type="submit" class="btn btn-primary" form="submitForDetails">See details</button>
+                        </form>
+                        </p>
                     </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <div class="bg-light mb-4">
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" th:src="@{/images/blog-2.jpg}" alt="">
-                            <a href=""
-                               class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
-                               style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
-                                <h4 class="text-center text-white font-weight-medium mb-3"
-                                    style="color: rgb(217, 211, 211) !important;">Order #13949</h4>
-                                <div class="d-flex text-light">
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                    <div class="bg-light mb-4">
-                        <div class="position-relative">
-                            <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
-                            <a href=""
-                               class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
-                               style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
-                                <h4 class="text-center text-white font-weight-medium mb-3"
-                                    style="color: rgb(217, 211, 211) !important;">Order #12349</h4>
-                                <div class="d-flex text-light">
-                                </div>
-                            </a>
-                        </div>
+                    <div th:unless="${order.isCompleted()}">
+                        <p class="mb-3">
+                        <p th:text="${'Order status: Active'}"></p>
+                        </p>
+                        <form action="/tracking" method="get" id="submitForTracking">
+                            <button type="submit" class="btn btn-primary" form="submitForTracking">See details</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Blog Grid End -->
-
-
     </div>
 </div>
+
+
+<!--
+<div class="col-lg-8">
+    <div class="row">
+        <div class="col-md-6 mb-2">
+            <div class="bg-light mb-4">
+                <div class="position-relative">
+                    <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
+                    <a href=""
+                       class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
+                       style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
+                        <h4 class="text-center text-white font-weight-medium mb-3" th:text="${'Order #' + order.getId()}"></h4>
+
+                        <div class="d-flex text-light" th:if="${order.isCompleted()}">
+                            <small class="mr-2"><i class="fa fa-globe text-secondary"></i> Active</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+
 <!-- Blog End -->
 
 <!-- Back to Top -->
