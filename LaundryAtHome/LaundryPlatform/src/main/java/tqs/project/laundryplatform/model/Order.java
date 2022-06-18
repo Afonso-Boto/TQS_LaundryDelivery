@@ -69,27 +69,27 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Long getId() {
-        return id;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    public Date getDate() {
-        return date;
-    }
+        Order order = (Order) o;
 
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public String getDeliveryLocation() {
-        return deliveryLocation;
-    }
-
-    public Date getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
+        if (isCompleted != order.isCompleted) return false;
+        if (Double.compare(order.totalPrice, totalPrice) != 0) return false;
+        if (id != null ? !id.equals(order.id) : order.id != null) return false;
+        if (date != null ? !date.equals(order.date) : order.date != null) return false;
+        if (deliveryLocation != null
+                ? !deliveryLocation.equals(order.deliveryLocation)
+                : order.deliveryLocation != null) return false;
+        if (deliveryDate != null
+                ? !deliveryDate.equals(order.deliveryDate)
+                : order.deliveryDate != null) return false;
+        if (laundry != null ? !laundry.equals(order.laundry) : order.laundry != null) return false;
+        if (user != null ? !user.equals(order.user) : order.user != null) return false;
+        if (orderType != null ? !orderType.equals(order.orderType) : order.orderType != null)
+            return false;
+        return complaint != null ? complaint.equals(order.complaint) : order.complaint == null;
     }
 }
