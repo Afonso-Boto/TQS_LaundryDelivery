@@ -41,7 +41,6 @@ public class DeliveriesManager {
         deliveryRepository.save(newDelivery);
 
         createAuction(newDelivery);
-        newDelivery.setDeliveryState(DeliveryState.DELIVERED);
 
         return newDelivery;
     }
