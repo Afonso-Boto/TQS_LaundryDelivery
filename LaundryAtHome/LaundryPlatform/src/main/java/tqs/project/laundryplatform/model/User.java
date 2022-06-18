@@ -1,6 +1,5 @@
 package tqs.project.laundryplatform.model;
 
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Getter;
