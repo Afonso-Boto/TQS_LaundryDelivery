@@ -42,4 +42,16 @@ public class ItemType {
         if (id != null ? !id.equals(itemType.id) : itemType.id != null) return false;
         return name != null ? name.equals(itemType.name) : itemType.name == null;
     }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        temp = Double.doubleToLongBits(price);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (items != null ? items.hashCode() : 0);
+        return result;
+    }
 }
