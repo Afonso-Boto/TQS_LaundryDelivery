@@ -49,7 +49,6 @@ public class User {
 
     public User() {}
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,10 +58,13 @@ public class User {
 
         if (phoneNumber != user.phoneNumber) return false;
         if (id != null ? !id.equals(user.id) : user.id != null) return false;
-        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null)
+            return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null) return false;
-        if (fullName != null ? !fullName.equals(user.fullName) : user.fullName != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null)
+            return false;
+        if (fullName != null ? !fullName.equals(user.fullName) : user.fullName != null)
+            return false;
         return orders != null ? orders.equals(user.orders) : user.orders == null;
     }
 
