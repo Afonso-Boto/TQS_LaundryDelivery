@@ -57,6 +57,11 @@ public class ItemRepositoryTest {
         assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
     }
 
+    @Test
+    public void testInvalidId_thenReturnEmptyOptional() {
+        assertThat(itemRepository.findById(0L)).isEmpty();
+    }
+
     @AfterEach
     public void tearDown() {
         itemRepository.deleteAll();
