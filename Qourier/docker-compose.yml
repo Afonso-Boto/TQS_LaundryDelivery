@@ -38,9 +38,19 @@ services:
       - ./volumes/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
 
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+      - 15674:15674
+    volumes:
+      - ./volumes/rabbitmq/:/etc/rabbitmq/
+    command: [sh, -c, "rabbitmq-plugins enable rabbitmq_web_stomp && rabbitmq-server"]
+
   qourier_app:
     depends_on:
       - mysqldb
+      - rabbitmq
       - grafana
     build: ./qourier_app
     env_file: .env
