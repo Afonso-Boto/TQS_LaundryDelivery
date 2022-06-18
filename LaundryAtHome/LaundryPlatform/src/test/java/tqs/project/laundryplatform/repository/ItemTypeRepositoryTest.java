@@ -13,16 +13,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.ItemType;
-import tqs.project.laundryplatform.model.Order;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-public class ItemRepositoryTest {
+public class ItemTypeRepositoryTest {
 
-    Item item;
+    ItemType itemType;
 
     @Container
     public static MySQLContainer container =
@@ -31,8 +29,6 @@ public class ItemRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private ItemRepository itemRepository;
-    @Autowired private OrderRepository orderRepository;
     @Autowired private ItemTypeRepository itemTypeRepository;
 
     @DynamicPropertySource
@@ -44,26 +40,33 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Order order = new Order();
-        ItemType itemType = new ItemType("test_item_type", 300);
-        item = new Item(2, false, order, itemType);
-        orderRepository.saveAndFlush(order);
+        itemType = new ItemType("test_item_type", 300);
         itemTypeRepository.saveAndFlush(itemType);
-        itemRepository.saveAndFlush(item);
-    }
-
-    @Test
-    public void testFindById() {
-        assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
-    }
-
-    @Test
-    public void testInvalidId_thenReturnEmptyOptional() {
-        assertThat(itemRepository.findById(0L)).isEmpty();
     }
 
     @AfterEach
     public void tearDown() {
-        itemRepository.deleteAll();
+        itemTypeRepository.deleteAll();
+    }
+
+    @Test
+    public void testFindById() {
+        assertThat(itemTypeRepository.findById(itemType.getId()).orElse(null)).isEqualTo(itemType);
+    }
+
+    @Test
+    public void testFindByName() {
+        assertThat(itemTypeRepository.findByName(itemType.getName()).orElse(null))
+                .isEqualTo(itemType);
+    }
+
+    @Test
+    public void testFindByNameNotFound() {
+        assertThat(itemTypeRepository.findByName("test_item_type_not_found").orElse(null)).isNull();
+    }
+
+    @Test
+    public void testInvalidId_thenReturnEmptyOptional() {
+        assertThat(itemTypeRepository.findById(0).orElse(null)).isNull();
     }
 }

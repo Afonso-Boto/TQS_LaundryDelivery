@@ -13,16 +13,16 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import tqs.project.laundryplatform.model.Item;
-import tqs.project.laundryplatform.model.ItemType;
-import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.model.OrderType;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-public class ItemRepositoryTest {
+public class OrderTypeRepositoryTest {
 
-    Item item;
+    OrderType orderType;
+
+    @Autowired private OrderTypeRepository orderTypeRepository;
 
     @Container
     public static MySQLContainer container =
@@ -30,10 +30,6 @@ public class ItemRepositoryTest {
                     .withDatabaseName("test_db")
                     .withUsername("test_user")
                     .withPassword("123456");
-
-    @Autowired private ItemRepository itemRepository;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private ItemTypeRepository itemTypeRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -44,26 +40,34 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Order order = new Order();
-        ItemType itemType = new ItemType("test_item_type", 300);
-        item = new Item(2, false, order, itemType);
-        orderRepository.saveAndFlush(order);
-        itemTypeRepository.saveAndFlush(itemType);
-        itemRepository.saveAndFlush(item);
-    }
-
-    @Test
-    public void testFindById() {
-        assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
-    }
-
-    @Test
-    public void testInvalidId_thenReturnEmptyOptional() {
-        assertThat(itemRepository.findById(0L)).isEmpty();
+        orderType = new OrderType("test_order_type", 100);
+        orderTypeRepository.save(orderType);
     }
 
     @AfterEach
     public void tearDown() {
-        itemRepository.deleteAll();
+        orderTypeRepository.delete(orderType);
+    }
+
+    @Test
+    public void testFindById() {
+        assertThat(orderTypeRepository.findById(orderType.getId()).orElse(null))
+                .isEqualTo(orderType);
+    }
+
+    @Test
+    public void testFindByName() {
+        assertThat(orderTypeRepository.findByName(orderType.getName()).orElse(null))
+                .isEqualTo(orderType);
+    }
+
+    @Test
+    public void testInvalidFindByName() {
+        assertThat(orderTypeRepository.findByName("invalid_name").orElse(null)).isNull();
+    }
+
+    @Test
+    public void testInvalidFindById() {
+        assertThat(orderTypeRepository.findById(0L).orElse(null)).isNull();
     }
 }

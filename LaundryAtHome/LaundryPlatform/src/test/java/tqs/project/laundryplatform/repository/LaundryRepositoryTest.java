@@ -13,16 +13,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import tqs.project.laundryplatform.model.Item;
-import tqs.project.laundryplatform.model.ItemType;
-import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.model.Laundry;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-public class ItemRepositoryTest {
+public class LaundryRepositoryTest {
 
-    Item item;
+    Laundry laundry;
 
     @Container
     public static MySQLContainer container =
@@ -31,9 +29,7 @@ public class ItemRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private ItemRepository itemRepository;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private ItemTypeRepository itemTypeRepository;
+    @Autowired private LaundryRepository laundryRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -44,26 +40,32 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Order order = new Order();
-        ItemType itemType = new ItemType("test_item_type", 300);
-        item = new Item(2, false, order, itemType);
-        orderRepository.saveAndFlush(order);
-        itemTypeRepository.saveAndFlush(itemType);
-        itemRepository.saveAndFlush(item);
-    }
-
-    @Test
-    public void testFindById() {
-        assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
-    }
-
-    @Test
-    public void testInvalidId_thenReturnEmptyOptional() {
-        assertThat(itemRepository.findById(0L)).isEmpty();
+        laundry = new Laundry("test_laundry", "123456");
+        laundryRepository.save(laundry);
     }
 
     @AfterEach
     public void tearDown() {
-        itemRepository.deleteAll();
+        laundryRepository.deleteAll();
+    }
+
+    @Test
+    public void testFindById() {
+        assertThat(laundryRepository.findById(laundry.getId()).orElse(null)).isEqualTo(laundry);
+    }
+
+    @Test
+    public void testFindByName() {
+        assertThat(laundryRepository.findByName(laundry.getName()).orElse(null)).isEqualTo(laundry);
+    }
+
+    @Test
+    public void testInvalidFindById() {
+        assertThat(laundryRepository.findById(0L).orElse(null)).isNull();
+    }
+
+    @Test
+    public void testInvalidFindByName() {
+        assertThat(laundryRepository.findByName("test_laundry_not_found").orElse(null)).isNull();
     }
 }

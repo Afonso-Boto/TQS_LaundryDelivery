@@ -2,7 +2,6 @@ package tqs.project.laundryplatform.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +12,19 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import tqs.project.laundryplatform.model.Item;
-import tqs.project.laundryplatform.model.ItemType;
-import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.model.*;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-public class ItemRepositoryTest {
+public class OrderRepositoryTest {
 
-    Item item;
+    Order order;
+
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private OrderTypeRepository orderTypeRepository;
+    @Autowired private LaundryRepository laundryRepository;
+    @Autowired private UserRepository userRepository;
 
     @Container
     public static MySQLContainer container =
@@ -30,10 +32,6 @@ public class ItemRepositoryTest {
                     .withDatabaseName("test_db")
                     .withUsername("test_user")
                     .withPassword("123456");
-
-    @Autowired private ItemRepository itemRepository;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private ItemTypeRepository itemTypeRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -44,26 +42,36 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Order order = new Order();
-        ItemType itemType = new ItemType("test_item_type", 300);
-        item = new Item(2, false, order, itemType);
-        orderRepository.saveAndFlush(order);
-        itemTypeRepository.saveAndFlush(itemType);
-        itemRepository.saveAndFlush(item);
+        User user = new User("test_user", "test@user.pt", "123456", "test_user", 964023412);
+        Laundry laundry = new Laundry("test_laundry", "123456");
+        OrderType orderType = new OrderType("test_order_type", 100);
+        order = new Order(orderType, user, laundry);
+        laundryRepository.save(laundry);
+        userRepository.save(user);
+        orderTypeRepository.save(orderType);
+        orderRepository.save(order);
     }
 
     @Test
     public void testFindById() {
-        assertThat(itemRepository.findById(item.getId()).orElse(null)).isEqualTo(item);
+        assertThat(orderRepository.findById(order.getId()).orElse(null)).isEqualTo(order);
+    }
+
+    @Test
+    public void testFindByUser() {
+        assertThat(orderRepository.findAllByUser(order.getUser())).hasSize(1);
+        assertThat(orderRepository.findAllByUser(order.getUser())).contains(order);
+    }
+
+    @Test
+    public void testInvalidFindByUser() {
+        User user = new User("test_user", "w123456", "123456", "test_user", 964023412);
+        userRepository.save(user);
+        assertThat(orderRepository.findAllByUser(user)).isEmpty();
     }
 
     @Test
     public void testInvalidId_thenReturnEmptyOptional() {
-        assertThat(itemRepository.findById(0L)).isEmpty();
-    }
-
-    @AfterEach
-    public void tearDown() {
-        itemRepository.deleteAll();
+        assertThat(orderRepository.findById(0L)).isEmpty();
     }
 }

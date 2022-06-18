@@ -13,10 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import tqs.project.laundryplatform.model.Complaint;
-import tqs.project.laundryplatform.model.Order;
-import tqs.project.laundryplatform.repository.ComplaintRepository;
-import tqs.project.laundryplatform.repository.OrderRepository;
+import tqs.project.laundryplatform.model.*;
+import tqs.project.laundryplatform.repository.*;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
@@ -29,6 +27,15 @@ public class OrderServiceTest {
     @Mock(lenient = true)
     private OrderRepository orderRepository;
 
+    @Mock(lenient = true)
+    private OrderTypeRepository orderTypeRepository;
+
+    @Mock(lenient = true)
+    private UserRepository userRepository;
+
+    @Mock(lenient = true)
+    private LaundryRepository laundryRepository;
+
     @BeforeEach
     void setUp() {
         Order order = new Order(1L, new Date(2022, 12, 12), 20.99);
@@ -36,6 +43,12 @@ public class OrderServiceTest {
         Mockito.when(orderRepository.findById(1L)).thenReturn(Optional.of(order));
         Mockito.when(complaintRepository.save(Mockito.any(Complaint.class)))
                 .thenReturn(new Complaint());
+        Mockito.when(orderTypeRepository.findById(1L))
+                .thenReturn(Optional.of(new OrderType("wash", 20.99)));
+        Mockito.when(userRepository.findByUsername("test"))
+                .thenReturn(Optional.of(new User("test", "test", "123", "test", 123)));
+        Mockito.when(laundryRepository.findByName("default"))
+                .thenReturn(Optional.of(new Laundry("default", "default")));
     }
 
     @Test

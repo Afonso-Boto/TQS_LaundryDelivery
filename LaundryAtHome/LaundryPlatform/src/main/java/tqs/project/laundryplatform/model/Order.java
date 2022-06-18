@@ -69,28 +69,46 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (isCompleted != order.isCompleted) return false;
+        if (Double.compare(order.totalPrice, totalPrice) != 0) return false;
+        if (id != null ? !id.equals(order.id) : order.id != null) return false;
+        if (date != null ? !date.equals(order.date) : order.date != null) return false;
+        if (deliveryLocation != null
+                ? !deliveryLocation.equals(order.deliveryLocation)
+                : order.deliveryLocation != null) return false;
+        if (deliveryDate != null
+                ? !deliveryDate.equals(order.deliveryDate)
+                : order.deliveryDate != null) return false;
+        if (laundry != null ? !laundry.equals(order.laundry) : order.laundry != null) return false;
+        if (orderType != null ? !orderType.equals(order.orderType) : order.orderType != null)
+            return false;
+        return complaint != null ? complaint.equals(order.complaint) : order.complaint == null;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public boolean isCompleted() {
-        return isCompleted;
-    }
-
-    public String getDeliveryLocation() {
-        return deliveryLocation;
-    }
-
-    public Date getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public double getTotalPrice() {
-        return totalPrice;
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (isCompleted ? 1 : 0);
+        result = 31 * result + (deliveryLocation != null ? deliveryLocation.hashCode() : 0);
+        result = 31 * result + (deliveryDate != null ? deliveryDate.hashCode() : 0);
+        temp = Double.doubleToLongBits(totalPrice);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (items != null ? items.hashCode() : 0);
+        result = 31 * result + (laundry != null ? laundry.hashCode() : 0);
+        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = 31 * result + (orderType != null ? orderType.hashCode() : 0);
+        result = 31 * result + (complaint != null ? complaint.hashCode() : 0);
+        return result;
     }
 
     public Set<Item> getItems() {
