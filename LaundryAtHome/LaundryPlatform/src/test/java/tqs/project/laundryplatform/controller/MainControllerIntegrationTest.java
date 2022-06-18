@@ -27,11 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class MainControllerIntegrationTest {
 
-    @LocalServerPort
-    int randomServerPort;
+    @LocalServerPort int randomServerPort;
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -41,9 +39,7 @@ public class MainControllerIntegrationTest {
     @Test
     @DisplayName("GET Request Index")
     void getHome() throws Exception {
-        MvcResult mvcResult = mvc.perform(get("/index"))
-                .andExpect(status().isFound())
-                .andReturn();
+        MvcResult mvcResult = mvc.perform(get("/index")).andExpect(status().isFound()).andReturn();
 
         assertThat(mvcResult.getResponse().getRedirectedUrl()).isEqualTo("/login");
     }
@@ -51,29 +47,25 @@ public class MainControllerIntegrationTest {
     @Test
     @DisplayName("GET Request Login")
     void getLogin() throws Exception {
-        mvc.perform(get("/login"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/login")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("GET Request logout")
     void getLogout() throws Exception {
-        mvc.perform(get("/logout"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/logout")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("GET Request Register")
     void getRegister() throws Exception {
-        mvc.perform(get("/register"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/register")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("GET Request new_order")
     void getNewOrder() throws Exception {
-        mvc.perform(get("/new_order"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/new_order")).andExpect(status().isOk());
     }
 
     @Test
@@ -88,15 +80,13 @@ public class MainControllerIntegrationTest {
     @Test
     @DisplayName("GET Request service")
     void getService() throws Exception {
-        mvc.perform(get("/service"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/service")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("GET Request ok")
     void getOk() throws Exception {
-        mvc.perform(get("/ok"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/ok")).andExpect(status().isOk());
     }
 
     @Test
@@ -111,8 +101,6 @@ public class MainControllerIntegrationTest {
     @Test
     @DisplayName("GET Request error")
     void getError() throws Exception {
-        mvc.perform(get("/error"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/error")).andExpect(status().isOk());
     }
-
 }
