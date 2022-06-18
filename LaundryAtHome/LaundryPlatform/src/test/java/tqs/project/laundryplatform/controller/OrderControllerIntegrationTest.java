@@ -32,14 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class OrderControllerIntegrationTest {
 
-    @LocalServerPort
-    int randomServerPort;
+    @LocalServerPort int randomServerPort;
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @Autowired
-    private OrderRepository orderRepository;
+    @Autowired private OrderRepository orderRepository;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -50,8 +47,7 @@ public class OrderControllerIntegrationTest {
     @Test
     @DisplayName("init-order")
     void initOrder() throws Exception {
-        mvc.perform(get("/order/init-order").param("orderTypeId", "1"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/order/init-order").param("orderTypeId", "1")).andExpect(status().isOk());
     }
 
     @Test
@@ -61,7 +57,6 @@ public class OrderControllerIntegrationTest {
         json.put("itemType", 1);
         json.put("isDark", "Claras");
         json.put("number", 10);
-
 
         JSONObject json2 = new JSONObject();
         List<JSONObject> items = new ArrayList<>();
@@ -75,9 +70,10 @@ public class OrderControllerIntegrationTest {
 
         String param = objectMapper.writeValueAsString(json2);
 
-        mvc.perform(post("/order/make-order")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(param))
+        mvc.perform(
+                        post("/order/make-order")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(param))
                 .andExpect(status().isOk());
     }
 
@@ -94,16 +90,13 @@ public class OrderControllerIntegrationTest {
 
         String param = objectMapper.writeValueAsString(json);
 
-        mvc.perform(post("/order/complaint")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(param))
+        mvc.perform(post("/order/complaint").contentType(MediaType.APPLICATION_JSON).content(param))
                 .andExpect(status().isFound());
     }
 
     @Test
     @DisplayName("cancel order")
     void cancelOrder() throws Exception {
-        mvc.perform(post("/order/cancelOrder/1"))
-                .andExpect(status().isFound());
+        mvc.perform(post("/order/cancelOrder/1")).andExpect(status().isFound());
     }
 }
