@@ -20,8 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 public class ComplaintRepositoryTest {
 
-    @Autowired
-    private ComplaintRepository complaintRepository;
+    @Autowired private ComplaintRepository complaintRepository;
 
     Complaint complaint;
 
@@ -52,12 +51,14 @@ public class ComplaintRepositoryTest {
 
     @Test
     public void testFindById() {
-        assertThat(complaintRepository.findById(complaint.getId()).orElse(null)).isEqualTo(complaint);
+        assertThat(complaintRepository.findById(complaint.getId()).orElse(null))
+                .isEqualTo(complaint);
     }
 
     @Test
     public void testFindByTitle() {
-        assertThat(complaintRepository.findByTitle(complaint.getTitle()).orElse(null)).isEqualTo(complaint);
+        assertThat(complaintRepository.findByTitle(complaint.getTitle()).orElse(null))
+                .isEqualTo(complaint);
     }
 
     @Test
@@ -69,5 +70,4 @@ public class ComplaintRepositoryTest {
     public void testInvalidFindByTitle() {
         assertThat(complaintRepository.findByTitle("").orElse(null)).isNull();
     }
-
 }
