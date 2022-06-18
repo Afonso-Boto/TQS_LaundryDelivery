@@ -87,7 +87,6 @@ public class Order {
                 ? !deliveryDate.equals(order.deliveryDate)
                 : order.deliveryDate != null) return false;
         if (laundry != null ? !laundry.equals(order.laundry) : order.laundry != null) return false;
-        if (user != null ? !user.equals(order.user) : order.user != null) return false;
         if (orderType != null ? !orderType.equals(order.orderType) : order.orderType != null)
             return false;
         return complaint != null ? complaint.equals(order.complaint) : order.complaint == null;

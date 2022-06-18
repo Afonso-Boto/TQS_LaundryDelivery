@@ -64,7 +64,7 @@ public class User {
             return false;
         if (fullName != null ? !fullName.equals(user.fullName) : user.fullName != null)
             return false;
-        return orders != null ? orders.equals(user.orders) : user.orders == null;
+        return true;
     }
 
     @Override
