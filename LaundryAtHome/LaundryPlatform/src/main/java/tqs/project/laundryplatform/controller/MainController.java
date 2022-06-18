@@ -14,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.model.Order;
-import tqs.project.laundryplatform.model.User;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
 
