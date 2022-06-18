@@ -106,6 +106,10 @@ public class DeliveriesManager {
         }
         deliveryRepository.save(delivery);
 
+        // If delivery is finished -> rider is free for other deliveries
+        if(delivery.getDeliveryState() == DELIVERED)
+            accountManager.assignWork(riderId, null);
+
         return delivery.getDeliveryState();
     }
 
