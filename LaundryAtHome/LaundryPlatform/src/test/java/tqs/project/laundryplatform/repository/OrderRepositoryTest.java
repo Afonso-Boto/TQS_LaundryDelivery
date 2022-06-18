@@ -1,6 +1,5 @@
 package tqs.project.laundryplatform.repository;
 
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ public class OrderRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        User user = new User("test_user","test@user.pt", "123456", "test_user", 964023412);
+        User user = new User("test_user", "test@user.pt", "123456", "test_user", 964023412);
         Laundry laundry = new Laundry("test_laundry", "123456");
         OrderType orderType = new OrderType("test_order_type", 100);
         order = new Order(orderType, user, laundry);
@@ -67,7 +66,7 @@ public class OrderRepositoryTest {
 
     @Test
     public void testInvalidFindByUser() {
-        User user = new User("test_user","w123456", "123456", "test_user", 964023412);
+        User user = new User("test_user", "w123456", "123456", "test_user", 964023412);
         userRepository.save(user);
         assertThat(orderRepository.findAllByUser(user)).isEmpty();
     }
@@ -76,5 +75,4 @@ public class OrderRepositoryTest {
     public void testInvalidId_thenReturnEmptyOptional() {
         assertThat(orderRepository.findById(0L)).isEmpty();
     }
-
 }

@@ -56,7 +56,8 @@ public class ItemTypeRepositoryTest {
 
     @Test
     public void testFindByName() {
-        assertThat(itemTypeRepository.findByName(itemType.getName()).orElse(null)).isEqualTo(itemType);
+        assertThat(itemTypeRepository.findByName(itemType.getName()).orElse(null))
+                .isEqualTo(itemType);
     }
 
     @Test

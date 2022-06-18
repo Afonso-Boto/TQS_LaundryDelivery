@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LaundryRepositoryTest {
 
     Laundry laundry;
+
     @Container
     public static MySQLContainer container =
             new MySQLContainer("mysql:8.0.29")

@@ -51,12 +51,14 @@ public class OrderTypeRepositoryTest {
 
     @Test
     public void testFindById() {
-        assertThat(orderTypeRepository.findById(orderType.getId()).orElse(null)).isEqualTo(orderType);
+        assertThat(orderTypeRepository.findById(orderType.getId()).orElse(null))
+                .isEqualTo(orderType);
     }
 
     @Test
     public void testFindByName() {
-        assertThat(orderTypeRepository.findByName(orderType.getName()).orElse(null)).isEqualTo(orderType);
+        assertThat(orderTypeRepository.findByName(orderType.getName()).orElse(null))
+                .isEqualTo(orderType);
     }
 
     @Test
