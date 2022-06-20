@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "Complaint")
+@Table(name = "complaint")
 public class Complaint {
 
     @Id
