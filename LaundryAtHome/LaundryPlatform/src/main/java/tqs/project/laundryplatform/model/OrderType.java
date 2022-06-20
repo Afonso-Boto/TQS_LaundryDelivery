@@ -21,7 +21,7 @@ public class OrderType {
     @Column(name = "base_price")
     private double basePrice;
 
-    @OneToMany(mappedBy = "ordertype")
+    @OneToMany(mappedBy = "order_type")
     Set<Order> orders;
 
     public OrderType(String name, double basePrice) {
