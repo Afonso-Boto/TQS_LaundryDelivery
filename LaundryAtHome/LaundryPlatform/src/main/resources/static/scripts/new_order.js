@@ -13,7 +13,7 @@ function submitOrder() {
             console.log('success', data);
             alert("Order submitted successfully!");
 
-            window.location.href = "http://" + location.hostname + ":81/ok";
+            window.location.href = "http://" + location.hostname + ":81/orders";
         },
         error: function (data) {
             console.log('error', data);

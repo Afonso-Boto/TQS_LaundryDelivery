@@ -66,16 +66,4 @@ public class User {
             return false;
         return true;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (username != null ? username.hashCode() : 0);
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
-        result = 31 * result + phoneNumber;
-        result = 31 * result + (orders != null ? orders.hashCode() : 0);
-        return result;
-    }
 }

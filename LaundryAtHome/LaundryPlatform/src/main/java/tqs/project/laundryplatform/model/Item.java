@@ -49,14 +49,4 @@ public class Item {
         if (!id.equals(item.id)) return false;
         return itemType.equals(item.itemType);
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + number;
-        result = 31 * result + (isDark ? 1 : 0);
-        result = 31 * result + (order != null ? order.hashCode() : 0);
-        result = 31 * result + (itemType != null ? itemType.hashCode() : 0);
-        return result;
-    }
 }

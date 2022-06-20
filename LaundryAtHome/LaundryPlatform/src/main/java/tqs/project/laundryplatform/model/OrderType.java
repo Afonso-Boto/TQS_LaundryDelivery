@@ -42,16 +42,4 @@ public class OrderType {
         if (id != null ? !id.equals(type.id) : type.id != null) return false;
         return name != null ? name.equals(type.name) : type.name == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        temp = Double.doubleToLongBits(basePrice);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (orders != null ? orders.hashCode() : 0);
-        return result;
-    }
 }

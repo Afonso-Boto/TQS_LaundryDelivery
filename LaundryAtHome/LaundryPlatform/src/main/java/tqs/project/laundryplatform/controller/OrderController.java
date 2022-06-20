@@ -5,11 +5,16 @@ import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
 
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.service.OrderService;
 
 @Controller
@@ -48,8 +53,8 @@ public class OrderController {
     }
 
     @PostMapping("/make-order")
-    public String makeOrder(
-            @RequestBody String formObject, Model model, HttpServletRequest request) {
+    public String makeOrder(@RequestBody String formObject, Model model, HttpServletRequest request)
+            throws JsonProcessingException {
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 
@@ -63,6 +68,15 @@ public class OrderController {
         if (orderService.makeOrder(orderId, orderInfo)) {
             System.out.println("Order made");
             ordersUncompleted.remove(cookieId);
+
+            String uri = "http://51.142.110.251:80/api/v1/login";
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json =
+                    objectMapper.writeValueAsString(new LoginRequest("laundryathome@ua.pt", "123"));
+            RestTemplate restTemplate = new RestTemplate();
+            String response = restTemplate.postForObject(uri, json, String.class);
+            System.out.println(response);
+
             return "redirect:/ok";
         }
 
