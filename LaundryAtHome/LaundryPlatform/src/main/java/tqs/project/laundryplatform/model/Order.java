@@ -92,25 +92,6 @@ public class Order {
         return complaint != null ? complaint.equals(order.complaint) : order.complaint == null;
     }
 
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        result = 31 * result + (isCompleted ? 1 : 0);
-        result = 31 * result + (deliveryLocation != null ? deliveryLocation.hashCode() : 0);
-        result = 31 * result + (deliveryDate != null ? deliveryDate.hashCode() : 0);
-        temp = Double.doubleToLongBits(totalPrice);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (items != null ? items.hashCode() : 0);
-        result = 31 * result + (laundry != null ? laundry.hashCode() : 0);
-        result = 31 * result + (user != null ? user.hashCode() : 0);
-        result = 31 * result + (orderType != null ? orderType.hashCode() : 0);
-        result = 31 * result + (complaint != null ? complaint.hashCode() : 0);
-        return result;
-    }
-
     public Set<Item> getItems() {
         return items;
     }

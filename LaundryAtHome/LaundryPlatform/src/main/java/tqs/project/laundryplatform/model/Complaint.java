@@ -51,13 +51,4 @@ public class Complaint {
                 : complaint.description != null) return false;
         return order != null ? order.equals(complaint.order) : complaint.order == null;
     }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (title != null ? title.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (order != null ? order.hashCode() : 0);
-        return result;
-    }
 }
