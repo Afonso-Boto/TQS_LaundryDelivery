@@ -12,6 +12,8 @@ import com.qourier.qourier_app.repository.DeliveryRepository;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import org.springframework.amqp.AmqpApplicationContextClosedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

@@ -8,6 +8,7 @@ import com.qourier.qourier_app.TestUtils;
 import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
+import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.AccountRepository;
 import com.qourier.qourier_app.repository.AdminRepository;
 import com.qourier.qourier_app.repository.CustomerRepository;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.aspectj.bridge.Message;
 import org.openqa.selenium.*;
 
 public class CucumberSteps {
@@ -35,6 +37,7 @@ public class CucumberSteps {
     private final Rider sampleRider;
     private final Customer sampleCustomer;
     private final DeliveriesManager deliveriesManager;
+    private final MessageCenter messageCenter;
     private final int auctionSpan;
 
     private Account currentAccount;
@@ -45,12 +48,14 @@ public class CucumberSteps {
             CustomerRepository customerRepository,
             AdminRepository adminRepository,
             AccountRepository accountRepository,
-            DeliveriesManager deliveriesManager) {
+            DeliveriesManager deliveriesManager,
+            MessageCenter messageCenter) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
         this.deliveriesManager = deliveriesManager;
+        this.messageCenter = messageCenter;
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
@@ -317,7 +322,7 @@ public class CucumberSteps {
 
     @When("I wait for the auction to end")
     public void waitAuctionEnd() {
-        await().atMost(auctionSpan, TimeUnit.SECONDS).until(
+        await().atMost(auctionSpan + 3, TimeUnit.SECONDS).until(
                 () -> deliveriesManager.getDeliveryState(focusedDelivery.getDeliveryId()) != DeliveryState.BID_CHECK
         );
     }
