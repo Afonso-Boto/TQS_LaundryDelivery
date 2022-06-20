@@ -10,11 +10,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import tqs.project.laundryplatform.account.LoginRequest;
+import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.qourier.Delivery;
+import tqs.project.laundryplatform.qourier.QourierLoginRequest;
+import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.service.OrderService;
 
 @Controller
@@ -24,6 +30,7 @@ public class OrderController {
 
     @Autowired OrderService orderService;
     @Autowired MainController mainController;
+    @Autowired OrderRepository orderRepository;
 
     private static final String REDIRECT_NEW_ORDER = "redirect:/new_order";
     private static final String REDIRECT_ORDERS = "redirect:/orders";
@@ -69,13 +76,37 @@ public class OrderController {
             System.out.println("Order made");
             ordersUncompleted.remove(cookieId);
 
-            String uri = "http://51.142.110.251:80/api/v1/login";
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json =
-                    objectMapper.writeValueAsString(new LoginRequest("laundryathome@ua.pt", "123"));
+            // Qourier API Calls
+            String uri = "http://51.142.110.251:80/api/v1/accounts/login";
             RestTemplate restTemplate = new RestTemplate();
-            String response = restTemplate.postForObject(uri, json, String.class);
-            System.out.println(response);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
+            HttpEntity<String> request1;
+
+            json =
+                    objectMapper.writeValueAsString(
+                            new QourierLoginRequest("laundryathome@ua.pt", "123"));
+            request1 = new HttpEntity<>(json, httpHeaders);
+            String basicAuth = restTemplate.postForObject(uri, request1, String.class);
+
+            uri = "http://51.142.110.251:80/api/v1/deliveries?basicAuth=" + basicAuth;
+            Order order = orderRepository.findById(orderId).orElse(null);
+            json =
+                    objectMapper.writeValueAsString(
+                            new Delivery(
+                                    "laundryathome@ua.pt",
+                                    40.631230465638644,
+                                    -8.657472830474786,
+                                    order.getDeliveryLocation() != null
+                                            ? order.getDeliveryLocation()
+                                            : "Universidade de Aveiro, 3810-193 Aveiro",
+                                    "Universidade de Aveiro, 3810-193 Aveiro"));
+
+            request1 = new HttpEntity<>(json, httpHeaders);
+            String x = restTemplate.postForObject(uri, request1, String.class);
+            System.out.println(x);
 
             return "redirect:/ok";
         }

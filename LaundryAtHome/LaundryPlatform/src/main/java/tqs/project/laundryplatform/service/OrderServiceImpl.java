@@ -45,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean makeOrder(long orderId, JSONObject orderInfo) {
         Order newOrder;
+        String address = "";
 
         newOrder = orderRepository.findById(orderId).orElse(null);
         if (newOrder == null) return false;
@@ -86,9 +87,16 @@ public class OrderServiceImpl implements OrderService {
             item = new Item(number, isDark, newOrder, itemType);
             items.add(item);
             itemRepository.save(item);
+
+            if (itemObject.get("address") != JSONObject.NULL) {
+                address = itemObject.getString("address");
+            }
         }
+        System.out.println("address: " + address);
 
         newOrder.setItems(items);
+        newOrder.setDeliveryLocation(address);
+        orderRepository.save(newOrder);
 
         return true;
     }
