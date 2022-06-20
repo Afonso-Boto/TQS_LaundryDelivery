@@ -44,7 +44,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "ordertype_id")
-    OrderType orderType;
+    OrderType order_type;
 
     @OneToOne(mappedBy = "order")
     Complaint complaint;
@@ -55,8 +55,8 @@ public class Order {
         this.deliveryLocation = deliveryLocation;
     }
 
-    public Order(OrderType orderType, User user, Laundry laundry) {
-        this.orderType = orderType;
+    public Order(OrderType order_type, User user, Laundry laundry) {
+        this.order_type = order_type;
         this.user = user;
         this.laundry = laundry;
     }
@@ -87,7 +87,7 @@ public class Order {
                 ? !deliveryDate.equals(order.deliveryDate)
                 : order.deliveryDate != null) return false;
         if (laundry != null ? !laundry.equals(order.laundry) : order.laundry != null) return false;
-        if (orderType != null ? !orderType.equals(order.orderType) : order.orderType != null)
+        if (order_type != null ? !order_type.equals(order.order_type) : order.order_type != null)
             return false;
         return complaint != null ? complaint.equals(order.complaint) : order.complaint == null;
     }

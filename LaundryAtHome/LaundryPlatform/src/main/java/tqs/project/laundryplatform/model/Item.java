@@ -26,13 +26,13 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "item_type_id")
-    ItemType itemType;
+    ItemType item_type;
 
-    public Item(int number, boolean isDark, Order order, ItemType itemType) {
+    public Item(int number, boolean isDark, Order order, ItemType item_type) {
         this.number = number;
         this.isDark = isDark;
         this.order = order;
-        this.itemType = itemType;
+        this.item_type = item_type;
     }
 
     public Item() {}
@@ -47,6 +47,6 @@ public class Item {
         if (number != item.number) return false;
         if (isDark != item.isDark) return false;
         if (!id.equals(item.id)) return false;
-        return itemType.equals(item.itemType);
+        return item_type.equals(item.item_type);
     }
 }
