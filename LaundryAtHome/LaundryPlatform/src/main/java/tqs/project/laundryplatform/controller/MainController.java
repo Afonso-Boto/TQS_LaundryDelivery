@@ -2,7 +2,6 @@ package tqs.project.laundryplatform.controller;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
-import java.sql.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
-import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
 
@@ -114,9 +112,9 @@ public class MainController {
     }
 
     @GetMapping("/tracking")
-    public ModelAndView tracking(Model model, HttpServletRequest request) {
+    public ModelAndView tracking(Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
         ModelAndView mav = new ModelAndView("tracking");
-        mav.addObject("order", new Order(1L, new Date(2022, 12, 12), 20.99));
+        mav.addObject("order", orderRepository.findById(Long.parseLong(orderId)).orElse(null));
 
         return mav;
     }

@@ -1,5 +1,9 @@
 package tqs.project.laundryplatform.service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,6 +100,8 @@ public class OrderServiceImpl implements OrderService {
 
         newOrder.setItems(items);
         newOrder.setDeliveryLocation(address);
+        java.util.Date date = new java.util.Date();
+        newOrder.setDate(new Date(date.getTime()));
         orderRepository.save(newOrder);
 
         return true;

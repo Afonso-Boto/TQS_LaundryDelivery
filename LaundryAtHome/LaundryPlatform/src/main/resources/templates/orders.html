@@ -58,8 +58,9 @@
                     <div th:if="${order.isCompleted()}">
                         <p class="mb-3">
                         <p th:text="${'Order status: Completed'}"></p>
-                        <form action="/tracking" method="get" id="submitForDetails">
-                            <button type="submit" class="btn btn-primary" form="submitForDetails">See details</button>
+                        <form action="/tracking" method="get">
+                            <input type="hidden" name="orderId" th:value="${order.getId()}">
+                            <button type="submit" class="btn btn-primary">See details</button>
                         </form>
                         </p>
                     </div>
@@ -67,8 +68,9 @@
                         <p class="mb-3">
                         <p th:text="${'Order status: Active'}"></p>
                         </p>
-                        <form action="/tracking" method="get" id="submitForTracking">
-                            <button type="submit" class="btn btn-primary" form="submitForTracking">See details</button>
+                        <form action="/tracking" method="get">
+                            <input type="hidden" name="orderId" th:value="${order.getId()}">
+                            <button type="submit" class="btn btn-primary">See details</button>
                         </form>
                     </div>
                 </div>
