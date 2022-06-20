@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tqs.project.laundryplatform.account.AccountManager;
@@ -82,6 +84,16 @@ public class AuthController {
         return "redirect:/index";
     }
 
+    @PostMapping("/register-mobile")
+    public ResponseEntity<String> signUpMobile(RegisterRequest request, HttpServletResponse response) {
+        if (!accountManager.register(request)) return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+
+        // Set cookie for customer
+        setCookie(response, request.getUsername());
+
+        return new ResponseEntity<>("success", HttpStatus.OK);
+    }
+
     @PostMapping("/login")
     public String loginPost(LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
@@ -96,5 +108,21 @@ public class AuthController {
         setCookie(response, user.getUsername());
 
         return "redirect:/index";
+    }
+
+    @PostMapping("/login-mobile")
+    public ResponseEntity<String> loginMobile(LoginRequest user, HttpServletResponse response) {
+        LoginResult result = accountManager.login(user);
+        System.err.println("Login result: " + result);
+
+        if (result.equals(LoginResult.WRONG_CREDENTIALS)
+                || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)) {
+            return new ResponseEntity<>("error", HttpStatus.UNAUTHORIZED);
+        }
+
+        // Set cookie for customer
+        setCookie(response, user.getUsername());
+
+        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 }
