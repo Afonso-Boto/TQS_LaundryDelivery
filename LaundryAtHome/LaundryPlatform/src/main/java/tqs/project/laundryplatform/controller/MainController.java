@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,8 @@ import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/")
@@ -90,6 +93,15 @@ public class MainController {
         return modelAndView;
     }
 
+    @GetMapping("/orders-mobile")
+    public ResponseEntity<String> ordersMobile(Model model, HttpServletRequest request) {
+        System.err.println("orders");
+        return ResponseEntity.ok(
+                orderRepository.findAllByUser(
+                        userRepository.findByUsername(getIdFromCookie(request)).orElse(null))
+                        .toString());
+    }
+
     @GetMapping("/service")
     public String service(Model model, HttpServletRequest request) {
         return "service";
@@ -117,5 +129,10 @@ public class MainController {
         mav.addObject("order", orderRepository.findById(Long.parseLong(orderId)).orElse(null));
 
         return mav;
+    }
+
+    @GetMapping("/tracking-mobile")
+    public ResponseEntity<String> trackingMobile(Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
+        return ResponseEntity.ok(Objects.requireNonNull(orderRepository.findById(Long.parseLong(orderId)).orElse(null)).toString());
     }
 }

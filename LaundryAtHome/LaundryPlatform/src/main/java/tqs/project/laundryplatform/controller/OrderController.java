@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,14 @@ public class OrderController {
         return REDIRECT_ORDERS;
     }
 
+    @PostMapping("cancelOrder-mobilde/{id}")
+    public ResponseEntity<String> cancelOrderMobile(@PathVariable("id") Long id, HttpServletRequest request) {
+        if (!hasCookie(request)) return ResponseEntity.status(401).body("unauthorized");
+
+        orderService.cancelOrder(id);
+        return ResponseEntity.status(200).body("ok");
+    }
+
     @PostMapping("/complaint")
     public String complaint(@RequestBody String body, HttpServletRequest request, Model model) {
         JSONObject json = new JSONObject(body);
@@ -57,6 +66,18 @@ public class OrderController {
         }
 
         return REDIRECT_ERROR;
+    }
+
+    @PostMapping("/complaint-mobile")
+    public ResponseEntity<String> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+        JSONObject json = new JSONObject(body);
+
+        if (hasCookie(request)) {
+            orderService.complaint(json);
+            return ResponseEntity.ok("OK");
+        }
+
+        return ResponseEntity.status(401).body("Unauthorized");
     }
 
     @PostMapping("/make-order")
@@ -114,6 +135,61 @@ public class OrderController {
         return "redirect:/error";
     }
 
+    @PostMapping("/make-order-mobile")
+    public ResponseEntity<String> newOrderMobile(@RequestBody String formObject, Model model, HttpServletRequest request)
+            throws JsonProcessingException {
+        JSONObject orderInfo = new JSONObject(formObject);
+        long orderId;
+
+        if (!hasCookie(request)) return ResponseEntity.status(401).body("Unauthorized");
+
+        String cookieId = getIdFromCookie(request);
+        orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
+
+        if (orderId == -1L) return ResponseEntity.status(401).body("Unauthorized");
+
+        if (orderService.makeOrder(orderId, orderInfo)) {
+            System.out.println("Order made");
+            ordersUncompleted.remove(cookieId);
+
+            // Qourier API Calls
+            String uri = "http://51.142.110.251:80/api/v1/accounts/login";
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            ObjectMapper objectMapper = new ObjectMapper();
+            String json;
+            HttpEntity<String> request1;
+
+            json =
+                    objectMapper.writeValueAsString(
+                            new QourierLoginRequest("laundryathome@ua.pt", "123"));
+            request1 = new HttpEntity<>(json, httpHeaders);
+            String basicAuth = restTemplate.postForObject(uri, request1, String.class);
+
+            uri = "http://51.142.110.251:80/api/v1/deliveries?basicAuth=" + basicAuth;
+            Order order = orderRepository.findById(orderId).orElse(null);
+            json =
+                    objectMapper.writeValueAsString(
+                            new Delivery(
+                                    "laundryathome@ua.pt",
+                                    40.631230465638644,
+                                    -8.657472830474786,
+                                    order.getDeliveryLocation() != null
+                                            ? order.getDeliveryLocation()
+                                            : "Universidade de Aveiro, 3810-193 Aveiro",
+                                    "Universidade de Aveiro, 3810-193 Aveiro"));
+
+            request1 = new HttpEntity<>(json, httpHeaders);
+            String x = restTemplate.postForObject(uri, request1, String.class);
+            System.out.println(x);
+
+            return ResponseEntity.status(200).body("OK");
+        }
+
+        return ResponseEntity.status(401).body("Unauthorized");
+    }
+
     @GetMapping("/init-order")
     public String initOrder(
             Model model,
@@ -135,5 +211,28 @@ public class OrderController {
         ordersUncompleted.put(cookieID, orderID);
 
         return REDIRECT_NEW_ORDER;
+    }
+
+    @GetMapping("/init-order-mobile")
+    public ResponseEntity<String> initOrderMobile(
+            Model model,
+            HttpServletRequest request,
+            @RequestParam("orderTypeId") long orderTypeId) {
+
+        if (!hasCookie(request)) {
+            return ResponseEntity.status(401).body("error");
+        }
+
+        String cookieID = getIdFromCookie(request);
+
+        long orderID = orderService.initOrder(orderTypeId, cookieID);
+
+        if (orderID == -1) {
+            return ResponseEntity.status(401).body("error");
+        }
+
+        ordersUncompleted.put(cookieID, orderID);
+
+        return ResponseEntity.status(200).body("ok");
     }
 }

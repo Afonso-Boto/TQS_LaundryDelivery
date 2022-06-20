@@ -125,4 +125,10 @@ public class AuthController {
 
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
+
+    @GetMapping("/logout-mobile")
+    public ResponseEntity<String> logoutMobile(HttpServletResponse response) {
+        removeCookie(response);
+        return new ResponseEntity<>("success", HttpStatus.OK);
+    }
 }
