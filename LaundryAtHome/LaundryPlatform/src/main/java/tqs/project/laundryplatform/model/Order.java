@@ -43,7 +43,7 @@ public class Order {
     User user;
 
     @ManyToOne
-    @JoinColumn(name = "orderType_id")
+    @JoinColumn(name = "ordertype_id")
     OrderType orderType;
 
     @OneToOne(mappedBy = "order")

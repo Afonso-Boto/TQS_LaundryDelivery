@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "itemType")
+@Table(name = "itemtype")
 public class ItemType {
 
     @Id
@@ -21,7 +21,7 @@ public class ItemType {
     @Column(name = "price")
     private double price;
 
-    @OneToMany(mappedBy = "itemType")
+    @OneToMany(mappedBy = "itemtype")
     Set<Item> items;
 
     public ItemType(String name, double price) {
