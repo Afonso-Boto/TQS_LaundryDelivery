@@ -51,7 +51,7 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
     - name: Setup RabbitMQ for integration testing
-      run: cd Qourier && docker-compose up -d rabbitmq
+      run: cd .. && docker-compose up -d rabbitmq
     - name: Build and analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     # Needed to get PR information, if any
