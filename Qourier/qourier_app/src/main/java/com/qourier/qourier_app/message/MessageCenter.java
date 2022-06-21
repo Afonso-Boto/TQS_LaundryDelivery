@@ -21,13 +21,16 @@ public class MessageCenter {
     }
 
     public void notifyRiderAssignment(String riderId, long deliveryId) {
-        rabbitTemplate.send(RabbitConfiguration.TOPIC_EXCHANGE_NAME, generateRiderAssignmentTopic(riderId), MessageBuilder
-                .withBody(String.valueOf(deliveryId).getBytes())
-                .build());
+        rabbitTemplate.send(
+                RabbitConfiguration.TOPIC_EXCHANGE_NAME,
+                generateRiderAssignmentTopic(riderId),
+                MessageBuilder.withBody(String.valueOf(deliveryId).getBytes()).build());
     }
 
     public static String generateRiderAssignmentTopic(String riderId) {
-        return RabbitConfiguration.RIDER_ASSIGNMENTS_ROUTING_KEY + "." + convertRiderIdToTopic(riderId);
+        return RabbitConfiguration.RIDER_ASSIGNMENTS_ROUTING_KEY
+                + "."
+                + convertRiderIdToTopic(riderId);
     }
 
     private static String convertRiderIdToTopic(String riderId) {

@@ -41,8 +41,7 @@ public class ApiController {
             return List.of(deliveriesManager.getDelivery(Long.parseLong(deliveryId)));
 
         // Check if filter or not
-        if (!customerId.isEmpty())
-            return deliveriesManager.getDeliveriesFromCustomer(customerId);
+        if (!customerId.isEmpty()) return deliveriesManager.getDeliveriesFromCustomer(customerId);
 
         return deliveriesManager.getAllDeliveries();
     }
@@ -88,7 +87,8 @@ public class ApiController {
         String riderId = newBid.getRidersId();
 
         // Check if auth is right
-        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes())) && accountManager.getRiderAccount(riderId).getCurrentDelivery() == null) {
+        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes()))
+                && accountManager.getRiderAccount(riderId).getCurrentDelivery() == null) {
             Bid bid = deliveriesManager.createBid(Bid.fromDto(newBid));
             return new ResponseEntity<>(bid, HttpStatus.CREATED);
         }

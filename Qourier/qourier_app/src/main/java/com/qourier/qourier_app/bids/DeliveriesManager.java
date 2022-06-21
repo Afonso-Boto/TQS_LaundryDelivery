@@ -69,7 +69,8 @@ public class DeliveriesManager {
                                     delivery.setDeliveryState(FETCHING);
                                     deliveryRepository.save(delivery);
 
-                                    messageCenter.notifyRiderAssignment(delivery.getRiderId(), delivery.getDeliveryId());
+                                    messageCenter.notifyRiderAssignment(
+                                            delivery.getRiderId(), delivery.getDeliveryId());
                                 } else {
                                     deliveryRepository.delete(delivery);
                                 }
@@ -108,8 +109,7 @@ public class DeliveriesManager {
         deliveryRepository.save(delivery);
 
         // If delivery is finished -> rider is free for other deliveries
-        if(delivery.getDeliveryState() == DELIVERED)
-            accountManager.assignWork(riderId, null);
+        if (delivery.getDeliveryState() == DELIVERED) accountManager.assignWork(riderId, null);
 
         return delivery.getDeliveryState();
     }

@@ -56,7 +56,10 @@ public class WebController {
     private String adminPass;
 
     @Autowired
-    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager, MessageCenter messageCenter) {
+    public WebController(
+            AccountManager accountManager,
+            DeliveriesManager deliveriesManager,
+            MessageCenter messageCenter) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
         this.messageCenter = messageCenter;
@@ -172,7 +175,8 @@ public class WebController {
         model.addAttribute("role", role);
         model.addAttribute("riderId", riderId);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
-        model.addAttribute("notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
+        model.addAttribute(
+                "notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
 
         RiderDTO rider = accountManager.getRiderAccount(riderId);
         model.addAttribute("alreadyDelivering", rider.getCurrentDelivery() != null);

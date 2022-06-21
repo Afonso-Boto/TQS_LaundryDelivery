@@ -14,6 +14,5 @@ import org.springframework.test.context.TestPropertySource;
 @ExtendWith(MockitoExtension.class)
 public class CucumberSpringConfiguration {
 
-    @SpyBean
-    private MessageCenter messageCenter;
+    @SpyBean private MessageCenter messageCenter;
 }

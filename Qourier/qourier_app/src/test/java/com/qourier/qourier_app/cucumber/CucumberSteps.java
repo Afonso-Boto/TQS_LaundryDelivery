@@ -47,8 +47,7 @@ public class CucumberSteps {
     private final BidsRepository bidsRepository;
     private final int auctionSpan;
 
-    @Autowired
-    private MessageCenter messageCenter;
+    @Autowired private MessageCenter messageCenter;
 
     private Account currentAccount;
     private long focusedDeliveryId;
@@ -167,14 +166,17 @@ public class CucumberSteps {
     public void initializeDeliveries(List<Map<String, String>> dataTable) {
         for (Map<String, String> deliveryDetails : dataTable) {
             String customerId = deliveryDetails.get("customer");
-            double latitude = Double.parseDouble( deliveryDetails.get("latitude") );
-            double longitude = Double.parseDouble( deliveryDetails.get("longitude") );
-            Customer customer = customerRepository.findById(customerId)
-                    .orElseThrow();
+            double latitude = Double.parseDouble(deliveryDetails.get("latitude"));
+            double longitude = Double.parseDouble(deliveryDetails.get("longitude"));
+            Customer customer = customerRepository.findById(customerId).orElseThrow();
 
-            Delivery delivery = new Delivery(
-                    customer.getEmail(), latitude, longitude, TestUtils.randomString(), TestUtils.randomString()
-            );
+            Delivery delivery =
+                    new Delivery(
+                            customer.getEmail(),
+                            latitude,
+                            longitude,
+                            TestUtils.randomString(),
+                            TestUtils.randomString());
             deliveriesManager.createDelivery(delivery);
         }
     }
@@ -183,10 +185,10 @@ public class CucumberSteps {
     public void initializeBids(List<Map<String, String>> dataTable) {
         for (Map<String, String> bidDetails : dataTable) {
             String customerEmail = bidDetails.get("customer");
-            double latitude = Double.parseDouble( bidDetails.get("latitude") );
-            double longitude = Double.parseDouble( bidDetails.get("longitude") );
+            double latitude = Double.parseDouble(bidDetails.get("latitude"));
+            double longitude = Double.parseDouble(bidDetails.get("longitude"));
             String riderId = bidDetails.get("rider");
-            double distance = Double.parseDouble( bidDetails.get("distance") );
+            double distance = Double.parseDouble(bidDetails.get("distance"));
 
             long deliveryId = getDeliveryId(customerEmail, latitude, longitude).getDeliveryId();
             deliveriesManager.createBid(new Bid(riderId, deliveryId, distance));
@@ -332,25 +334,24 @@ public class CucumberSteps {
     public void waitAuctionEnd() {
         await().atMost(auctionSpan * 2L, TimeUnit.SECONDS)
                 .untilAsserted(
-                        () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong())
-                );
+                        () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong()));
     }
 
     @Then("a rider assignment notification should have been sent")
     public void riderAssignmentNotificationSent() {
-        verify(messageCenter, times(1)).notifyRiderAssignment(
-                currentAccount.getEmail(), focusedDeliveryId);
+        verify(messageCenter, times(1))
+                .notifyRiderAssignment(currentAccount.getEmail(), focusedDeliveryId);
     }
 
     @Then("I should {not}receive a notification indicating that I have been accepted")
     public void iShouldReceiveDeliveryAcceptedNotification(boolean not) {
-        await().atMost(5L, TimeUnit.SECONDS).untilAsserted(
-                () -> {
-                    WebElement alert = driver.findElement(By.id("info-delivery-assigned"));
-                    if (not) assertThat(alert.isDisplayed()).isFalse();
-                    else assertThat(alert.isDisplayed()).isTrue();
-                }
-        );
+        await().atMost(5L, TimeUnit.SECONDS)
+                .untilAsserted(
+                        () -> {
+                            WebElement alert = driver.findElement(By.id("info-delivery-assigned"));
+                            if (not) assertThat(alert.isDisplayed()).isFalse();
+                            else assertThat(alert.isDisplayed()).isTrue();
+                        });
     }
 
     @Then("I should be presented with the delivery's details")
@@ -377,7 +378,8 @@ public class CucumberSteps {
     @Then("I can {not}bid for another delivery")
     public void assertBidAbility(boolean not) {
         WebElement infoDeliveriesAvailable = driver.findElement(By.id("info-delivery-available"));
-        WebElement infoDeliveryAlreadyAssigned = driver.findElement(By.id("info-delivery-assigned"));
+        WebElement infoDeliveryAlreadyAssigned =
+                driver.findElement(By.id("info-delivery-assigned"));
         if (not) {
             assertThat(infoDeliveriesAvailable.isDisplayed()).isFalse();
             assertThat(infoDeliveryAlreadyAssigned.isDisplayed()).isTrue();
@@ -490,7 +492,7 @@ public class CucumberSteps {
         WebElement button = checkButtons.get(0);
         button.click();
         String[] idSplit = button.getAttribute("id").split("-");
-        focusedDeliveryId = Long.parseLong( idSplit[idSplit.length - 1] );
+        focusedDeliveryId = Long.parseLong(idSplit[idSplit.length - 1]);
     }
 
     @And("I click confirm")
@@ -549,9 +551,11 @@ public class CucumberSteps {
     }
 
     private Delivery getDeliveryId(String customerEmail, double latitude, double longitude) {
-        return deliveriesManager.getDeliveriesFromCustomer(customerEmail)
-                .stream()
-                .filter(delivery -> delivery.getLatitude() == latitude && delivery.getLongitude() == longitude)
+        return deliveriesManager.getDeliveriesFromCustomer(customerEmail).stream()
+                .filter(
+                        delivery ->
+                                delivery.getLatitude() == latitude
+                                        && delivery.getLongitude() == longitude)
                 .findFirst()
                 .orElseThrow();
     }
