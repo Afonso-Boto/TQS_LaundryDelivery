@@ -1,7 +1,6 @@
 package com.qourier.qourier_app.controller;
 
 import static com.qourier.qourier_app.account.login.LoginResult.*;
-import static com.qourier.qourier_app.data.DeliveryState.SHIPPED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -18,11 +17,10 @@ import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.data.Account;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
-import java.util.Base64;
-import java.util.List;
-
 import com.qourier.qourier_app.data.Rider;
 import com.qourier.qourier_app.data.dto.RiderDTO;
+import java.util.Base64;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -247,9 +245,11 @@ class ApiControllerTest {
     @Test
     @DisplayName("Create bid for delivery")
     void whenCreatingBid_thenProgressShouldUpdate() throws Exception {
-        Rider testRider = new Rider(new Account("Rider1","rider@email.com", "password"), "1234567890");
+        Rider testRider =
+                new Rider(new Account("Rider1", "rider@email.com", "password"), "1234567890");
 
-        when(accountManager.getRiderAccount("rider@email.com")).thenReturn(RiderDTO.fromEntity(testRider));
+        when(accountManager.getRiderAccount("rider@email.com"))
+                .thenReturn(RiderDTO.fromEntity(testRider));
 
         // Create Bid
         ObjectMapper objectMapper = new ObjectMapper();
@@ -274,12 +274,14 @@ class ApiControllerTest {
     @Test
     @DisplayName("Create bid for delivery")
     void whenCreatingBidWithWorkingJob_thenProgressShouldntUpdate() throws Exception {
-        Rider testRider = new Rider(new Account("Rider1","rider@email.com", "password"), "1234567890");
+        Rider testRider =
+                new Rider(new Account("Rider1", "rider@email.com", "password"), "1234567890");
 
         // Set rider as already working on a  delivery
         testRider.setCurrentDelivery(1L);
 
-        when(accountManager.getRiderAccount("rider@email.com")).thenReturn(RiderDTO.fromEntity(testRider));
+        when(accountManager.getRiderAccount("rider@email.com"))
+                .thenReturn(RiderDTO.fromEntity(testRider));
 
         // Create Bid
         ObjectMapper objectMapper = new ObjectMapper();

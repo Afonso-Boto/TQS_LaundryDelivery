@@ -14,6 +14,7 @@ import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
+import com.qourier.qourier_app.message.MessageCenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,8 +23,6 @@ import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.qourier.qourier_app.message.MessageCenter;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -56,7 +55,10 @@ public class WebController {
     private String adminPass;
 
     @Autowired
-    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager, MessageCenter messageCenter) {
+    public WebController(
+            AccountManager accountManager,
+            DeliveriesManager deliveriesManager,
+            MessageCenter messageCenter) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
         this.messageCenter = messageCenter;
@@ -172,7 +174,8 @@ public class WebController {
         model.addAttribute("role", role);
         model.addAttribute("riderId", riderId);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
-        model.addAttribute("notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
+        model.addAttribute(
+                "notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
 
         RiderDTO rider = accountManager.getRiderAccount(riderId);
         model.addAttribute("alreadyDelivering", rider.getCurrentDelivery() != null);

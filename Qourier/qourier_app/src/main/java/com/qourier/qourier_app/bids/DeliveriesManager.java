@@ -12,8 +12,6 @@ import com.qourier.qourier_app.repository.DeliveryRepository;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import org.springframework.amqp.AmqpApplicationContextClosedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -69,7 +67,8 @@ public class DeliveriesManager {
                                     delivery.setDeliveryState(FETCHING);
                                     deliveryRepository.save(delivery);
 
-                                    messageCenter.notifyRiderAssignment(delivery.getRiderId(), delivery.getDeliveryId());
+                                    messageCenter.notifyRiderAssignment(
+                                            delivery.getRiderId(), delivery.getDeliveryId());
                                 } else {
                                     deliveryRepository.delete(delivery);
                                 }
@@ -108,8 +107,7 @@ public class DeliveriesManager {
         deliveryRepository.save(delivery);
 
         // If delivery is finished -> rider is free for other deliveries
-        if(delivery.getDeliveryState() == DELIVERED)
-            accountManager.assignWork(riderId, null);
+        if (delivery.getDeliveryState() == DELIVERED) accountManager.assignWork(riderId, null);
 
         return delivery.getDeliveryState();
     }

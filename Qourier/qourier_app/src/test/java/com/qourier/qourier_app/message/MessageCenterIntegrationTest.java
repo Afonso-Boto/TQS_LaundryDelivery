@@ -1,5 +1,11 @@
 package com.qourier.qourier_app.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
+
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -18,19 +24,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
-
 /**
- * This requires a RabbitMQ instance to be running.
- * However, if one isn't running, then the test is ignored (@RabbitAvailable).
+ * This requires a RabbitMQ instance to be running. However, if one isn't running, then the test is
+ * ignored (@RabbitAvailable).
  */
 @SpringJUnitConfig
 @SpringRabbitTest
@@ -42,11 +40,9 @@ class MessageCenterIntegrationTest {
     private static final long DELIVERY_ID = 1L;
     private static final String RIDER_LISTENER_ID = "rider";
 
-    @Autowired
-    private MessageCenter messageCenter;
+    @Autowired private MessageCenter messageCenter;
 
-    @Autowired
-    private RabbitListenerTestHarness harness;
+    @Autowired private RabbitListenerTestHarness harness;
 
     @Test
     void whenNotifyRider_thenNotificationReceived() {
@@ -54,9 +50,8 @@ class MessageCenterIntegrationTest {
 
         Listener listener = this.harness.getSpy(RIDER_LISTENER_ID);
         assertThat(listener).isNotNull();
-        await().atMost(5L, TimeUnit.SECONDS).untilAsserted(
-                () -> verify(listener).checkNotification(any())
-        );
+        await().atMost(5L, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(listener).checkNotification(any()));
     }
 
     @Configuration
@@ -108,8 +103,10 @@ class MessageCenterIntegrationTest {
         }
 
         @Bean
-        public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory cf) {
-            SimpleRabbitListenerContainerFactory containerFactory = new SimpleRabbitListenerContainerFactory();
+        public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+                ConnectionFactory cf) {
+            SimpleRabbitListenerContainerFactory containerFactory =
+                    new SimpleRabbitListenerContainerFactory();
             containerFactory.setConnectionFactory(cf);
             return containerFactory;
         }
@@ -122,5 +119,4 @@ class MessageCenterIntegrationTest {
             assertThat(notification).isEqualTo(String.valueOf(DELIVERY_ID));
         }
     }
-
 }

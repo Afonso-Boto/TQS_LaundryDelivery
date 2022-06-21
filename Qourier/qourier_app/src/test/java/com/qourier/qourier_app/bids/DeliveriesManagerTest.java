@@ -25,11 +25,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 public class DeliveriesManagerTest {
     @Container
-    public static RabbitMQContainer container = new RabbitMQContainer("rabbitmq:management")
-            .withExposedPorts(5672, 15672, 15674)
-            .withVhost("/")
-            .withUser("guest", "guest")
-            .withPermission("/", "admin", ".*", ".*", ".*");
+    public static RabbitMQContainer container =
+            new RabbitMQContainer("rabbitmq:management")
+                    .withExposedPorts(5672, 15672, 15674)
+                    .withVhost("/")
+                    .withUser("guest", "guest")
+                    .withPermission("/", "admin", ".*", ".*", ".*");
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
