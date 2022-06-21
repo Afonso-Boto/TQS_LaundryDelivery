@@ -21,9 +21,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 /**
  * This requires a RabbitMQ instance to be running.
@@ -51,7 +54,9 @@ class MessageCenterIntegrationTest {
 
         Listener listener = this.harness.getSpy(RIDER_LISTENER_ID);
         assertThat(listener).isNotNull();
-        verify(listener).checkNotification(any());
+        await().atMost(5L, TimeUnit.SECONDS).untilAsserted(
+                () -> verify(listener).checkNotification(any())
+        );
     }
 
     @Configuration

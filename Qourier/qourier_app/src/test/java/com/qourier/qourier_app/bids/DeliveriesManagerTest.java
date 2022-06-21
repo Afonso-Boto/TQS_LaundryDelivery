@@ -20,7 +20,7 @@ import org.testcontainers.containers.RabbitMQContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @TestPropertySource("/application-test.properties")
 @Testcontainers
 public class DeliveriesManagerTest {
@@ -66,7 +66,7 @@ public class DeliveriesManagerTest {
                 .untilAsserted(
                         () ->
                                 assertThat(deliveryManager.getDelivery(delivery.getDeliveryId()))
-                                        .isEqualTo(null));
+                                        .isNull());
     }
 
     @Test

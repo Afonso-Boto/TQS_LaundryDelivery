@@ -52,6 +52,7 @@ public class CucumberSteps {
 
     private Account currentAccount;
     private long focusedDeliveryId;
+    private AccountRole focusedRole;
 
     public CucumberSteps(
             RiderRepository riderRepository,
@@ -69,7 +70,7 @@ public class CucumberSteps {
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
-        auctionSpan = 10;
+        auctionSpan = 5;
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
         driver = new HtmlUnitDriver(true);
@@ -222,17 +223,17 @@ public class CucumberSteps {
     public void registerAs(AccountRole accountRole) {
         String role = accountRole.name().toLowerCase();
         driver.findElement(By.id("btn-register-" + role)).click();
-        currentAccount.setRole(accountRole);
+        focusedRole = accountRole;
     }
 
     @When("I fill the registration details")
     public void registerDetailsAs() {
-        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
+        if (focusedRole == AccountRole.RIDER) {
             driver.findElement(By.id("email")).sendKeys("rider_example@mial.com");
             driver.findElement(By.id("password")).sendKeys("secret");
             driver.findElement(By.id("name")).sendKeys("Diegos");
             driver.findElement(By.id("citizen_id")).sendKeys("9901294");
-        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
+        } else if (focusedRole == AccountRole.CUSTOMER) {
             driver.findElement(By.id("email")).sendKeys("customer_example@mial.com");
             driver.findElement(By.id("password")).sendKeys("the_password");
             driver.findElement(By.id("name")).sendKeys("Christina Laundry");
@@ -400,14 +401,14 @@ public class CucumberSteps {
 
     @Then("the details are the same as the ones in the registration form")
     public void profileDetailsSameAsRegistration() {
-        if (currentAccount.getRole().equals(AccountRole.RIDER)) {
+        if (focusedRole == AccountRole.RIDER) {
             assertThat(driver.findElement(By.id("details-email")).getText())
                     .isEqualTo("rider_example@mial.com");
             assertThat(driver.findElement(By.id("details-citizen-id")).getText())
                     .isEqualTo("9901294");
             assertThat(driver.findElement(By.id("details-name")).getText()).isEqualTo("Diegos");
             assertThat(driver.findElement(By.id("account-type")).getText()).isEqualTo("Rider");
-        } else if (currentAccount.getRole().equals(AccountRole.CUSTOMER)) {
+        } else if (focusedRole == AccountRole.CUSTOMER) {
             assertThat(driver.findElement(By.id("details-email")).getText())
                     .isEqualTo("customer_example@mial.com");
             assertThat(driver.findElement(By.id("details-service-type")).getText())
@@ -423,10 +424,10 @@ public class CucumberSteps {
         List<List<WebElement>> statsElements = new ArrayList<>();
 
         statsElements.add(driver.findElements(By.id("statistics-section")));
-        if (currentAccount.getRole() == AccountRole.RIDER) {
+        if (focusedRole == AccountRole.RIDER) {
             statsElements.add(driver.findElements(By.id("statistics-deliveries-over-time")));
             statsElements.add(driver.findElements(By.id("statistics-average-time-spent")));
-        } else if (currentAccount.getRole() == AccountRole.CUSTOMER) {
+        } else if (focusedRole == AccountRole.CUSTOMER) {
             statsElements.add(driver.findElements(By.id("statistics-delivery-request-rate")));
             statsElements.add(driver.findElements(By.id("statistics-delivery-average-time")));
         }
@@ -483,8 +484,13 @@ public class CucumberSteps {
 
     @And("I click the check button on the line of the first delivery presented")
     public void iClickTheCheckButtonOnTheLineOfTheFirstDeliveryPresented() {
-        driver.findElement(By.id("btn-delivery-1")).click();
-        focusedDeliveryId = 1L;
+        List<WebElement> checkButtons = driver.findElements(By.cssSelector("td > button"));
+        assertThat(checkButtons).isNotEmpty();
+
+        WebElement button = checkButtons.get(0);
+        button.click();
+        String[] idSplit = button.getAttribute("id").split("-");
+        focusedDeliveryId = Long.parseLong( idSplit[idSplit.length - 1] );
     }
 
     @And("I click confirm")
