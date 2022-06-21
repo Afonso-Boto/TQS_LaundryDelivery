@@ -20,9 +20,9 @@
 
     <nav th:replace="base :: navbar"></nav>
 
-    <div id="delivery-notification" class="delivery-notification" style="display: none">
-        Your delivery bid has been accepted!
-    </div>
+<!--    <div id="delivery-notification" class="delivery-notification" style="display: none">-->
+<!--        Your delivery bid has been accepted!-->
+<!--    </div>-->
 
     <div class="container">
         <div class="row">
@@ -31,7 +31,7 @@
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
                 <div id="permitted-content" th:if="${permitted}" class="container">
-                    <div id="info-delivery-available" th:unless="${alreadyDelivering}">
+                    <div id="info-delivery-available">
                         <h2>Deliveries to be processed</h2>
                         <p>Progress for each delivery:</p>
                         <div class="row">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
 
-                    <div id="info-delivery-assigned" style="display: none" th:if="${alreadyDelivering}">
+                    <div id="info-delivery-assigned" style="display: none">
                         <h2>A delivery has already been assigned</h2>
 
                         <p>Customer: <span id="assigned-delivery-customer"></span></p>
@@ -117,6 +117,7 @@
         const riderId = $('#rider-id').val();
         const notificationTopic = $('#notification-topic').val();
         let lastReceivedNotification;
+        let lastReceivedData;
 
         const ws = new WebSocket('ws://' + window.location.hostname + ':15674/ws');
         const client = StompJs.Stomp.over(ws);
@@ -134,17 +135,20 @@
 
             $.ajax({
                 type: "GET",
+                url: "/api/v1/deliveries",
                 data: {
                     id: deliveryId
                 },
                 contentType: "application/json; charset=utf-8",
                 success: function(data, textStatus, jqXHR) {
+                    data = data[0]
+                    lastReceivedData = data
                     $('#assigned-delivery-customer').text(data['customerId']);
                     $('#assigned-delivery-origin').text(data['originAddr']);
                     $('#assigned-delivery-destination').text(data['deliveryAddr']);
                     $('#assigned-delivery-latitude').text(data['latitude']);
                     $('#assigned-delivery-longitude').text(data['longitude']);
-                    $('#assigned-delivery-state').text(data['state']);
+                    $('#assigned-delivery-state').text(data['deliveryState']);
                 }
             });
         };

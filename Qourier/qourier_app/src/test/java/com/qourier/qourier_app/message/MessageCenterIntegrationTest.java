@@ -77,7 +77,7 @@ class MessageCenterIntegrationTest {
 
         @Bean
         public TopicExchange topic() {
-            return new TopicExchange("spring-boot-exchange");
+            return new TopicExchange(RabbitConfiguration.TOPIC_EXCHANGE_NAME);
         }
 
         @Bean

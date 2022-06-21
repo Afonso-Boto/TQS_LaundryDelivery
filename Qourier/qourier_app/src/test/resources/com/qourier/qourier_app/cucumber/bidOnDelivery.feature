@@ -27,7 +27,9 @@ Feature: Bid on delivery and get assign to it
     * I click the check button on the line of the first delivery presented
     * I click confirm
     * I wait for the auction to end
-    Then I should receive a notification indicating that I have been accepted
+    Then a rider assignment notification should have been sent
+    * I should receive a notification indicating that I have been accepted
+    * I should be presented with the delivery's details
     * I should be the assigned Rider for the delivery
     * I can not bid for another delivery
     * the delivery job is not up for bidding

@@ -21,10 +21,9 @@ public class MessageCenter {
     }
 
     public void notifyRiderAssignment(String riderId, long deliveryId) {
-        rabbitTemplate.send("spring-boot-exchange", generateRiderAssignmentTopic(riderId), MessageBuilder
+        rabbitTemplate.send(RabbitConfiguration.TOPIC_EXCHANGE_NAME, generateRiderAssignmentTopic(riderId), MessageBuilder
                 .withBody(String.valueOf(deliveryId).getBytes())
                 .build());
-        //rabbitTemplate.convertAndSend(RabbitConfiguration.TOPIC_EXCHANGE_NAME, generateRiderAssignmentTopic(riderId), deliveryId);
     }
 
     public static String generateRiderAssignmentTopic(String riderId) {

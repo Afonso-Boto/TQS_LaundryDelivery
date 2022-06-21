@@ -2,6 +2,9 @@ package com.qourier.qourier_app.cucumber;
 
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import com.qourier.qourier_app.TestUtils;
@@ -9,10 +12,7 @@ import com.qourier.qourier_app.bids.DeliveriesManager;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.message.MessageCenter;
-import com.qourier.qourier_app.repository.AccountRepository;
-import com.qourier.qourier_app.repository.AdminRepository;
-import com.qourier.qourier_app.repository.CustomerRepository;
-import com.qourier.qourier_app.repository.RiderRepository;
+import com.qourier.qourier_app.repository.*;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -22,10 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.aspectj.bridge.Message;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 public class CucumberSteps {
 
@@ -37,11 +44,14 @@ public class CucumberSteps {
     private final Rider sampleRider;
     private final Customer sampleCustomer;
     private final DeliveriesManager deliveriesManager;
-    private final MessageCenter messageCenter;
+    private final BidsRepository bidsRepository;
     private final int auctionSpan;
 
+    @Autowired
+    private MessageCenter messageCenter;
+
     private Account currentAccount;
-    private Delivery focusedDelivery;
+    private long focusedDeliveryId;
 
     public CucumberSteps(
             RiderRepository riderRepository,
@@ -49,21 +59,20 @@ public class CucumberSteps {
             AdminRepository adminRepository,
             AccountRepository accountRepository,
             DeliveriesManager deliveriesManager,
-            MessageCenter messageCenter) {
+            BidsRepository bidsRepository) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
         this.deliveriesManager = deliveriesManager;
-        this.messageCenter = messageCenter;
+        this.bidsRepository = bidsRepository;
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
         auctionSpan = 10;
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
-//        driver = new HtmlUnitDriver(true);
-        driver = WebDriverManager.firefoxdriver().create();
+        driver = new HtmlUnitDriver(true);
     }
 
     @Given("I am in the {page} page")
@@ -166,8 +175,6 @@ public class CucumberSteps {
                     customer.getEmail(), latitude, longitude, TestUtils.randomString(), TestUtils.randomString()
             );
             deliveriesManager.createDelivery(delivery);
-
-            focusedDelivery = delivery;
         }
     }
 
@@ -322,21 +329,46 @@ public class CucumberSteps {
 
     @When("I wait for the auction to end")
     public void waitAuctionEnd() {
-        await().atMost(auctionSpan + 3, TimeUnit.SECONDS).until(
-                () -> deliveriesManager.getDeliveryState(focusedDelivery.getDeliveryId()) != DeliveryState.BID_CHECK
-        );
+        await().atMost(auctionSpan * 2L, TimeUnit.SECONDS)
+                .untilAsserted(
+                        () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong())
+                );
+    }
+
+    @Then("a rider assignment notification should have been sent")
+    public void riderAssignmentNotificationSent() {
+        verify(messageCenter, times(1)).notifyRiderAssignment(
+                currentAccount.getEmail(), focusedDeliveryId);
     }
 
     @Then("I should {not}receive a notification indicating that I have been accepted")
     public void iShouldReceiveDeliveryAcceptedNotification(boolean not) {
-        WebElement alert = driver.findElement(By.id("delivery-notification"));
-        if (not) assertThat(alert.isDisplayed()).isFalse();
-        else assertThat(alert.isDisplayed()).isTrue();
+        await().atMost(5L, TimeUnit.SECONDS).untilAsserted(
+                () -> {
+                    WebElement alert = driver.findElement(By.id("info-delivery-assigned"));
+                    if (not) assertThat(alert.isDisplayed()).isFalse();
+                    else assertThat(alert.isDisplayed()).isTrue();
+                }
+        );
+    }
+
+    @Then("I should be presented with the delivery's details")
+    public void iShouldBePresentedWithDeliveryDetails() {
+        Delivery updatedDelivery = deliveriesManager.getDelivery(focusedDeliveryId);
+        WebElement detailsCustomer = driver.findElement(By.id("assigned-delivery-customer"));
+        WebElement detailsOrigin = driver.findElement(By.id("assigned-delivery-origin"));
+        WebElement detailsDestination = driver.findElement(By.id("assigned-delivery-destination"));
+        WebElement detailsState = driver.findElement(By.id("assigned-delivery-state"));
+
+        assertThat(detailsCustomer.getText()).isEqualTo(updatedDelivery.getCustomerId());
+        assertThat(detailsOrigin.getText()).isEqualTo(updatedDelivery.getOriginAddr());
+        assertThat(detailsDestination.getText()).isEqualTo(updatedDelivery.getDeliveryAddr());
+        assertThat(detailsState.getText()).isEqualTo(updatedDelivery.getDeliveryState().toString());
     }
 
     @Then("I should {not}be the assigned Rider for the delivery")
     public void iShouldBeDeliveryAssignedRider(boolean not) {
-        Delivery updatedDelivery = deliveriesManager.getDelivery(focusedDelivery.getDeliveryId());
+        Delivery updatedDelivery = deliveriesManager.getDelivery(focusedDeliveryId);
         if (not) assertThat(updatedDelivery.getRiderId()).isNotEqualTo(currentAccount.getEmail());
         else assertThat(updatedDelivery.getRiderId()).isEqualTo(currentAccount.getEmail());
     }
@@ -356,7 +388,7 @@ public class CucumberSteps {
 
     @Then("the delivery job is not up for bidding")
     public void assertDeliveryNotUpForBidding() {
-        assertThat(deliveriesManager.getDelivery(focusedDelivery.getDeliveryId()).getDeliveryState())
+        assertThat(deliveriesManager.getDelivery(focusedDeliveryId).getDeliveryState())
                 .isNotEqualTo(DeliveryState.BID_CHECK);
     }
 
@@ -452,6 +484,7 @@ public class CucumberSteps {
     @And("I click the check button on the line of the first delivery presented")
     public void iClickTheCheckButtonOnTheLineOfTheFirstDeliveryPresented() {
         driver.findElement(By.id("btn-delivery-1")).click();
+        focusedDeliveryId = 1L;
     }
 
     @And("I click confirm")
