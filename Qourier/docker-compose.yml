@@ -3,7 +3,6 @@ version: '3.8'
 services:
   mysqldb:
     image: mysql
-    env_file: .env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
@@ -24,7 +23,6 @@ services:
 
   grafana:
     image: grafana/grafana
-    env_file: .env
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=$GF_SECURITY_ADMIN_PASSWORD
       - GF_USERS_ALLOW_SIGN_UP=$GF_USERS_ALLOW_SIGN_UP
@@ -54,7 +52,6 @@ services:
       - rabbitmq
       - grafana
     build: ./qourier_app
-    env_file: .env
     ports:
       - $SPRING_QOURIER_LOCAL_PORT:$SPRING_DOCKER_PORT
     environment:
