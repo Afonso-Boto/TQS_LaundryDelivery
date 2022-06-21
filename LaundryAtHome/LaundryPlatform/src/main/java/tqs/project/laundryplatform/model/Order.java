@@ -109,12 +109,6 @@ public class Order {
 
     @Override
     public String toString() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(new Order(this.id, this.date, this.isCompleted, this.totalPrice, this.deliveryLocation));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return id + "," + date + "," + isCompleted + "," + totalPrice + ",";
     }
 }

@@ -5,7 +5,10 @@ import static tqs.project.laundryplatform.controller.AuthController.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
+import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
 
+import java.util.List;
 import java.util.Objects;
 
 @Controller
@@ -96,10 +101,19 @@ public class MainController {
     @GetMapping("/orders-mobile")
     public ResponseEntity<String> ordersMobile(Model model, HttpServletRequest request) {
         System.err.println("orders");
-        return ResponseEntity.ok(
-                orderRepository.findAllByUser(
-                        userRepository.findByUsername(getIdFromCookie(request)).orElse(null))
-                        .toString());
+        List<Order> orders = orderRepository.findAll();
+        StringBuilder ordersString = new StringBuilder();
+        for (Order order : orders) {
+            System.err.println(order.toString());
+            ordersString.append(order.toString());
+        }
+        System.err.println(ordersString.toString());
+
+        ordersString = new StringBuilder(ordersString.substring(0, ordersString.length() - 1));
+
+        System.err.println(ordersString);
+
+        return new ResponseEntity<>(ordersString.toString(), HttpStatus.OK);
     }
 
     @GetMapping("/service")
@@ -124,7 +138,8 @@ public class MainController {
     }
 
     @GetMapping("/tracking")
-    public ModelAndView tracking(Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
+    public ModelAndView tracking(
+            Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
         ModelAndView mav = new ModelAndView("tracking");
         mav.addObject("order", orderRepository.findById(Long.parseLong(orderId)).orElse(null));
 
@@ -132,7 +147,11 @@ public class MainController {
     }
 
     @GetMapping("/tracking-mobile")
-    public ResponseEntity<String> trackingMobile(Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
-        return ResponseEntity.ok(Objects.requireNonNull(orderRepository.findById(Long.parseLong(orderId)).orElse(null)).toString());
+    public ResponseEntity<String> trackingMobile(
+            Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
+        return ResponseEntity.ok(
+                Objects.requireNonNull(
+                                orderRepository.findById(Long.parseLong(orderId)).orElse(null))
+                        .toString());
     }
 }
