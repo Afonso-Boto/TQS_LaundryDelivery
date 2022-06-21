@@ -111,7 +111,11 @@ public class OrderServiceImpl implements OrderService {
     public long initOrder(long orderTypeId, String cookieID) {
 
         OrderType type = orderTypeRepository.findById(orderTypeId).orElse(null);
+        if (type == null)
+            System.err.println("TAMBEM FODEU");
         User user = userRepository.findByUsername(cookieID).orElse(null);
+        if(user == null)
+            System.err.println("FODEU");
         Laundry laundry = laundryRepository.findByName("default").orElse(null);
 
         if (type == null || user == null || laundry == null) return -1;

@@ -10,10 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -141,7 +138,6 @@ public class OrderController {
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 
-        if (!hasCookie(request)) return ResponseEntity.status(401).body("Unauthorized");
 
         String cookieId = getIdFromCookie(request);
         orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
@@ -213,26 +209,22 @@ public class OrderController {
         return REDIRECT_NEW_ORDER;
     }
 
-    @GetMapping("/init-order-mobile")
-    public ResponseEntity<String> initOrderMobile(
+    @GetMapping("/init-order-mobile/{orderTypeId}/{cookieID}")
+    public ResponseEntity<Boolean> initOrderMobile(
             Model model,
             HttpServletRequest request,
-            @RequestParam("orderTypeId") long orderTypeId) {
+            @PathVariable("orderTypeId") long orderTypeId, @PathVariable("cookieID") String cookieID) {
 
-        if (!hasCookie(request)) {
-            return ResponseEntity.status(401).body("error");
-        }
-
-        String cookieID = getIdFromCookie(request);
-
+        System.err.println(cookieID);
         long orderID = orderService.initOrder(orderTypeId, cookieID);
 
         if (orderID == -1) {
-            return ResponseEntity.status(401).body("error");
+            System.err.println("SERA AQUI?????");
+            return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
         }
 
         ordersUncompleted.put(cookieID, orderID);
 
-        return ResponseEntity.status(200).body("ok");
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
