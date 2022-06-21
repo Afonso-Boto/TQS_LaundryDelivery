@@ -54,4 +54,8 @@ public class TestUtils {
     private static String hashPassword(String password) {
         return DigestUtils.sha256Hex(password);
     }
+
+    public static String hasher(String str) {
+        return DigestUtils.sha256Hex(str);
+    }
 }

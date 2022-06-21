@@ -27,11 +27,13 @@ jobs:
       uses: axel-op/googlejavaformat-action@v3.6.0
       with:
         files: "Qourier/qourier_app/**/*.java"
-        skipCommit: true
-        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
+        #skipCommit: true
+        commitMessage: Google Java Format formatting, without imports
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --replace"
+        #args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
     - name: Google Java Format import structure fixer
       uses: axel-op/googlejavaformat-action@v3
-      if: always()
+      #if: always()
       with:
         files: "Qourier/qourier_app/**/*.java"
         commitMessage: Google Java Format import ordering
