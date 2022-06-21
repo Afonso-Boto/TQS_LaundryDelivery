@@ -7,7 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "Item")
+@Table(name = "item")
 public class Item {
 
     @Id
@@ -26,19 +26,27 @@ public class Item {
 
     @ManyToOne
     @JoinColumn(name = "item_type_id")
-    ItemType itemType;
+    ItemType item_type;
 
-    public Item(int number, boolean isDark) {
-        this.number = number;
-        this.isDark = isDark;
-    }
-
-    public Item(int number, boolean isDark, Order order, ItemType itemType) {
+    public Item(int number, boolean isDark, Order order, ItemType item_type) {
         this.number = number;
         this.isDark = isDark;
         this.order = order;
-        this.itemType = itemType;
+        this.item_type = item_type;
     }
 
     public Item() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        if (number != item.number) return false;
+        if (isDark != item.isDark) return false;
+        if (!id.equals(item.id)) return false;
+        return item_type.equals(item.item_type);
+    }
 }

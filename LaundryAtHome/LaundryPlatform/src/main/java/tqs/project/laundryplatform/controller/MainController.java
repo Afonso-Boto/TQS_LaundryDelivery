@@ -5,19 +5,30 @@ import static tqs.project.laundryplatform.controller.AuthController.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
+import tqs.project.laundryplatform.repository.OrderRepository;
+import tqs.project.laundryplatform.repository.UserRepository;
+
+import java.util.Objects;
 
 @Controller
+@RequestMapping("/")
+@CrossOrigin(origins = "*")
 @Log4j2
 public class MainController {
 
     private static final String REDIRECT_REGISTER = "redirect:/register";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
+    @Autowired OrderRepository orderRepository;
+    @Autowired UserRepository userRepository;
 
     @GetMapping("/")
     public String mainPage() {
@@ -33,8 +44,6 @@ public class MainController {
             return REDIRECT_LOGIN;
         }
 
-        System.err.println("cookie verified");
-        System.err.println(getIdFromCookie(request));
         return "index";
     }
 
@@ -74,8 +83,23 @@ public class MainController {
     }
 
     @GetMapping("/orders")
-    public String orders(Model model, HttpServletRequest request) {
-        return "orders";
+    public ModelAndView orders(Model model, HttpServletRequest request) {
+        System.err.println("orders");
+        ModelAndView modelAndView = new ModelAndView("orders");
+        modelAndView.addObject(
+                "orders",
+                orderRepository.findAllByUser(
+                        userRepository.findByUsername(getIdFromCookie(request)).orElse(null)));
+        return modelAndView;
+    }
+
+    @GetMapping("/orders-mobile")
+    public ResponseEntity<String> ordersMobile(Model model, HttpServletRequest request) {
+        System.err.println("orders");
+        return ResponseEntity.ok(
+                orderRepository.findAllByUser(
+                        userRepository.findByUsername(getIdFromCookie(request)).orElse(null))
+                        .toString());
     }
 
     @GetMapping("/service")
@@ -86,5 +110,29 @@ public class MainController {
     @GetMapping("/pricing")
     public String pricing(Model model, HttpServletRequest request) {
         return "pricing";
+    }
+
+    @GetMapping("/ok")
+    public String ok(Model model, HttpServletRequest request) {
+        System.out.println("ok");
+        return "ok_page";
+    }
+
+    @GetMapping("/error")
+    public String error(Model model, HttpServletRequest request) {
+        return "error";
+    }
+
+    @GetMapping("/tracking")
+    public ModelAndView tracking(Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
+        ModelAndView mav = new ModelAndView("tracking");
+        mav.addObject("order", orderRepository.findById(Long.parseLong(orderId)).orElse(null));
+
+        return mav;
+    }
+
+    @GetMapping("/tracking-mobile")
+    public ResponseEntity<String> trackingMobile(Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
+        return ResponseEntity.ok(Objects.requireNonNull(orderRepository.findById(Long.parseLong(orderId)).orElse(null)).toString());
     }
 }

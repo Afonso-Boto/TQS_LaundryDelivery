@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "Laundry")
+@Table(name = "laundry")
 public class Laundry {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,4 +29,16 @@ public class Laundry {
     }
 
     public Laundry() {}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Laundry laundry = (Laundry) o;
+
+        if (id != null ? !id.equals(laundry.id) : laundry.id != null) return false;
+        if (name != null ? !name.equals(laundry.name) : laundry.name != null) return false;
+        return location != null ? location.equals(laundry.location) : laundry.location == null;
+    }
 }

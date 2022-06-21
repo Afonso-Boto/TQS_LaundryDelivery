@@ -1,0 +1,16 @@
+package tqs.project.laundryplatform.qourier;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class QourierLoginRequest {
+
+    private String email;
+    private String password;
+}

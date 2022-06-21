@@ -1,4 +1,4 @@
-package tqs.project.laundryplatform;
+package tqs.project.laundryplatform.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

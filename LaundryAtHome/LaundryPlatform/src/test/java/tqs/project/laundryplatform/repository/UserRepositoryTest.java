@@ -1,7 +1,10 @@
-package tqs.project.laundryplatform;
+package tqs.project.laundryplatform.repository;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -10,15 +13,13 @@ import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import tqs.project.laundryplatform.model.Item;
-import tqs.project.laundryplatform.repository.ItemRepository;
+import tqs.project.laundryplatform.model.User;
 
 @TestPropertySource(properties = "spring.jpa.hibernate.ddl-auto=create")
 @Testcontainers
 @SpringBootTest
-public class ItemRepositoryTest {
-
-    Item item;
+public class UserRepositoryTest {
+    User user;
 
     @Container
     public static MySQLContainer container =
@@ -27,7 +28,7 @@ public class ItemRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private ItemRepository repository;
+    @Autowired private UserRepository repository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {
@@ -38,12 +39,42 @@ public class ItemRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        item = new Item();
-        repository.save(item);
+        user = new User("test_jonas", "afonso@ua.pt", "123", "Jonas Fernandes", 1234567);
+        repository.save(user);
     }
 
     @AfterEach
     public void tearDown() {
         repository.deleteAll();
+    }
+
+    @Test
+    public void testFindByUsername() {
+        assertThat(repository.findByUsername(user.getUsername()).orElse(null)).isEqualTo(user);
+    }
+
+    @Test
+    public void whenInvalidUsername_thenReturnEmptyOptional() {
+        assertThat(repository.findByUsername("invalid_username")).isEmpty();
+    }
+
+    @Test
+    public void testFindById() {
+        assertThat(repository.findById(user.getId()).orElse(null)).isEqualTo(user);
+    }
+
+    @Test
+    public void whenInvalidId_thenReturnEmptyOptional() {
+        assertThat(repository.findById(0L)).isEmpty();
+    }
+
+    @Test
+    public void testExistsByUsername() {
+        assertThat(repository.existsByUsername(user.getUsername())).isTrue();
+    }
+
+    @Test
+    public void whenInvalidUsername_thenReturnFalse() {
+        assertThat(repository.existsByUsername("invalid_username")).isFalse();
     }
 }

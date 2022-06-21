@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "Orders")
+@Table(name = "orders")
 public class Order {
 
     @Id
@@ -43,8 +43,8 @@ public class Order {
     User user;
 
     @ManyToOne
-    @JoinColumn(name = "orderType_id")
-    OrderType orderType;
+    @JoinColumn(name = "ordertype_id")
+    OrderType order_type;
 
     @OneToOne(mappedBy = "order")
     Complaint complaint;
@@ -55,11 +55,44 @@ public class Order {
         this.deliveryLocation = deliveryLocation;
     }
 
-    public Order(OrderType orderType, User user, Laundry laundry) {
-        this.orderType = orderType;
+    public Order(OrderType order_type, User user, Laundry laundry) {
+        this.order_type = order_type;
         this.user = user;
         this.laundry = laundry;
     }
 
     public Order() {}
+
+    public Order(Long id, Date date, double totalPrice) {
+        this.id = id;
+        this.date = date;
+        this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (isCompleted != order.isCompleted) return false;
+        if (Double.compare(order.totalPrice, totalPrice) != 0) return false;
+        if (id != null ? !id.equals(order.id) : order.id != null) return false;
+        if (date != null ? !date.equals(order.date) : order.date != null) return false;
+        if (deliveryLocation != null
+                ? !deliveryLocation.equals(order.deliveryLocation)
+                : order.deliveryLocation != null) return false;
+        if (deliveryDate != null
+                ? !deliveryDate.equals(order.deliveryDate)
+                : order.deliveryDate != null) return false;
+        if (laundry != null ? !laundry.equals(order.laundry) : order.laundry != null) return false;
+        if (order_type != null ? !order_type.equals(order.order_type) : order.order_type != null)
+            return false;
+        return complaint != null ? complaint.equals(order.complaint) : order.complaint == null;
+    }
+
+    public Set<Item> getItems() {
+        return items;
+    }
 }

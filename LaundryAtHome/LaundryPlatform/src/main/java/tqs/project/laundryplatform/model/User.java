@@ -1,6 +1,5 @@
 package tqs.project.laundryplatform.model;
 
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.*;
 import lombok.Getter;
@@ -53,17 +52,18 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return phoneNumber == user.phoneNumber
-                && id.equals(user.id)
-                && username.equals(user.username)
-                && email.equals(user.email)
-                && password.equals(user.password)
-                && fullName.equals(user.fullName);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, email, password, fullName, phoneNumber);
+        User user = (User) o;
+
+        if (phoneNumber != user.phoneNumber) return false;
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null)
+            return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null)
+            return false;
+        if (fullName != null ? !fullName.equals(user.fullName) : user.fullName != null)
+            return false;
+        return true;
     }
 }
