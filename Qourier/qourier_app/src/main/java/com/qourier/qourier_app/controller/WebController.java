@@ -14,6 +14,7 @@ import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
+import com.qourier.qourier_app.message.MessageCenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,8 +23,6 @@ import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.qourier.qourier_app.message.MessageCenter;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;

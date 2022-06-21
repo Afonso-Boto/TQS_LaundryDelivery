@@ -1,13 +1,12 @@
 package com.qourier.qourier_app.message;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @Component
 @EnableRabbit
