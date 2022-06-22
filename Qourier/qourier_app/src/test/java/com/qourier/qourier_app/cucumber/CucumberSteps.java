@@ -20,8 +20,11 @@ import io.cucumber.java.en.When;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -67,7 +70,6 @@ public class CucumberSteps {
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
         driver = new HtmlUnitDriver(true);
-        //        driver = WebDriverManager.firefoxdriver().create();
     }
 
     @Given("I am in the {page} page")
@@ -615,6 +617,36 @@ public class CucumberSteps {
 
             assertThat(presentedState).isNotNull();
             assertThat(presentedState).isEqualTo(delivery.getDeliveryState());
+        }
+    }
+
+    @Then("I can see the profile of {string} with all details inputted in their registration")
+    public void validProfileShown(String profileEmail) {
+        Account account = accountRepository.findById(profileEmail)
+                .orElseThrow();
+
+        WebElement detailsEmail = driver.findElement(By.id("details-email"));
+        assertThat(detailsEmail.getText()).isEqualTo(account.getEmail());
+        WebElement detailsName = driver.findElement(By.id("details-name"));
+        assertThat(detailsName.getText()).isEqualTo(account.getName());
+        WebElement detailsRegistrationTime = driver.findElement(By.id("details-registration-time"));
+        assertThat(detailsRegistrationTime.getText()).isEqualTo(account.getRegistrationTime().toString());
+
+        switch (account.getRole()) {
+            case RIDER -> {
+                Rider rider = riderRepository.findById(account.getEmail())
+                        .orElseThrow();
+
+                WebElement detailsCitizenId = driver.findElement(By.id("details-citizen-id"));
+                assertThat(detailsCitizenId.getText()).isEqualTo(rider.getCitizenId());
+            }
+            case CUSTOMER -> {
+                Customer customer = customerRepository.findById(account.getEmail())
+                        .orElseThrow();
+
+                WebElement detailsServiceType = driver.findElement(By.id("details-service-type"));
+                assertThat(detailsServiceType.getText()).isEqualTo(customer.getServType());
+            }
         }
     }
 

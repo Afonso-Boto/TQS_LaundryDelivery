@@ -31,5 +31,13 @@ Feature: Manage accounts of Riders/Customers
 
   Scenario: Check Customer profile
     When I go to the Accounts section
-    And I go to the 'another.customer@mail.com' profile
+    * I filter for active accounts
+    * I filter for Customer accounts
+    * I apply the filters
+    * I go to the 'another.customer@mail.com' profile
     Then I can see the profile of 'another.customer@mail.com' with all details inputted in their registration
+
+  Scenario: Check Rider profile
+    When I go to the Accounts section
+    And I go to the 'another.rider@gmail.com' profile
+    Then I can see the profile of 'another.rider@gmail.com' with all details inputted in their registration
