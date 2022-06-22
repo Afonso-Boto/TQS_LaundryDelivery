@@ -36,8 +36,10 @@ Feature: Manage accounts of Riders/Customers
     * I apply the filters
     * I go to the 'another.customer@mail.com' profile
     Then I can see the profile of 'another.customer@mail.com' with all details inputted in their registration
+    And I can see statistics about the number of deliveries requested
 
   Scenario: Check Rider profile
     When I go to the Accounts section
     And I go to the 'another.rider@gmail.com' profile
     Then I can see the profile of 'another.rider@gmail.com' with all details inputted in their registration
+    And I can see statistics about the number of deliveries done
