@@ -66,7 +66,7 @@ jobs:
       uses: dorny/test-reporter@v1
       if: always()
       with:
-          name: Maven tests
+          name: Qourier Maven tests
           path: Qourier/qourier_app/target/surefire-reports/TEST-*.xml
           reporter: java-junit
           fail-on-error: true
@@ -105,7 +105,7 @@ jobs:
       uses: dorny/test-reporter@v1
       if: always()
       with:
-          name: Maven tests
+          name: LaundryAtHome Maven tests
           path: LaundryAtHome/LaundryPlatform/target/surefire-reports/TEST-*.xml
           reporter: java-junit
           fail-on-error: true
