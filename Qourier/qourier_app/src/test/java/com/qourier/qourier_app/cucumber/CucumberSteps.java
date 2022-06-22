@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -329,6 +331,21 @@ public class CucumberSteps {
                         () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong()));
     }
 
+    @When("I fill the delivery details")
+    public void fillDeliveryDetails() {
+        driver.findElement(By.id("form-delivery-origin")).sendKeys(TestUtils.randomString());
+        driver.findElement(By.id("form-delivery-destination")).sendKeys(TestUtils.randomString());
+        driver.findElement(By.id("form-delivery-latitude")).sendKeys("10");
+        driver.findElement(By.id("form-delivery-longitude")).sendKeys("10");
+    }
+
+    @When("I register the delivery")
+    public void registerDelivery() {
+        WebElement registerDeliveryButton = driver.findElement(By.id("btn-register-delivery"));
+        assertThat(registerDeliveryButton.isDisplayed()).isTrue();
+        registerDeliveryButton.click();
+    }
+
     @Then("a rider assignment notification should have been sent")
     public void riderAssignmentNotificationSent() {
         verify(messageCenter, times(1))
@@ -381,10 +398,11 @@ public class CucumberSteps {
         }
     }
 
-    @Then("the delivery job is not up for bidding")
-    public void assertDeliveryNotUpForBidding() {
-        assertThat(deliveriesManager.getDelivery(focusedDeliveryId).getDeliveryState())
-                .isNotEqualTo(DeliveryState.BID_CHECK);
+    @Then("the delivery job is {not}up for bidding")
+    public void assertDeliveryNotUpForBidding(boolean not) {
+        DeliveryState state = deliveriesManager.getDelivery(focusedDeliveryId).getDeliveryState();
+        if (not) assertThat(state).isNotEqualTo(DeliveryState.BID_CHECK);
+        else assertThat(state).isEqualTo(DeliveryState.BID_CHECK);
     }
 
     @Then("my status is {accountState}")
@@ -469,6 +487,21 @@ public class CucumberSteps {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
         if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
         else assertThat(toggleButton.getText()).startsWith("Suspend");
+    }
+
+    @Then("the delivery registration form is empty")
+    public void assertDeliveryRegistrationFormEmpty() {
+        List<WebElement> formElements = Stream.of(
+                "form-delivery-origin",
+                "form-delivery-destination",
+                "form-delivery-latitude",
+                "form-delivery-longitude"
+        ).map(id -> driver.findElement(By.id(id))).toList();
+
+        for (WebElement formElement : formElements) {
+            assertThat(formElement.isDisplayed()).isTrue();
+            assertThat(formElement.getAttribute("value")).isEmpty();
+        }
     }
 
     @And("I wait {int} seconds for the auction to end")
