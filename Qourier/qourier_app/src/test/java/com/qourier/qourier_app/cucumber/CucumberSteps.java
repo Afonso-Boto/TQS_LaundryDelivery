@@ -37,6 +37,7 @@ public class CucumberSteps {
     private final Customer sampleCustomer;
     private final DeliveriesManager deliveriesManager;
     private final BidsRepository bidsRepository;
+    private final DeliveryRepository deliveryRepository;
     private final int auctionSpan;
 
     @Autowired private MessageCenter messageCenter;
@@ -51,13 +52,15 @@ public class CucumberSteps {
             AdminRepository adminRepository,
             AccountRepository accountRepository,
             DeliveriesManager deliveriesManager,
-            BidsRepository bidsRepository) {
+            BidsRepository bidsRepository,
+            DeliveryRepository deliveryRepository) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
         this.deliveriesManager = deliveriesManager;
         this.bidsRepository = bidsRepository;
+        this.deliveryRepository = deliveryRepository;
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
@@ -169,7 +172,27 @@ public class CucumberSteps {
                             longitude,
                             TestUtils.randomString(),
                             TestUtils.randomString());
-            deliveriesManager.createDelivery(delivery);
+
+            if (deliveryDetails.containsKey("rider"))
+                delivery.setRiderId(deliveryDetails.get("rider"));
+
+            if (deliveryDetails.containsKey("state"))
+                delivery.setDeliveryState(
+                        DeliveryState.valueOf(deliveryDetails.get("state").toUpperCase().replace(' ', '_')));
+
+            if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                deliveriesManager.createDelivery(delivery);
+            else {
+                deliveryRepository.save(delivery);
+                if (delivery.getRiderId() != null) {
+                    Rider assignedRider =
+                            riderRepository.findById(delivery.getRiderId()).orElseThrow();
+                    assignedRider.setCurrentDelivery(delivery.getDeliveryId());
+                    riderRepository.save(assignedRider);
+                }
+            }
+
+            focusedDeliveryId = delivery.getDeliveryId();
         }
     }
 
@@ -469,6 +492,12 @@ public class CucumberSteps {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
         if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
         else assertThat(toggleButton.getText()).startsWith("Suspend");
+    }
+
+    @Then("a table of the currently participating Riders' progress is shown")
+    public void assertRiderProgressTable() {
+        List<WebElement> tableRows = driver.findElements(By.cssSelector("#progress-table-body > tr"));
+        assertThat(tableRows).hasSize( deliveriesManager.getAllDeliveries().size() );
     }
 
     @And("I wait {int} seconds for the auction to end")
