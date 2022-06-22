@@ -122,6 +122,10 @@ public class DeliveriesManager {
         return null;
     }
 
+    public List<Bid> getBids(Long deliveryId) {
+        return bidsRepository.findByDeliveryId(deliveryId);
+    }
+
     public Delivery getDelivery(Long deliveryId) {
         return deliveryRepository.findByDeliveryId(deliveryId);
     }
