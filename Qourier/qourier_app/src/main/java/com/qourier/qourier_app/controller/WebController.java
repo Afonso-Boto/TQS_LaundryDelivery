@@ -217,7 +217,8 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
+        String customerEmail = getIdFromCookie(request);
+        AccountState state = accountManager.getAccount(customerEmail).getState();
 
         switch (state) {
             case PENDING:
@@ -237,6 +238,19 @@ public class WebController {
 
         model.addAttribute("role", role);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+
+        List<Delivery> deliveries = deliveriesManager.getDeliveriesFromCustomer(customerEmail);
+        deliveries.forEach(
+                delivery -> {
+                    List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
+                    delivery.setRiderId(allBids.size() + " bids");
+                });
+        model.addAttribute(
+                "deliveries",
+                deliveries.stream()
+                        .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
+                        .toList());
+
         return "delivery_management";
     }
 
