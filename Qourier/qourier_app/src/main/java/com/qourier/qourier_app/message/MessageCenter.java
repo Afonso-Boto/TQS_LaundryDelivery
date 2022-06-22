@@ -43,7 +43,7 @@ public class MessageCenter {
 
         rabbitTemplate.send(
                 RabbitConfiguration.TOPIC_EXCHANGE_NAME,
-                RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY,
+                generateDeliveryUpdateTopic(deliveryId),
                 MessageBuilder.withBody(GSON.toJson(deliveryUpdate).getBytes()).build());
     }
 
@@ -51,6 +51,10 @@ public class MessageCenter {
         return RabbitConfiguration.RIDER_ASSIGNMENTS_ROUTING_KEY
                 + "."
                 + convertRiderIdToTopic(riderId);
+    }
+
+    public static String generateDeliveryUpdateTopic(long deliveryId) {
+        return RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY + "." + deliveryId;
     }
 
     private static String convertRiderIdToTopic(String riderId) {

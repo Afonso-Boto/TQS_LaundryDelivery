@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <th:block th:include="base :: head"></th:block>
+</head>
+
+<body>
+
+<!-- Topbar Start -->
+<div class="container-fluid bg-primary py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+
+<nav th:replace="base :: navbar"></nav>
+
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center py-4">
+            <div class="col-md-6 text-center text-md-left">
+                <h1 class="mb-4 mb-md-0 text-white">Orders</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header Start -->
+
+
+<!-- Blog Start -->
+<div class="container py-5" th:if="${orders!=null and !orders.isEmpty()}">
+    <div class="row" th:each="order : ${orders}">
+        <div class="col-lg-4">
+            <div class="bg-light mb-4">
+                <div class="p-4">
+                    <h4 class="mb-3"><p th:text="${'Order #' + order.getId()}"></p></h4>
+                    <!--p class="mb-3">
+                        <p th:text="${'Order date: ' + order.getDate().toString()}"></p>
+                    </p-->
+                    <div th:if="${order.isCompleted()}">
+                        <p class="mb-3">
+                        <p th:text="${'Order status: Completed'}"></p>
+                        <form action="/tracking" method="get">
+                            <input type="hidden" name="orderId" th:value="${order.getId()}">
+                            <button type="submit" class="btn btn-primary">See details</button>
+                        </form>
+                        </p>
+                    </div>
+                    <div th:unless="${order.isCompleted()}">
+                        <p class="mb-3">
+                        <p th:text="${'Order status: Active'}"></p>
+                        </p>
+                        <form action="/tracking" method="get">
+                            <input type="hidden" name="orderId" th:value="${order.getId()}">
+                            <button type="submit" class="btn btn-primary">See details</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+<div class="col-lg-8">
+    <div class="row">
+        <div class="col-md-6 mb-2">
+            <div class="bg-light mb-4">
+                <div class="position-relative">
+                    <img class="img-fluid w-100" th:src="@{/images/blog-3.jpg}" alt="">
+                    <a href=""
+                       class="position-absolute w-100 h-100 d-flex flex-column align-items-center justify-content-center   text-decoration-none p-4"
+                       style="top: 0; left: 0; background: rgba(0, 0, 0, .4);">
+                        <h4 class="text-center text-white font-weight-medium mb-3" th:text="${'Order #' + order.getId()}"></h4>
+
+                        <div class="d-flex text-light" th:if="${order.isCompleted()}">
+                            <small class="mr-2"><i class="fa fa-globe text-secondary"></i> Active</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+
+<!-- Blog End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/scripts/owlcarousel/owl.carousel.min.js}"></script>
+
+
+<!-- Template Javascript -->
+<script th:src="@{/scripts/main.js}"></script>
+</body>
+
+</html>
