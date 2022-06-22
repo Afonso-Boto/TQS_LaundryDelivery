@@ -354,6 +354,16 @@ public class CucumberSteps {
                         () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong()));
     }
 
+    @When("I indicate that I picked up the delivery")
+    public void markDeliveryPickedUp() {
+        driver.findElement(By.id("pickup-delivery")).click();
+    }
+
+    @When("I mark the delivery as being done")
+    public void markDeliveryDone() {
+        driver.findElement(By.id("confirm-delivery")).click();
+    }
+
     @Then("a rider assignment notification should have been sent")
     public void riderAssignmentNotificationSent() {
         verify(messageCenter, times(1))
@@ -403,6 +413,18 @@ public class CucumberSteps {
         } else {
             assertThat(infoDeliveriesAvailable.isDisplayed()).isTrue();
             assertThat(infoDeliveryAlreadyAssigned.isDisplayed()).isFalse();
+        }
+    }
+
+    @Then("the delivery job is registered as {deliveryStatus}")
+    public void assertDeliveryJobDone(DeliveryState state) {
+        Delivery delivery = deliveriesManager.getDelivery(focusedDeliveryId);
+        assertThat(delivery.getDeliveryState()).isEqualTo(state);
+
+        if (state == DeliveryState.FETCHING || state == DeliveryState.SHIPPED) {
+            WebElement detailsState = driver.findElement(By.id("assigned-delivery-state"));
+            assertThat(detailsState.isDisplayed()).isTrue();
+            assertThat(detailsState.getText()).isEqualTo(state.toString());
         }
     }
 

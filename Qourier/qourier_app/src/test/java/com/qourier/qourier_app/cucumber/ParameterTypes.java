@@ -2,6 +2,7 @@ package com.qourier.qourier_app.cucumber;
 
 import com.qourier.qourier_app.data.AccountRole;
 import com.qourier.qourier_app.data.AccountState;
+import com.qourier.qourier_app.data.DeliveryState;
 import io.cucumber.java.ParameterType;
 
 public class ParameterTypes {
@@ -44,6 +45,17 @@ public class ParameterTypes {
     @ParameterType("(pending|refused|active|suspended)")
     public AccountState accountState(String accountStateStr) {
         return AccountState.valueOf(accountStateStr.toUpperCase());
+    }
+
+    @ParameterType("shipped|done")
+    public DeliveryState deliveryStatus(String status) {
+        DeliveryState res;
+        switch (status) {
+            case "shipped" -> res = DeliveryState.SHIPPED;
+            case "done" -> res = DeliveryState.DELIVERED;
+            default -> res = null;
+        }
+        return res;
     }
 
     @ParameterType("Rider|Customer")
