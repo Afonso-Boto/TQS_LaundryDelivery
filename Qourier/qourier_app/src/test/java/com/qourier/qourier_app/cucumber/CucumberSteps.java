@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -68,6 +71,7 @@ public class CucumberSteps {
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
         driver = new HtmlUnitDriver(true);
+//        driver = WebDriverManager.firefoxdriver().create();
     }
 
     @Given("I am in the {page} page")

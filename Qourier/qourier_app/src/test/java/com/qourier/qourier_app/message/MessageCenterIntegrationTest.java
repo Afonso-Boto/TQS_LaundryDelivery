@@ -1,11 +1,15 @@
 package com.qourier.qourier_app.message;
 
+import static com.qourier.qourier_app.Utils.GSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import java.util.concurrent.TimeUnit;
+
+import com.qourier.qourier_app.data.DeliveryState;
+import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -39,6 +43,8 @@ class MessageCenterIntegrationTest {
     private static final String RIDER_ID = "rider@hotmail.com";
     private static final long DELIVERY_ID = 1L;
     private static final String RIDER_LISTENER_ID = "rider";
+    private static final String ADMIN_LISTENER_ID = "admin";
+    private static final DeliveryState DELIVERY_STATE = DeliveryState.SHIPPED;
 
     @Autowired private MessageCenter messageCenter;
 
@@ -50,8 +56,18 @@ class MessageCenterIntegrationTest {
 
         Listener listener = this.harness.getSpy(RIDER_LISTENER_ID);
         assertThat(listener).isNotNull();
-        await().atMost(5L, TimeUnit.SECONDS)
+        await().atMost(2L, TimeUnit.SECONDS)
                 .untilAsserted(() -> verify(listener).checkNotification(any()));
+    }
+
+    @Test
+    void whenUpdateDelivery_thenUpdateReceived() {
+        messageCenter.sendDeliveryUpdate(DELIVERY_ID, DELIVERY_STATE);
+
+        Listener listener = this.harness.getSpy(ADMIN_LISTENER_ID);
+        assertThat(listener).isNotNull();
+        await().atMost(2L, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(listener).checkDeliveryUpdate(any()));
     }
 
     @Configuration
@@ -71,7 +87,12 @@ class MessageCenterIntegrationTest {
         }
 
         @Bean
-        public Queue stompQueue() {
+        public Queue stompQueueRider() {
+            return new AnonymousQueue();
+        }
+
+        @Bean
+        public Queue stompQueueAdmin() {
             return new AnonymousQueue();
         }
 
@@ -81,10 +102,17 @@ class MessageCenterIntegrationTest {
         }
 
         @Bean
-        public Binding binding() {
-            return BindingBuilder.bind(stompQueue())
+        public Binding bindingRider() {
+            return BindingBuilder.bind(stompQueueRider())
                     .to(topic())
                     .with(MessageCenter.generateRiderAssignmentTopic(RIDER_ID));
+        }
+
+        @Bean
+        public Binding bindingAdmin() {
+            return BindingBuilder.bind(stompQueueAdmin())
+                    .to(topic())
+                    .with(RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY);
         }
 
         @Bean
@@ -112,11 +140,24 @@ class MessageCenterIntegrationTest {
         }
     }
 
+    @Data
+    private static class DeliveryUpdate {
+        private long deliveryId;
+        private DeliveryState state;
+    }
+
     public static class Listener {
 
-        @RabbitListener(id = RIDER_LISTENER_ID, queues = "#{stompQueue.name}")
+        @RabbitListener(id = RIDER_LISTENER_ID, queues = "#{stompQueueRider.name}")
         public void checkNotification(String notification) {
             assertThat(notification).isEqualTo(String.valueOf(DELIVERY_ID));
+        }
+
+        @RabbitListener(id = ADMIN_LISTENER_ID, queues = "#{stompQueueAdmin.name}")
+        public void checkDeliveryUpdate(String update) {
+            DeliveryUpdate deliveryUpdate = GSON.fromJson(update, DeliveryUpdate.class);
+            assertThat(deliveryUpdate.getDeliveryId()).isEqualTo(DELIVERY_ID);
+            assertThat(deliveryUpdate.getState()).isEqualTo(DELIVERY_STATE);
         }
     }
 }

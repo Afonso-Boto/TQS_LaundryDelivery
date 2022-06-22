@@ -5,6 +5,9 @@ import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
 @Entity
 @Getter
 @Setter
@@ -22,12 +25,15 @@ public class Delivery {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long deliveryId;
 
+    private LocalDateTime creationTime;
+
     public Delivery(
             String customerId,
             double latitude,
             double longitude,
             String deliveryAddr,
             String originAddr) {
+        this();
         this.customerId = customerId;
         this.riderId = null;
         this.latitude = latitude;
@@ -37,7 +43,9 @@ public class Delivery {
         this.deliveryState = DeliveryState.BID_CHECK;
     }
 
-    public Delivery() {}
+    public Delivery() {
+        creationTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
 
     public static Delivery fromDto(DeliveryDTO deliveryDTO) {
         return new Delivery(

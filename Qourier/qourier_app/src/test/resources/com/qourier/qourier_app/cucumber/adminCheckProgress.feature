@@ -16,7 +16,10 @@ Feature: Check Riders' progress
       | laundryathome@tqs.com | 40 | 40 | the.first@sapo.pt | fetching |
       | another.kustomer@tqs.com | 50 | 132 | the.second@sapo.pt | shipped |
       | another.kustomer@tqs.com | 10 | 10  | the.third@sapo.pt  | delivered |
-      | laundryathome@tqs.com  | 90 | 10  | the.fourth@sapo.pt | bid check |
+      | laundryathome@tqs.com  | 90 | 10  | | bid check |
+    * the following bids have been done:
+      | customer            | latitude | longitude | rider              | distance |
+      | laundryathome@tqs.com  | 90       | 10        | the.fourth@sapo.pt | 10       |
     And I am logged in as 'jacoco@mail.com'
     When I go to the Progress section
     Then a table of the currently participating Riders' progress is shown

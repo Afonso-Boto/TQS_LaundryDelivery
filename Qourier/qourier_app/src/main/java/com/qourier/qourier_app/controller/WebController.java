@@ -9,17 +9,16 @@ import com.qourier.qourier_app.account.register.AdminRegisterRequest;
 import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
-import com.qourier.qourier_app.data.AccountRole;
-import com.qourier.qourier_app.data.AccountState;
+import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
 import com.qourier.qourier_app.message.MessageCenter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -384,6 +383,26 @@ public class WebController {
         AccountDTO account = accountManager.getAccount(id);
 
         return applications(model, request, 0, account.getRole(), true);
+    }
+
+    @GetMapping("/progress")
+    public String progress(Model model, HttpServletRequest request) {
+        AccountRole role = ADMIN;
+
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        List<Delivery> deliveries = deliveriesManager.getAllDeliveries();
+        deliveries.forEach(delivery -> {
+            List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
+            delivery.setRiderId(allBids.size() + " bids");
+        });
+
+        model.addAttribute("role", role);
+        model.addAttribute("deliveries", deliveries
+                .stream()
+                .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
+                .toList());
+        return "progress";
     }
 
     @Bean

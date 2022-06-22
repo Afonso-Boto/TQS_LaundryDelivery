@@ -6,6 +6,7 @@ import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
+import com.qourier.qourier_app.data.dto.BidDTO;
 import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
@@ -120,6 +121,10 @@ public class DeliveriesManager {
             return bids.get(0).getRidersId();
         }
         return null;
+    }
+
+    public List<Bid> getBids(Long deliveryId) {
+        return bidsRepository.findByDeliveryId(deliveryId);
     }
 
     public Delivery getDelivery(Long deliveryId) {

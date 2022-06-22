@@ -8,7 +8,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 public class TestUtils {
 
-    public static Gson gson = new GsonBuilder().create();
+    private TestUtils() {}
 
     public static class SampleAccountBuilder {
 
