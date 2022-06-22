@@ -71,7 +71,7 @@ public class CucumberSteps {
         deliveriesManager.setNewAuctionSpan(auctionSpan);
 
         driver = new HtmlUnitDriver(true);
-//        driver = WebDriverManager.firefoxdriver().create();
+        //        driver = WebDriverManager.firefoxdriver().create();
     }
 
     @Given("I am in the {page} page")
@@ -182,7 +182,8 @@ public class CucumberSteps {
 
             if (deliveryDetails.containsKey("state"))
                 delivery.setDeliveryState(
-                        DeliveryState.valueOf(deliveryDetails.get("state").toUpperCase().replace(' ', '_')));
+                        DeliveryState.valueOf(
+                                deliveryDetails.get("state").toUpperCase().replace(' ', '_')));
 
             if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
                 deliveriesManager.createDelivery(delivery);
@@ -500,8 +501,9 @@ public class CucumberSteps {
 
     @Then("a table of the currently participating Riders' progress is shown")
     public void assertRiderProgressTable() {
-        List<WebElement> tableRows = driver.findElements(By.cssSelector("#progress-table-body > tr"));
-        assertThat(tableRows).hasSize( deliveriesManager.getAllDeliveries().size() );
+        List<WebElement> tableRows =
+                driver.findElements(By.cssSelector("#progress-table-body > tr"));
+        assertThat(tableRows).hasSize(deliveriesManager.getAllDeliveries().size());
     }
 
     @And("I wait {int} seconds for the auction to end")

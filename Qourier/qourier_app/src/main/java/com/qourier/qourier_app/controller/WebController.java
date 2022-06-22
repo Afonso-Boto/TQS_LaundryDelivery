@@ -392,16 +392,18 @@ public class WebController {
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
         List<Delivery> deliveries = deliveriesManager.getAllDeliveries();
-        deliveries.forEach(delivery -> {
-            List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
-            delivery.setRiderId(allBids.size() + " bids");
-        });
+        deliveries.forEach(
+                delivery -> {
+                    List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
+                    delivery.setRiderId(allBids.size() + " bids");
+                });
 
         model.addAttribute("role", role);
-        model.addAttribute("deliveries", deliveries
-                .stream()
-                .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
-                .toList());
+        model.addAttribute(
+                "deliveries",
+                deliveries.stream()
+                        .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
+                        .toList());
         return "progress";
     }
 
