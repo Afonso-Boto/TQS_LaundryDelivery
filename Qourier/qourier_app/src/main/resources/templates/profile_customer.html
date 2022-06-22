@@ -19,6 +19,7 @@
 
                 <p>State: <span id="details-state" th:text="${customer.account.state.name().toLowerCase()}">active</span></p>
                 <p>Email: <span id="details-email" th:text="${customer.account.email}">cristina@mail.com</span></p>
+                <p>Registration time: <span id="details-registration-time" th:text="${customer.account.registrationTime}"></span></p>
                 <p>Service type: <span id="details-service-type" th:text="${customer.servType}">Laundry</span></p>
             </div>
         </div>
