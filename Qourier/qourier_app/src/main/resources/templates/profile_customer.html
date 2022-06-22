@@ -27,11 +27,9 @@
             <div class="col-12">
                 <h3>Statistics</h3>
 
-                <h5 id="statistics-delivery-request-rate">Rate of delivery requests</h5>
-                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for request rate" />
-
-                <h5 id="statistics-delivery-average-time">Average time until delivery</h5>
-                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for time until delivery" />
+                <h5 id="statistics-delivery-request-rate">Rate of delivery requests (per hour):
+                    <span id="stat-delivery-request-rate" th:text="${statsDeliveryRequestRate}"></span>
+                </h5>
             </div>
         </div>
         <div class="row">
