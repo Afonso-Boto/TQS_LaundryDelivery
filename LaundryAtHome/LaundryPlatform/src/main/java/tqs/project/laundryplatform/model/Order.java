@@ -69,7 +69,8 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Order(Long id, Date date, boolean isCompleted, double totalPrice, String deliveryLocation) {
+    public Order(
+            Long id, Date date, boolean isCompleted, double totalPrice, String deliveryLocation) {
         this.id = id;
         this.date = date;
         this.isCompleted = isCompleted;
@@ -106,6 +107,15 @@ public class Order {
 
     @Override
     public String toString() {
-        return id + "," + date + "," + isCompleted + "," + totalPrice + "," + deliveryLocation + ",";
+        return id
+                + ","
+                + date
+                + ","
+                + isCompleted
+                + ","
+                + totalPrice
+                + ","
+                + deliveryLocation
+                + ",";
     }
 }

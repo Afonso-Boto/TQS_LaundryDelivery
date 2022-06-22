@@ -96,14 +96,16 @@ public class MainController {
     }
 
     @GetMapping("/orders-mobile")
-    public ResponseEntity<String> ordersMobile(Model model, HttpServletRequest request, @RequestParam("username") String username){
+    public ResponseEntity<String> ordersMobile(
+            Model model, HttpServletRequest request, @RequestParam("username") String username) {
         System.err.println("orders");
         List<Order> orders;
 
-        if (username.equals("admin"))
-            orders = orderRepository.findAll();
+        if (username.equals("admin")) orders = orderRepository.findAll();
         else
-            orders = orderRepository.findAllByUser(userRepository.findByUsername(username).orElse(null));
+            orders =
+                    orderRepository.findAllByUser(
+                            userRepository.findByUsername(username).orElse(null));
 
         StringBuilder ordersString = new StringBuilder();
         for (Order order : orders) {

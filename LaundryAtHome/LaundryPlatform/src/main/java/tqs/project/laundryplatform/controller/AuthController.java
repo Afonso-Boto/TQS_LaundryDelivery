@@ -86,7 +86,8 @@ public class AuthController {
     }
 
     @PostMapping("/register-mobile")
-    public ResponseEntity<Boolean> signUpMobile(@RequestBody String requestBody, HttpServletResponse response) {
+    public ResponseEntity<Boolean> signUpMobile(
+            @RequestBody String requestBody, HttpServletResponse response) {
         JSONObject json = new JSONObject(requestBody);
         RegisterRequest request =
                 new RegisterRequest(
@@ -122,9 +123,11 @@ public class AuthController {
     }
 
     @PostMapping("/login-mobile")
-    public ResponseEntity<Boolean> loginMobile(@RequestBody String requestBody, HttpServletResponse response) {
+    public ResponseEntity<Boolean> loginMobile(
+            @RequestBody String requestBody, HttpServletResponse response) {
         JSONObject json = new JSONObject(requestBody);
-        LoginRequest user = new LoginRequest(json.getString("username"), json.getString("password"));
+        LoginRequest user =
+                new LoginRequest(json.getString("username"), json.getString("password"));
 
         LoginResult result = accountManager.login(user);
         System.err.println("Login result: " + result);

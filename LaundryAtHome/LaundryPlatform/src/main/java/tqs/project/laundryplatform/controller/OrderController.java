@@ -45,7 +45,8 @@ public class OrderController {
     }
 
     @PostMapping("cancelOrder-mobilde/{id}")
-    public ResponseEntity<String> cancelOrderMobile(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<String> cancelOrderMobile(
+            @PathVariable("id") Long id, HttpServletRequest request) {
         if (!hasCookie(request)) return ResponseEntity.status(401).body("unauthorized");
 
         orderService.cancelOrder(id);
@@ -65,15 +66,13 @@ public class OrderController {
     }
 
     @PostMapping("/complaint-mobile")
-    public ResponseEntity<Boolean> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+    public ResponseEntity<Boolean> complaintMobile(
+            @RequestBody String body, HttpServletRequest request, Model model) {
         System.out.println("complaint-mobile");
         System.out.println(body);
         JSONObject json = new JSONObject(body);
 
-
-        if (orderService.complaint(json))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-
+        if (orderService.complaint(json)) return new ResponseEntity<>(true, HttpStatus.OK);
 
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
@@ -134,13 +133,16 @@ public class OrderController {
     }
 
     @PostMapping("/make-order-mobile/{cookieId}")
-    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject,@PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
+    public ResponseEntity<Boolean> newOrderMobile(
+            @RequestBody String formObject,
+            @PathVariable("cookieId") String cookieId,
+            Model model,
+            HttpServletRequest request)
             throws JsonProcessingException {
         System.out.println(formObject);
         formObject = formObject.substring(1, formObject.length() - 1);
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
-
 
         orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
 
@@ -215,7 +217,8 @@ public class OrderController {
     public ResponseEntity<Boolean> initOrderMobile(
             Model model,
             HttpServletRequest request,
-            @PathVariable("orderTypeId") long orderTypeId, @PathVariable("cookieID") String cookieID) {
+            @PathVariable("orderTypeId") long orderTypeId,
+            @PathVariable("cookieID") String cookieID) {
 
         System.err.println(cookieID);
         long orderID = orderService.initOrder(orderTypeId, cookieID);
