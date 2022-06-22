@@ -207,8 +207,9 @@ public class WebController {
         private Long deliveryId;
     }
 
-    @PostMapping(value="/deliveries/progress")
-    public String deliveryProgressUpdate(@ModelAttribute FormDeliveriesProgress form, Model model, HttpServletRequest request) {
+    @PostMapping(value = "/deliveries/progress")
+    public String deliveryProgressUpdate(
+            @ModelAttribute FormDeliveriesProgress form, Model model, HttpServletRequest request) {
         if (!verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
 
         deliveriesManager.setDeliveryState(form.getDeliveryId(), form.getRiderId());

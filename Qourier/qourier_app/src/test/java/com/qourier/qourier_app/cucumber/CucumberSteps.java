@@ -180,15 +180,16 @@ public class CucumberSteps {
                 delivery.setRiderId(deliveryDetails.get("rider"));
 
             if (deliveryDetails.containsKey("state"))
-                delivery.setDeliveryState(DeliveryState.valueOf(deliveryDetails.get("state").toUpperCase()));
+                delivery.setDeliveryState(
+                        DeliveryState.valueOf(deliveryDetails.get("state").toUpperCase()));
 
             if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
                 deliveriesManager.createDelivery(delivery);
             else {
                 deliveryRepository.save(delivery);
                 if (delivery.getRiderId() != null) {
-                    Rider assignedRider = riderRepository.findById(delivery.getRiderId())
-                            .orElseThrow();
+                    Rider assignedRider =
+                            riderRepository.findById(delivery.getRiderId()).orElseThrow();
                     assignedRider.setCurrentDelivery(delivery.getDeliveryId());
                     riderRepository.save(assignedRider);
                 }
@@ -426,7 +427,6 @@ public class CucumberSteps {
             assertThat(detailsState.isDisplayed()).isTrue();
             assertThat(detailsState.getText()).isEqualTo(state.toString());
         }
-
     }
 
     @Then("the delivery job is not up for bidding")
