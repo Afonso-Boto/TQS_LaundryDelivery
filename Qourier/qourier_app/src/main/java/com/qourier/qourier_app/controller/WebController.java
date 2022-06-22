@@ -9,20 +9,17 @@ import com.qourier.qourier_app.account.register.AdminRegisterRequest;
 import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
-import com.qourier.qourier_app.data.AccountRole;
-import com.qourier.qourier_app.data.AccountState;
+import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
 import com.qourier.qourier_app.message.MessageCenter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.Data;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
@@ -175,14 +172,42 @@ public class WebController {
         model.addAttribute("riderId", riderId);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
         model.addAttribute(
-                "notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
+                "notificationTopic", MessageCenter.generateRiderAssignmentTopic(riderId));
 
         RiderDTO rider = accountManager.getRiderAccount(riderId);
-        model.addAttribute("alreadyDelivering", rider.getCurrentDelivery() != null);
+
+        Delivery currentDelivery = deliveriesManager.getDelivery(rider.getCurrentDelivery());
+        boolean alreadyDelivering = currentDelivery != null;
+        model.addAttribute("alreadyDelivering", alreadyDelivering);
+        if (alreadyDelivering) {
+            model.addAttribute("deliveryCustomer", currentDelivery.getCustomerId());
+            model.addAttribute("deliveryOrigin", currentDelivery.getOriginAddr());
+            model.addAttribute("deliveryLatitude", currentDelivery.getLatitude());
+            model.addAttribute("deliveryLongitude", currentDelivery.getLongitude());
+            model.addAttribute("deliveryDestination", currentDelivery.getDeliveryAddr());
+            model.addAttribute("deliveryState", currentDelivery.getDeliveryState());
+            model.addAttribute("deliveryId", currentDelivery.getDeliveryId());
+        }
 
         // Add Deliveries
         model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());
         return "deliveries";
+    }
+
+    @Data
+    private static class FormDeliveriesProgress {
+        private String riderId;
+        private Long deliveryId;
+    }
+
+    @PostMapping(value = "/deliveries/progress")
+    public String deliveryProgressUpdate(
+            @ModelAttribute FormDeliveriesProgress form, Model model, HttpServletRequest request) {
+        if (!verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
+
+        deliveriesManager.setDeliveryState(form.getDeliveryId(), form.getRiderId());
+
+        return deliveries(model, request);
     }
 
     @GetMapping("/delivery_management")
@@ -384,6 +409,28 @@ public class WebController {
         AccountDTO account = accountManager.getAccount(id);
 
         return applications(model, request, 0, account.getRole(), true);
+    }
+
+    @GetMapping("/progress")
+    public String progress(Model model, HttpServletRequest request) {
+        AccountRole role = ADMIN;
+
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        List<Delivery> deliveries = deliveriesManager.getAllDeliveries();
+        deliveries.forEach(
+                delivery -> {
+                    List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
+                    delivery.setRiderId(allBids.size() + " bids");
+                });
+
+        model.addAttribute("role", role);
+        model.addAttribute(
+                "deliveries",
+                deliveries.stream()
+                        .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
+                        .toList());
+        return "progress";
     }
 
     @Bean

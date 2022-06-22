@@ -1,5 +1,6 @@
 package com.qourier.qourier_app.controller;
 
+import static com.qourier.qourier_app.Utils.GSON;
 import static com.qourier.qourier_app.account.login.LoginResult.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -101,50 +102,62 @@ class ApiControllerTest {
                 mvc.perform(get("/api/v1/deliveries")).andExpect(status().isOk()).andReturn();
 
         String resultDeliveriesString = result.getResponse().getContentAsString();
-        String expectedDeliveries =
-                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0"
-                    + " street\",\"originAddr\":\"Test0 origin"
-                    + " street\",\"riderId\":null,\"latitude\":10.0,"
-                    + "\"longitude\":20.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test1@email.com\",\"deliveryAddr\":\"Test1"
-                    + " street\",\"originAddr\":\"Test1 origin"
-                    + " street\",\"riderId\":null,\"latitude\":11.0,"
-                    + "\"longitude\":21.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test2@email.com\",\"deliveryAddr\":\"Test2"
-                    + " street\",\"originAddr\":\"Test2 origin"
-                    + " street\",\"riderId\":null,\"latitude\":12.0,"
-                    + "\"longitude\":22.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3"
-                    + " street\",\"originAddr\":\"Test3 origin"
-                    + " street\",\"riderId\":null,\"latitude\":13.0,"
-                    + "\"longitude\":23.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
+        //        String expectedDeliveries =
+        //                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0"
+        //                    + " street\",\"originAddr\":\"Test0 origin"
+        //                    + " street\",\"riderId\":null,\"latitude\":10.0,"
+        //                    +
+        // "\"longitude\":20.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test1@email.com\",\"deliveryAddr\":\"Test1"
+        //                    + " street\",\"originAddr\":\"Test1 origin"
+        //                    + " street\",\"riderId\":null,\"latitude\":11.0,"
+        //                    +
+        // "\"longitude\":21.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test2@email.com\",\"deliveryAddr\":\"Test2"
+        //                    + " street\",\"originAddr\":\"Test2 origin"
+        //                    + " street\",\"riderId\":null,\"latitude\":12.0,"
+        //                    +
+        // "\"longitude\":22.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3"
+        //                    + " street\",\"originAddr\":\"Test3 origin"
+        //                    + " street\",\"riderId\":null,\"latitude\":13.0,"
+        //                    +
+        // "\"longitude\":23.0,\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
+        String expectedDeliveries = GSON.toJson(deliveryList);
         assertEquals(expectedDeliveries, resultDeliveriesString);
     }
 
     @Test
     @DisplayName("Obtain all deliveries for a given customerId")
     void whenGetFilteredDeliveries_thenReturnFilteredDeliveries() throws Exception {
+        String customerId = "test0@email.com";
         MvcResult result =
-                mvc.perform(get("/api/v1/deliveries?customerId=test0@email.com"))
+                mvc.perform(get("/api/v1/deliveries").param("customerId", customerId))
                         .andExpect(status().isOk())
                         .andReturn();
 
         String resultDeliveriesString = result.getResponse().getContentAsString();
+        //        String expectedDeliveries =
+        //                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0"
+        //                        + " street\",\"originAddr\":\"Test0 origin
+        // street\",\"riderId\":null,"
+        //                        + "\"latitude\":10.0,\"longitude\":20.0,"
+        //                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
+        //                        + "{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3"
+        //                        + " street\",\"originAddr\":\"Test3 origin
+        // street\",\"riderId\":null,"
+        //                        + "\"latitude\":13.0,\"longitude\":23.0,"
+        //                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
         String expectedDeliveries =
-                "[{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test0"
-                        + " street\",\"originAddr\":\"Test0 origin street\",\"riderId\":null,"
-                        + "\"latitude\":10.0,\"longitude\":20.0,"
-                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null},"
-                        + "{\"customerId\":\"test0@email.com\",\"deliveryAddr\":\"Test3"
-                        + " street\",\"originAddr\":\"Test3 origin street\",\"riderId\":null,"
-                        + "\"latitude\":13.0,\"longitude\":23.0,"
-                        + "\"deliveryState\":\"BID_CHECK\",\"deliveryId\":null}]";
+                GSON.toJson(
+                        deliveryList.stream()
+                                .filter(delivery -> delivery.getCustomerId().equals(customerId))
+                                .toList());
         assertEquals(expectedDeliveries, resultDeliveriesString);
     }
 
     @Test
     @DisplayName("Create delivery through post")
     void whenPostDelivery_thenDeliveryIsCreated() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         String json =
-                objectMapper.writeValueAsString(
+                GSON.toJson(
                         new Delivery(
                                 "test0@email.com",
                                 99.00,
@@ -169,9 +182,8 @@ class ApiControllerTest {
     @Test
     @DisplayName("Try to create delivery through post but fail Auth")
     void whenPostDeliveryWithWrongCreds_thenDeliveryIsntCreated() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         String json =
-                objectMapper.writeValueAsString(
+                GSON.toJson(
                         new Delivery(
                                 "test0@email.com",
                                 99.00,

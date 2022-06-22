@@ -12,6 +12,7 @@ public class RabbitConfiguration {
     public static final String TOPIC_EXCHANGE_NAME = "spring-boot-exchange";
 
     public static final String RIDER_ASSIGNMENTS_ROUTING_KEY = "rider.assignments";
+    public static final String DELIVERY_UPDATES_ROUTING_KEY = "delivery.updates";
 
     @Bean
     public TopicExchange exchange() {
