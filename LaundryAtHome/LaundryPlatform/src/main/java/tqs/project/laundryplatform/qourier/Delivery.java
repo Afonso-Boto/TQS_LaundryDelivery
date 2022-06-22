@@ -1,6 +1,5 @@
 package tqs.project.laundryplatform.qourier;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
