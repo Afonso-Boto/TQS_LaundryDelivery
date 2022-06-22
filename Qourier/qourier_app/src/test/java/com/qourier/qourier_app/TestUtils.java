@@ -1,14 +1,12 @@
 package com.qourier.qourier_app;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.qourier.qourier_app.data.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class TestUtils {
 
-    public static Gson gson = new GsonBuilder().create();
+    private TestUtils() {}
 
     public static class SampleAccountBuilder {
 
