@@ -17,82 +17,6 @@
         </div>
         <div id="permitted-content" th:if="${permitted}">
             <div class="row">
-                <div class="col-12">
-                    <div class="container">
-                        <h2>Deliveries Progress</h2>
-                        <p>Progress for each delivery:</p>
-                        <div class="row">
-                            <div class="col-12">
-                                <table class="table">
-                                    <thead class="thead-dark">
-                                      <tr>
-                                        <th scope="col">Id</th>
-                                        <th scope="col">Customer</th>
-                                        <th scope="col">Start Date</th>
-                                        <th scope="col">Progress</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                      <tr>
-                                        <th scope="row">1</th>
-                                        <td>Morgan.Balistreri@gmail.com</td>
-                                        <td>25/5/22 10:22</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width:25%">
-                                                  25% (Bid check)
-                                                </div>
-                                              </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <th scope="row">2</th>
-                                        <td>Ibrahim_Bergstrom48@gmail.com</td>
-                                        <td>25/5/22 09:12</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                                aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:50%">
-                                                    50% (Fetching)
-                                                </div>
-                                              </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <th scope="row">3</th>
-                                        <td>Kenton46@hotmail.com</td>
-                                        <td>25/5/22 07:00</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                                aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:75%">
-                                                75% (Shipped)
-                                                </div>
-                                              </div>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <th scope="row">4</th>
-                                        <td>Jake_Waters54@hotmail.com</td>
-                                        <td>25/5/22 05:49</td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped active" role="progressbar"
-                                                aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%">
-                                                    100% (Delivered)
-                                                </div>
-                                              </div>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <h2>Register delivery</h2>
                 <form method="POST" action="/delivery_management/delivery" th:action="@{/delivery_management/delivery}">
                     <label for="form-delivery-origin">Origin: </label>
@@ -109,6 +33,65 @@
 
                     <button id="btn-register-delivery" type="submit">Register delivery</button>
                 </form>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="container">
+                        <h2>Deliveries Progress</h2>
+                        <p>Progress for each delivery:</p>
+                        <div class="row">
+                            <div class="col-12">
+                                <table id="delivery-table" class="table">
+                                    <thead id="delivery-table-head" class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Id</th>
+                                            <th scope="col">Rider</th>
+                                            <th scope="col">Start Date</th>
+                                            <th scope="col">Progress</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="delivery-table-body">
+                                        <tr th:each="delivery : ${deliveries}">
+                                            <th scope="row" th:text="${delivery.deliveryId}">1</th>
+                                            <td th:text="${delivery.riderId}">Morgan.Balistreri@gmail.com</td>
+                                            <td th:text="${delivery.creationTime}">25/5/22 10:22</td>
+                                            <td>
+                                                <div class="progress">
+                                                    <th:block th:switch="${delivery.deliveryState.name()}">
+                                                        <div th:case="'BID_CHECK'" th:id="'delivery-' + ${delivery.deliveryId}"
+                                                             class="progress-bar progress-bar-striped active" role="progressbar"
+                                                             aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width:25%">
+                                                            25% (Bid check)
+                                                        </div>
+                                                        <div th:case="'FETCHING'" th:id="'delivery-' + ${delivery.deliveryId}"
+                                                             class="progress-bar progress-bar-striped active" role="progressbar"
+                                                             aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width:50%">
+                                                            50% (Fetching)
+                                                        </div>
+                                                        <div th:case="'SHIPPED'" th:id="'delivery-' + ${delivery.deliveryId}"
+                                                             class="progress-bar progress-bar-striped active" role="progressbar"
+                                                             aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width:75%">
+                                                            75% (Shipped)
+                                                        </div>
+                                                        <div th:case="'DELIVERED'" th:id="'delivery-' + ${delivery.deliveryId}"
+                                                             class="progress-bar progress-bar-striped active" role="progressbar"
+                                                             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"
+                                                             style="width:100%">
+                                                            100% (Delivered)
+                                                        </div>
+                                                    </th:block>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                  </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
