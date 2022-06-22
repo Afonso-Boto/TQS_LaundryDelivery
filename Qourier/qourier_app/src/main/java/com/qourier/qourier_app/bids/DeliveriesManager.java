@@ -9,6 +9,8 @@ import com.qourier.qourier_app.data.DeliveryState;
 import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -146,5 +148,37 @@ public class DeliveriesManager {
 
     public void deleteAll() {
         deliveryRepository.deleteAll(deliveryRepository.findAll());
+    }
+
+    public long statsRiderNumberDeliveriesDone(String riderId) {
+        return deliveryRepository.findByRiderId(riderId).stream()
+                .filter(delivery -> delivery.getDeliveryState() == DELIVERED)
+                .count();
+    }
+
+    public double statsCustomerDeliveryRate(String customerId) {
+        List<Delivery> customerDeliveries = deliveryRepository.findByCustomerId(customerId);
+
+        LocalDateTime minCreationTime =
+                customerDeliveries.stream()
+                        .map(Delivery::getCreationTime)
+                        .min(LocalDateTime::compareTo)
+                        .orElse(null);
+        LocalDateTime maxCreationTime =
+                customerDeliveries.stream()
+                        .map(Delivery::getCreationTime)
+                        .max(LocalDateTime::compareTo)
+                        .orElse(null);
+
+        if (minCreationTime == null || maxCreationTime == null) return -1;
+
+        long totalDeliveries = customerDeliveries.size();
+        int secondsInHour = 60 * 60;
+        ZoneOffset offset = ZoneOffset.UTC;
+        return secondsInHour
+                * totalDeliveries
+                / (double)
+                        (maxCreationTime.toEpochSecond(offset)
+                                - minCreationTime.toEpochSecond(offset));
     }
 }
