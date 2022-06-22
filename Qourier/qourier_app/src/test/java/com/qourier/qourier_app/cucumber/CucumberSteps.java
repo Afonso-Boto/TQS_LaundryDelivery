@@ -37,6 +37,7 @@ public class CucumberSteps {
     private final Customer sampleCustomer;
     private final DeliveriesManager deliveriesManager;
     private final BidsRepository bidsRepository;
+    private final DeliveryRepository deliveryRepository;
     private final int auctionSpan;
 
     @Autowired private MessageCenter messageCenter;
@@ -51,13 +52,15 @@ public class CucumberSteps {
             AdminRepository adminRepository,
             AccountRepository accountRepository,
             DeliveriesManager deliveriesManager,
-            BidsRepository bidsRepository) {
+            BidsRepository bidsRepository,
+            DeliveryRepository deliveryRepository) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
         this.accountRepository = accountRepository;
         this.deliveriesManager = deliveriesManager;
         this.bidsRepository = bidsRepository;
+        this.deliveryRepository = deliveryRepository;
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
@@ -169,7 +172,24 @@ public class CucumberSteps {
                             longitude,
                             TestUtils.randomString(),
                             TestUtils.randomString());
-            deliveriesManager.createDelivery(delivery);
+
+            if (deliveryDetails.containsKey("rider"))
+                delivery.setRiderId(deliveryDetails.get("rider"));
+
+            if (deliveryDetails.containsKey("state"))
+                delivery.setDeliveryState(DeliveryState.valueOf(deliveryDetails.get("state").toUpperCase()));
+
+            if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                deliveriesManager.createDelivery(delivery);
+            else {
+                deliveryRepository.save(delivery);
+                if (delivery.getRiderId() != null) {
+                    Rider assignedRider = riderRepository.findById(delivery.getRiderId())
+                            .orElseThrow();
+                    assignedRider.setCurrentDelivery(delivery.getDeliveryId());
+                    riderRepository.save(assignedRider);
+                }
+            }
         }
     }
 
@@ -329,6 +349,16 @@ public class CucumberSteps {
                         () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong()));
     }
 
+    @When("I indicate that I picked up the delivery")
+    public void markDeliveryPickedUp() {
+        driver.findElement(By.id("pickup-delivery")).click();
+    }
+
+    @When("I mark the delivery as being done")
+    public void markDeliveryDone() {
+        driver.findElement(By.id("confirm-delivery")).click();
+    }
+
     @Then("a rider assignment notification should have been sent")
     public void riderAssignmentNotificationSent() {
         verify(messageCenter, times(1))
@@ -379,6 +409,16 @@ public class CucumberSteps {
             assertThat(infoDeliveriesAvailable.isDisplayed()).isTrue();
             assertThat(infoDeliveryAlreadyAssigned.isDisplayed()).isFalse();
         }
+    }
+
+    @Then("the delivery job is registered as {deliveryStatus}")
+    public void assertDeliveryJobDone(DeliveryState state) {
+        Delivery delivery = deliveriesManager.getDelivery(focusedDeliveryId);
+        assertThat(delivery.getDeliveryState()).isEqualTo(state);
+
+        WebElement detailsState = driver.findElement(By.id("assigned-delivery-state"));
+        assertThat(detailsState.isDisplayed()).isTrue();
+        assertThat(detailsState.getText()).isEqualTo(state.toString());
     }
 
     @Then("the delivery job is not up for bidding")
