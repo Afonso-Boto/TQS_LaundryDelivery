@@ -17,12 +17,11 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -354,6 +353,26 @@ public class CucumberSteps {
                         () -> verify(messageCenter).notifyRiderAssignment(anyString(), anyLong()));
     }
 
+    @When("I fill the delivery details")
+    public void fillDeliveryDetails() {
+        driver.findElement(By.id("form-delivery-origin")).sendKeys(TestUtils.randomString());
+        driver.findElement(By.id("form-delivery-destination")).sendKeys(TestUtils.randomString());
+        driver.findElement(By.id("form-delivery-latitude")).sendKeys("10");
+        driver.findElement(By.id("form-delivery-longitude")).sendKeys("10");
+    }
+
+    @When("I register the delivery")
+    public void registerDelivery() {
+        WebElement registerDeliveryButton = driver.findElement(By.id("btn-register-delivery"));
+        assertThat(registerDeliveryButton.isDisplayed()).isTrue();
+        registerDeliveryButton.click();
+        focusedDeliveryId =
+                deliveriesManager.getAllDeliveries().stream()
+                        .max(Comparator.comparing(Delivery::getCreationTime))
+                        .orElseThrow()
+                        .getDeliveryId();
+    }
+
     @When("I indicate that I picked up the delivery")
     public void markDeliveryPickedUp() {
         driver.findElement(By.id("pickup-delivery")).click();
@@ -416,6 +435,13 @@ public class CucumberSteps {
         }
     }
 
+    @Then("the delivery job is {not}up for bidding")
+    public void assertDeliveryNotUpForBidding(boolean not) {
+        DeliveryState state = deliveriesManager.getDelivery(focusedDeliveryId).getDeliveryState();
+        if (not) assertThat(state).isNotEqualTo(DeliveryState.BID_CHECK);
+        else assertThat(state).isEqualTo(DeliveryState.BID_CHECK);
+    }
+
     @Then("the delivery job is registered as {deliveryStatus}")
     public void assertDeliveryJobDone(DeliveryState state) {
         Delivery delivery = deliveriesManager.getDelivery(focusedDeliveryId);
@@ -426,12 +452,6 @@ public class CucumberSteps {
             assertThat(detailsState.isDisplayed()).isTrue();
             assertThat(detailsState.getText()).isEqualTo(state.toString());
         }
-    }
-
-    @Then("the delivery job is not up for bidding")
-    public void assertDeliveryNotUpForBidding() {
-        assertThat(deliveriesManager.getDelivery(focusedDeliveryId).getDeliveryState())
-                .isNotEqualTo(DeliveryState.BID_CHECK);
     }
 
     @Then("my status is {accountState}")
@@ -516,6 +536,23 @@ public class CucumberSteps {
         WebElement toggleButton = driver.findElement(By.id("toggle-account"));
         if (action.equals("activate")) assertThat(toggleButton.getText()).startsWith("Activate");
         else assertThat(toggleButton.getText()).startsWith("Suspend");
+    }
+
+    @Then("the delivery registration form is empty")
+    public void assertDeliveryRegistrationFormEmpty() {
+        List<WebElement> formElements =
+                Stream.of(
+                                "form-delivery-origin",
+                                "form-delivery-destination",
+                                "form-delivery-latitude",
+                                "form-delivery-longitude")
+                        .map(id -> driver.findElement(By.id(id)))
+                        .toList();
+
+        for (WebElement formElement : formElements) {
+            assertThat(formElement.isDisplayed()).isTrue();
+            assertThat(formElement.getAttribute("value")).isEmpty();
+        }
     }
 
     @Then("a table of the currently participating Riders' progress is shown")

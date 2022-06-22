@@ -217,7 +217,6 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        // TODO pass right message to show
         AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
 
         switch (state) {
@@ -239,6 +238,34 @@ public class WebController {
         model.addAttribute("role", role);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
         return "delivery_management";
+    }
+
+    @Data
+    private static class DeliveryRegistration {
+        private String origin;
+        private String destination;
+        private long latitude;
+        private long longitude;
+    }
+
+    @PostMapping("/delivery_management/delivery")
+    public String deliveryManagementRegister(
+            @ModelAttribute DeliveryRegistration deliveryRegistration,
+            Model model,
+            HttpServletRequest request) {
+        if (!verifyCookie(request, CUSTOMER)) return REDIRECT_LOGIN;
+
+        String customerId = getIdFromCookie(request);
+
+        deliveriesManager.createDelivery(
+                new Delivery(
+                        customerId,
+                        deliveryRegistration.getLatitude(),
+                        deliveryRegistration.getLongitude(),
+                        deliveryRegistration.getDestination(),
+                        deliveryRegistration.getOrigin()));
+
+        return deliveryManagement(model, request);
     }
 
     @GetMapping("/register_rider")
