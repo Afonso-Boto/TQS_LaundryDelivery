@@ -132,18 +132,17 @@ public class OrderController {
         return "redirect:/error";
     }
 
-    @PostMapping("/make-order-mobile")
-    public ResponseEntity<String> newOrderMobile(@RequestBody String formObject, Model model, HttpServletRequest request)
+    @PostMapping("/make-order-mobile/{cookieId}")
+    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject,@PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
             throws JsonProcessingException {
+        System.out.println(formObject);
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 
-        if (!hasCookie(request)) return ResponseEntity.status(401).body("Unauthorized");
 
-        String cookieId = getIdFromCookie(request);
         orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
 
-        if (orderId == -1L) return ResponseEntity.status(401).body("Unauthorized");
+        if (orderId == -1L) return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
 
         if (orderService.makeOrder(orderId, orderInfo)) {
             System.out.println("Order made");
@@ -181,10 +180,10 @@ public class OrderController {
             String x = restTemplate.postForObject(uri, request1, String.class);
             System.out.println(x);
 
-            return ResponseEntity.status(200).body("OK");
+            return new ResponseEntity<>(true, HttpStatus.OK);
         }
 
-        return ResponseEntity.status(401).body("Unauthorized");
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/init-order")
