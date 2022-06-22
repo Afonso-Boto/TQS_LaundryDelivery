@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <th:block th:include="base :: head"></th:block>
+
+  <title>Monitor - Qourier</title>
+</head>
+<body>
+
+<!--  ADMIN  -->
+
+<nav th:replace="base :: navbar"></nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2>Riders Status</h2>
+      <div class="row">
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=64" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=62" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=66" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=37" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=40" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=65" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=63" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=41" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=38" width="210" height="200" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/Kn5xm-gZk/rabbitmq-overview?orgId=1&refresh=15s&panelId=67" width="210" height="200" frameborder="0"></iframe>
+      </div>
+      <br>
+      <br>
+      <br>
+      <h2>Costumers Status</h2>
+      <div class="row">
+        <iframe src="http://localhost:3000/d-solo/C0jeDstZk/erlang-distributions-compare?orgId=1&refresh=15s&theme=light&panelId=58" width="525" height="300" frameborder="0"></iframe>
+        <iframe src="http://localhost:3000/d-solo/C0jeDstZk/erlang-distributions-compare?orgId=1&refresh=15s&theme=light&panelId=57" width="525" height="300" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block th:include="base :: scripts"></th:block>
+<script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+
+</body>
+</html>

@@ -28,6 +28,7 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=$GF_USERS_ALLOW_SIGN_UP
       - GF_AUTH_ANONYMOUS_ENABLED=$GF_AUTH_ANONYMOUS_ENABLED
       - GF_INSTALL_PLUGINS:"flant-statusmap-panel,grafana-piechart-panel"
+      - GF_SECURITY_ALLOW_EMBEDDING=true
     depends_on:
       - prometheus
     ports:
