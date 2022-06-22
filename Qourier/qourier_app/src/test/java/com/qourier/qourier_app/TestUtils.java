@@ -1,13 +1,12 @@
 package com.qourier.qourier_app;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.qourier.qourier_app.data.*;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class TestUtils {
 
-    public static Gson gson = new GsonBuilder().create();
+    private TestUtils() {}
 
     public static class SampleAccountBuilder {
 
@@ -51,11 +50,15 @@ public class TestUtils {
         }
     }
 
-    private static String hashPassword(String password) {
-        return DigestUtils.sha256Hex(password);
+    public static String randomString() {
+        return RandomStringUtils.randomAlphabetic(10);
     }
 
     public static String hasher(String str) {
         return DigestUtils.sha256Hex(str);
+    }
+
+    private static String hashPassword(String password) {
+        return DigestUtils.sha256Hex(password);
     }
 }

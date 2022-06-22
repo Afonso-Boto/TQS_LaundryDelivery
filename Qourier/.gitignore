@@ -1,6 +1,7 @@
 # Ignore Docker volumes
 /volumes/mysql/db
 /volumes/qourier
+!/volumes/rabbitmq/rabbitmq.conf
 
 # .env file
 .env

@@ -6,6 +6,7 @@ import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
+import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
 import java.util.List;
@@ -20,16 +21,19 @@ public class DeliveriesManager {
     private final BidsRepository bidsRepository;
     private final DeliveryRepository deliveryRepository;
     private final AccountManager accountManager;
+    private final MessageCenter messageCenter;
     private long auctionSpan;
 
     @Autowired
     public DeliveriesManager(
             BidsRepository bidsrepository,
             DeliveryRepository deliveryRepository,
-            AccountManager accountManager) {
+            AccountManager accountManager,
+            MessageCenter messageCenter) {
         this.bidsRepository = bidsrepository;
         this.deliveryRepository = deliveryRepository;
         this.accountManager = accountManager;
+        this.messageCenter = messageCenter;
         this.auctionSpan = 600000;
     }
 
@@ -37,7 +41,6 @@ public class DeliveriesManager {
         deliveryRepository.save(newDelivery);
 
         createAuction(newDelivery);
-        newDelivery.setDeliveryState(DeliveryState.DELIVERED);
 
         return newDelivery;
     }
@@ -63,6 +66,9 @@ public class DeliveriesManager {
                                     delivery.setRiderId(winnerId);
                                     delivery.setDeliveryState(FETCHING);
                                     deliveryRepository.save(delivery);
+
+                                    messageCenter.notifyRiderAssignment(
+                                            delivery.getRiderId(), delivery.getDeliveryId());
                                 } else {
                                     deliveryRepository.delete(delivery);
                                 }
@@ -100,6 +106,9 @@ public class DeliveriesManager {
         }
         deliveryRepository.save(delivery);
 
+        // If delivery is finished -> rider is free for other deliveries
+        if (delivery.getDeliveryState() == DELIVERED) accountManager.assignWork(riderId, null);
+
         return delivery.getDeliveryState();
     }
 
@@ -111,6 +120,10 @@ public class DeliveriesManager {
             return bids.get(0).getRidersId();
         }
         return null;
+    }
+
+    public List<Bid> getBids(Long deliveryId) {
+        return bidsRepository.findByDeliveryId(deliveryId);
     }
 
     public Delivery getDelivery(Long deliveryId) {
