@@ -9,14 +9,11 @@ import com.qourier.qourier_app.data.DeliveryState;
 import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.stream.Stream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
