@@ -5,10 +5,12 @@ name: CD
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  pull_request:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: [Main check]
+    types:
+      - completed
 
-  # Allows you to run this workflow manually from the Actions tab
+# Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -30,6 +32,9 @@ jobs:
           host: ${{ secrets.HOST }}
           key: ${{ secrets.SSH_KEY }}
           username: ${{ secrets.USERNAME }}
-          script: whoami
+          script: |
+                  cd TQS_LaundryDelivery/Qourier/
+                  docker-compose up --build
+                  
           
           
