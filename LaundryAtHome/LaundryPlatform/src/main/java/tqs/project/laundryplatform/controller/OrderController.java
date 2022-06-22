@@ -136,6 +136,7 @@ public class OrderController {
     public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject,@PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
             throws JsonProcessingException {
         System.out.println(formObject);
+        formObject = formObject.substring(1, formObject.length() - 1);
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 
