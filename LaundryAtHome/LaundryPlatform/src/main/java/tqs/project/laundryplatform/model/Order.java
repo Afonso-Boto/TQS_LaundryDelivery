@@ -3,9 +3,6 @@ package tqs.project.laundryplatform.model;
 import java.sql.Date;
 import java.util.Set;
 import javax.persistence.*;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 

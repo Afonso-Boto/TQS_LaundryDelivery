@@ -2,11 +2,11 @@ package tqs.project.laundryplatform.controller;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
+import java.util.List;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +19,6 @@ import tqs.project.laundryplatform.account.RegisterRequest;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
-
-import java.util.List;
-import java.util.Objects;
 
 @Controller
 @RequestMapping("/")
