@@ -61,7 +61,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: cd Qourier/qourier_app && mvn -B verify jacoco:prepare-agent jacoco:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Afonso-Boto_TQS_LaundryDelivery -Pcoverage
+      run: cd Qourier && mvn -B verify jacoco:prepare-agent jacoco:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Afonso-Boto_TQS_LaundryDelivery -Pcoverage
     - name: Test report
       uses: dorny/test-reporter@v1
       if: always()
