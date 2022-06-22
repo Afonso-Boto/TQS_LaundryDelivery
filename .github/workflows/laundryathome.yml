@@ -26,15 +26,14 @@ jobs:
     - name: Google Java Format enforcer, without imports
       uses: axel-op/googlejavaformat-action@v3
       with:
-        skipCommit: true
         files: "LaundryAtHome/LaundryPlatform/**/*.java"
-        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
+        commitMessage: Google Java Format formatting, without imports (LAUNDRYATHOME)
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --replace"
     - name: Google Java Format import structure fixer
       uses: axel-op/googlejavaformat-action@v3
-      if: always()
       with:
         files: "LaundryAtHome/LaundryPlatform/**/*.java"
-        commitMessage: Google Java Format import ordering
+        commitMessage: Google Java Format import ordering (LAUNDRYATHOME)
         args: "--fix-imports-only --replace"
     - name: Cache SonarCloud packages
       uses: actions/cache@v1

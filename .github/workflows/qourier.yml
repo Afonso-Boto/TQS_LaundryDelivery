@@ -28,7 +28,7 @@ jobs:
       with:
         files: "Qourier/qourier_app/**/*.java"
         #skipCommit: true
-        commitMessage: Google Java Format formatting, without imports
+        commitMessage: Google Java Format formatting, without imports (QOURIER)
         args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --replace"
         #args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
     - name: Google Java Format import structure fixer
@@ -36,7 +36,7 @@ jobs:
       #if: always()
       with:
         files: "Qourier/qourier_app/**/*.java"
-        commitMessage: Google Java Format import ordering
+        commitMessage: Google Java Format import ordering (QOURIER)
         args: "--fix-imports-only --replace"
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
