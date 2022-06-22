@@ -154,8 +154,7 @@ public class DeliveriesManager {
     }
 
     public long statsRiderNumberDeliveriesDone(String riderId) {
-        return deliveryRepository.findByRiderId(riderId)
-                .stream()
+        return deliveryRepository.findByRiderId(riderId).stream()
                 .filter(delivery -> delivery.getDeliveryState() == DELIVERED)
                 .count();
     }
@@ -163,23 +162,26 @@ public class DeliveriesManager {
     public double statsCustomerDeliveryRate(String customerId) {
         List<Delivery> customerDeliveries = deliveryRepository.findByCustomerId(customerId);
 
-        LocalDateTime minCreationTime = customerDeliveries
-                .stream()
-                .map(Delivery::getCreationTime)
-                .min(LocalDateTime::compareTo)
-                .orElse(null);
-        LocalDateTime maxCreationTime = customerDeliveries
-                .stream()
-                .map(Delivery::getCreationTime)
-                .max(LocalDateTime::compareTo)
-                .orElse(null);
+        LocalDateTime minCreationTime =
+                customerDeliveries.stream()
+                        .map(Delivery::getCreationTime)
+                        .min(LocalDateTime::compareTo)
+                        .orElse(null);
+        LocalDateTime maxCreationTime =
+                customerDeliveries.stream()
+                        .map(Delivery::getCreationTime)
+                        .max(LocalDateTime::compareTo)
+                        .orElse(null);
 
-        if (minCreationTime == null || maxCreationTime == null)
-            return -1;
+        if (minCreationTime == null || maxCreationTime == null) return -1;
 
         long totalDeliveries = customerDeliveries.size();
         int secondsInHour = 60 * 60;
         ZoneOffset offset = ZoneOffset.UTC;
-        return secondsInHour * totalDeliveries / (double)(maxCreationTime.toEpochSecond(offset) - minCreationTime.toEpochSecond(offset));
+        return secondsInHour
+                * totalDeliveries
+                / (double)
+                        (maxCreationTime.toEpochSecond(offset)
+                                - minCreationTime.toEpochSecond(offset));
     }
 }

@@ -367,11 +367,14 @@ public class WebController {
         if (account.getRole() == RIDER) {
             profileView = "profile_rider";
             model.addAttribute("rider", accountManager.getRiderAccount(id));
-            model.addAttribute("statsNumberDeliveriesDone", deliveriesManager.statsRiderNumberDeliveriesDone(id));
+            model.addAttribute(
+                    "statsNumberDeliveriesDone",
+                    deliveriesManager.statsRiderNumberDeliveriesDone(id));
         } else if (account.getRole() == CUSTOMER) {
             profileView = "profile_customer";
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
-            model.addAttribute("statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(id));
+            model.addAttribute(
+                    "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(id));
         }
 
         model.addAttribute("role", role);
@@ -397,13 +400,16 @@ public class WebController {
             profileView = "profile_rider";
             RiderDTO riderProfile = accountManager.getRiderAccount(email);
             model.addAttribute("rider", riderProfile);
-            model.addAttribute("statsNumberDeliveriesDone", deliveriesManager.statsRiderNumberDeliveriesDone(email));
+            model.addAttribute(
+                    "statsNumberDeliveriesDone",
+                    deliveriesManager.statsRiderNumberDeliveriesDone(email));
             account = riderProfile.getAccount();
         } else if (cookieRole == CUSTOMER) {
             profileView = "profile_customer";
             CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
             model.addAttribute("customer", customerProfile);
-            model.addAttribute("statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(email));
+            model.addAttribute(
+                    "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(email));
             account = customerProfile.getAccount();
         } else return REDIRECT_INDEX;
 

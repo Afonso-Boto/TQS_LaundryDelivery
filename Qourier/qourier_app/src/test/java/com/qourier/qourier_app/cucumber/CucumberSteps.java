@@ -651,18 +651,22 @@ public class CucumberSteps {
 
     @Then("I can see statistics about the number of deliveries done")
     public void iCanSeeRiderStatistics() {
-        WebElement statsNumberOfDeliveriesDone = driver.findElement(By.id("stat-number-deliveries-done"));
+        WebElement statsNumberOfDeliveriesDone =
+                driver.findElement(By.id("stat-number-deliveries-done"));
 
         assertThat(statsNumberOfDeliveriesDone.isDisplayed()).isTrue();
-        assertThat(Integer.parseInt(statsNumberOfDeliveriesDone.getText())).isEqualTo(deliveriesManager.statsRiderNumberDeliveriesDone(focusedAccountId));
+        assertThat(Integer.parseInt(statsNumberOfDeliveriesDone.getText()))
+                .isEqualTo(deliveriesManager.statsRiderNumberDeliveriesDone(focusedAccountId));
     }
 
     @Then("I can see statistics about the number of deliveries requested")
     public void iCanSeeCustomerStatistics() {
-        WebElement statsDeliveryRequestRate = driver.findElement(By.id("stat-delivery-request-rate"));
+        WebElement statsDeliveryRequestRate =
+                driver.findElement(By.id("stat-delivery-request-rate"));
 
         assertThat(statsDeliveryRequestRate.isDisplayed()).isTrue();
-        assertThat(Double.parseDouble(statsDeliveryRequestRate.getText())).isEqualTo(deliveriesManager.statsCustomerDeliveryRate(focusedAccountId));
+        assertThat(Double.parseDouble(statsDeliveryRequestRate.getText()))
+                .isEqualTo(deliveriesManager.statsCustomerDeliveryRate(focusedAccountId));
     }
 
     @And("I wait {int} seconds for the auction to end")

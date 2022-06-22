@@ -54,9 +54,7 @@ public class MessageCenter {
     }
 
     public static String generateDeliveryUpdateTopic(long deliveryId) {
-        return RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY
-                + "."
-                + deliveryId;
+        return RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY + "." + deliveryId;
     }
 
     private static String convertRiderIdToTopic(String riderId) {
