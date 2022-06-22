@@ -14,6 +14,7 @@ import com.qourier.qourier_app.data.AccountState;
 import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
+import com.qourier.qourier_app.message.MessageCenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +46,7 @@ public class WebController {
 
     private final AccountManager accountManager;
     private final DeliveriesManager deliveriesManager;
+    private final MessageCenter messageCenter;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
@@ -53,9 +55,13 @@ public class WebController {
     private String adminPass;
 
     @Autowired
-    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager) {
+    public WebController(
+            AccountManager accountManager,
+            DeliveriesManager deliveriesManager,
+            MessageCenter messageCenter) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
+        this.messageCenter = messageCenter;
     }
 
     @PostMapping("/login")
@@ -147,7 +153,6 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        // TODO pass right message to show
         AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
 
         switch (state) {
@@ -165,9 +170,15 @@ public class WebController {
             default:
                 model.addAttribute("msg", "An error has occurred");
         }
+        String riderId = getIdFromCookie(request);
         model.addAttribute("role", role);
-        model.addAttribute("riderId", getIdFromCookie(request));
+        model.addAttribute("riderId", riderId);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+        model.addAttribute(
+                "notificationTopic", messageCenter.generateRiderAssignmentTopic(riderId));
+
+        RiderDTO rider = accountManager.getRiderAccount(riderId);
+        model.addAttribute("alreadyDelivering", rider.getCurrentDelivery() != null);
 
         // Add Deliveries
         model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());

@@ -3,7 +3,6 @@ version: '3.8'
 services:
   mysqldb:
     image: mysql
-    env_file: .env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
@@ -24,7 +23,6 @@ services:
 
   grafana:
     image: grafana/grafana
-    env_file: .env
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=$GF_SECURITY_ADMIN_PASSWORD
       - GF_USERS_ALLOW_SIGN_UP=$GF_USERS_ALLOW_SIGN_UP
@@ -38,12 +36,22 @@ services:
       - ./volumes/grafana/provisioning/:/etc/grafana/provisioning/
     restart: always
 
+  rabbitmq:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 15674:15674
+    volumes:
+      - ./volumes/rabbitmq/:/etc/rabbitmq/
+    command: [sh, -c, "rabbitmq-plugins enable rabbitmq_web_stomp rabbitmq_management && rabbitmq-server"]
+
   qourier_app:
     depends_on:
       - mysqldb
+      - rabbitmq
       - grafana
     build: ./qourier_app
-    env_file: .env
     ports:
       - $SPRING_QOURIER_LOCAL_PORT:$SPRING_DOCKER_PORT
     environment:
