@@ -1,12 +1,11 @@
 package com.qourier.qourier_app.data;
 
 import com.qourier.qourier_app.data.dto.DeliveryDTO;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter

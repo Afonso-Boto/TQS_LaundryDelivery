@@ -6,7 +6,6 @@ import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
-import com.qourier.qourier_app.data.dto.BidDTO;
 import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;

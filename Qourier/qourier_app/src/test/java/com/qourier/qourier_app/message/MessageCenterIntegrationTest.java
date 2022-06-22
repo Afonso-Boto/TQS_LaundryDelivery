@@ -6,9 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
-import java.util.concurrent.TimeUnit;
-
 import com.qourier.qourier_app.data.DeliveryState;
+import java.util.concurrent.TimeUnit;
 import lombok.Data;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.*;
