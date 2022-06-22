@@ -15,10 +15,11 @@ public class Utils {
 
     private Utils() {}
 
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-            .serializeNulls()
-            .create();
+    public static final Gson GSON =
+            new GsonBuilder()
+                    .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                    .serializeNulls()
+                    .create();
 
     private static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
 
@@ -28,7 +29,7 @@ public class Utils {
                 jsonWriter.nullValue();
                 return;
             }
-            jsonWriter.value( localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) );
+            jsonWriter.value(localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         }
 
         @Override
@@ -37,9 +38,8 @@ public class Utils {
                 jsonReader.nextNull();
                 return null;
             }
-            return LocalDateTime.parse(jsonReader.nextString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            return LocalDateTime.parse(
+                    jsonReader.nextString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         }
-
     }
-
 }
