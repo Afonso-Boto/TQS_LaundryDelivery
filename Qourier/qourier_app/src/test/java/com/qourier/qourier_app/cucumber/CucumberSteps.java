@@ -566,42 +566,52 @@ public class CucumberSteps {
     public void assertDeliveryProgressTable() {
         List<WebElement> tableRows =
                 driver.findElements(By.cssSelector("#delivery-table-body > tr"));
-        assertThat(tableRows).hasSize(deliveriesManager.getDeliveriesFromCustomer(currentAccount.getEmail()).size());
+        assertThat(tableRows)
+                .hasSize(
+                        deliveriesManager
+                                .getDeliveriesFromCustomer(currentAccount.getEmail())
+                                .size());
     }
 
     @Then("the deliveries in progress contain a progress bar")
     public void assertDeliveryProgressShownIsReal() {
         List<WebElement> progressBars = driver.findElements(By.cssSelector(".progress > div"));
-        assertThat(progressBars).hasSizeGreaterThan(
-                (int) deliveriesManager.getDeliveriesFromCustomer(currentAccount.getEmail())
-                        .stream()
-                        .filter(delivery -> delivery.getDeliveryState() != DeliveryState.DELIVERED)
-                        .count()
-        );
+        assertThat(progressBars)
+                .hasSizeGreaterThan(
+                        (int)
+                                deliveriesManager
+                                        .getDeliveriesFromCustomer(currentAccount.getEmail())
+                                        .stream()
+                                        .filter(
+                                                delivery ->
+                                                        delivery.getDeliveryState()
+                                                                != DeliveryState.DELIVERED)
+                                        .count());
 
         for (WebElement progressBar : progressBars) {
             String[] progressBarIdSplit = progressBar.getAttribute("id").split("-");
-            long deliveryId = Long.parseLong( progressBarIdSplit[progressBarIdSplit.length - 1] );
+            long deliveryId = Long.parseLong(progressBarIdSplit[progressBarIdSplit.length - 1]);
             String[] progressBarStyleSplit = progressBar.getAttribute("style").split(":");
 
             String progressBarWidth = null;
             for (int i = 0; i < progressBarStyleSplit.length; i++) {
                 if (progressBarStyleSplit[i].equals("width")) {
-                    assertThat(progressBarStyleSplit).hasSizeGreaterThan(i+1);
-                    progressBarWidth = progressBarStyleSplit[i+1];
+                    assertThat(progressBarStyleSplit).hasSizeGreaterThan(i + 1);
+                    progressBarWidth = progressBarStyleSplit[i + 1];
                     break;
                 }
             }
             assertThat(progressBarWidth).isNotNull();
 
             Delivery delivery = deliveriesManager.getDelivery(deliveryId);
-            DeliveryState presentedState = switch (progressBarWidth) {
-                case "25%" -> DeliveryState.BID_CHECK;
-                case "50%" -> DeliveryState.FETCHING;
-                case "75%" -> DeliveryState.SHIPPED;
-                case "100%" -> DeliveryState.DELIVERED;
-                default -> null;
-            };
+            DeliveryState presentedState =
+                    switch (progressBarWidth) {
+                        case "25%" -> DeliveryState.BID_CHECK;
+                        case "50%" -> DeliveryState.FETCHING;
+                        case "75%" -> DeliveryState.SHIPPED;
+                        case "100%" -> DeliveryState.DELIVERED;
+                        default -> null;
+                    };
 
             assertThat(presentedState).isNotNull();
             assertThat(presentedState).isEqualTo(delivery.getDeliveryState());
