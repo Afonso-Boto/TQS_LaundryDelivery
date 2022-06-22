@@ -106,10 +106,6 @@ public class AccountManager {
         return updateState(email, AccountState.SUSPENDED, AccountState.ACTIVE);
     }
 
-    public List<RiderDTO> getAllRiders() {
-        return riderRepository.findAll().stream().map(RiderDTO::fromEntity).toList();
-    }
-
     public RiderDTO getRiderAccount(String email) {
         return riderRepository
                 .findById(email)
