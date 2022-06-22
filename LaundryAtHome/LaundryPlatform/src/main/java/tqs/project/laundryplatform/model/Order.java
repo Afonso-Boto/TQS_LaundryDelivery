@@ -109,6 +109,6 @@ public class Order {
 
     @Override
     public String toString() {
-        return id + "," + date + "," + isCompleted + "," + totalPrice + ",";
+        return id + "," + date + "," + isCompleted + "," + totalPrice + "," + deliveryLocation + ",";
     }
 }

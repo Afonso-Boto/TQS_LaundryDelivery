@@ -66,15 +66,17 @@ public class OrderController {
     }
 
     @PostMapping("/complaint-mobile")
-    public ResponseEntity<String> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+    public ResponseEntity<Boolean> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+        System.out.println("complaint-mobile");
+        System.out.println(body);
         JSONObject json = new JSONObject(body);
 
-        if (hasCookie(request)) {
-            orderService.complaint(json);
-            return ResponseEntity.ok("OK");
-        }
 
-        return ResponseEntity.status(401).body("Unauthorized");
+        if (orderService.complaint(json))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+
+
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/make-order")
