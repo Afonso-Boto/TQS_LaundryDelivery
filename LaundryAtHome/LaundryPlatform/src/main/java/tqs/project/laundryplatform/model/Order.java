@@ -3,6 +3,9 @@ package tqs.project.laundryplatform.model;
 import java.sql.Date;
 import java.util.Set;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -69,6 +72,14 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    public Order(Long id, Date date, boolean isCompleted, double totalPrice, String deliveryLocation) {
+        this.id = id;
+        this.date = date;
+        this.isCompleted = isCompleted;
+        this.totalPrice = totalPrice;
+        this.deliveryLocation = deliveryLocation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,5 +105,10 @@ public class Order {
 
     public Set<Item> getItems() {
         return items;
+    }
+
+    @Override
+    public String toString() {
+        return id + "," + date + "," + isCompleted + "," + totalPrice + "," + deliveryLocation + ",";
     }
 }

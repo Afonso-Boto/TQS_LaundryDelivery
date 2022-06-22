@@ -126,11 +126,14 @@ public class OrderServiceImpl implements OrderService {
     public boolean complaint(JSONObject json) {
         long orderId;
         String title, description;
-
+        System.out.println(json.toString());
         try {
             orderId = Long.parseLong(json.getString("orderId"));
+            System.out.println(orderId);
             title = json.getString("title");
+            System.out.println(title);
             description = json.getString("description");
+            System.out.println(description);
         } catch (JSONException e) {
             return false;
         }
@@ -140,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
         Complaint complaint =
                 new Complaint(title, description, orderRepository.findById(orderId).orElse(null));
         complaintRepository.save(complaint);
-
+        System.out.println("complaint saved");
         return true;
     }
 

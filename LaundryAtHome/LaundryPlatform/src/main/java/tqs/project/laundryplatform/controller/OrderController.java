@@ -10,10 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -69,15 +66,17 @@ public class OrderController {
     }
 
     @PostMapping("/complaint-mobile")
-    public ResponseEntity<String> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+    public ResponseEntity<Boolean> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+        System.out.println("complaint-mobile");
+        System.out.println(body);
         JSONObject json = new JSONObject(body);
 
-        if (hasCookie(request)) {
-            orderService.complaint(json);
-            return ResponseEntity.ok("OK");
-        }
 
-        return ResponseEntity.status(401).body("Unauthorized");
+        if (orderService.complaint(json))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+
+
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/make-order")
@@ -135,18 +134,18 @@ public class OrderController {
         return "redirect:/error";
     }
 
-    @PostMapping("/make-order-mobile")
-    public ResponseEntity<String> newOrderMobile(@RequestBody String formObject, Model model, HttpServletRequest request)
+    @PostMapping("/make-order-mobile/{cookieId}")
+    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject,@PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
             throws JsonProcessingException {
+        System.out.println(formObject);
+        formObject = formObject.substring(1, formObject.length() - 1);
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
 
-        if (!hasCookie(request)) return ResponseEntity.status(401).body("Unauthorized");
 
-        String cookieId = getIdFromCookie(request);
         orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
 
-        if (orderId == -1L) return ResponseEntity.status(401).body("Unauthorized");
+        if (orderId == -1L) return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
 
         if (orderService.makeOrder(orderId, orderInfo)) {
             System.out.println("Order made");
@@ -184,10 +183,10 @@ public class OrderController {
             String x = restTemplate.postForObject(uri, request1, String.class);
             System.out.println(x);
 
-            return ResponseEntity.status(200).body("OK");
+            return new ResponseEntity<>(true, HttpStatus.OK);
         }
 
-        return ResponseEntity.status(401).body("Unauthorized");
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/init-order")
@@ -213,26 +212,22 @@ public class OrderController {
         return REDIRECT_NEW_ORDER;
     }
 
-    @GetMapping("/init-order-mobile")
-    public ResponseEntity<String> initOrderMobile(
+    @GetMapping("/init-order-mobile/{orderTypeId}/{cookieID}")
+    public ResponseEntity<Boolean> initOrderMobile(
             Model model,
             HttpServletRequest request,
-            @RequestParam("orderTypeId") long orderTypeId) {
+            @PathVariable("orderTypeId") long orderTypeId, @PathVariable("cookieID") String cookieID) {
 
-        if (!hasCookie(request)) {
-            return ResponseEntity.status(401).body("error");
-        }
-
-        String cookieID = getIdFromCookie(request);
-
+        System.err.println(cookieID);
         long orderID = orderService.initOrder(orderTypeId, cookieID);
 
         if (orderID == -1) {
-            return ResponseEntity.status(401).body("error");
+            System.err.println("SERA AQUI?????");
+            return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
         }
 
         ordersUncompleted.put(cookieID, orderID);
 
-        return ResponseEntity.status(200).body("ok");
+        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
