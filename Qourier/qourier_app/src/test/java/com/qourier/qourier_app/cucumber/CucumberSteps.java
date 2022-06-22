@@ -17,14 +17,13 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -369,6 +368,10 @@ public class CucumberSteps {
         WebElement registerDeliveryButton = driver.findElement(By.id("btn-register-delivery"));
         assertThat(registerDeliveryButton.isDisplayed()).isTrue();
         registerDeliveryButton.click();
+        focusedDeliveryId = deliveriesManager.getAllDeliveries()
+                .stream().max(Comparator.comparing(Delivery::getCreationTime))
+                .orElseThrow()
+                .getDeliveryId();
     }
 
     @When("I indicate that I picked up the delivery")

@@ -93,19 +93,19 @@
                 </div>
             </div>
             <div class="row">
-                <h2>Create delivery</h2>
-                <form method="POST" action="" th:action="@{}">
+                <h2>Register delivery</h2>
+                <form method="POST" action="/delivery_management/delivery" th:action="@{/delivery_management/delivery}">
                     <label for="form-delivery-origin">Origin: </label>
-                    <input id="form-delivery-origin" name="form-delivery-origin" type="text" />
+                    <input id="form-delivery-origin" name="origin" type="text" />
 
                     <label for="form-delivery-destination">Destination: </label>
-                    <input id="form-delivery-destination" name="form-delivery-destination" type="text" />
+                    <input id="form-delivery-destination" name="destination" type="text" />
 
                     <label for="form-delivery-latitude">Latitude: </label>
-                    <input id="form-delivery-latitude" name="form-delivery-latitude" type="number" />
+                    <input id="form-delivery-latitude" name="latitude" type="number" />
 
                     <label for="form-delivery-longitude">Longitude: </label>
-                    <input id="form-delivery-longitude" name="form-delivery-longitude" type="number" />
+                    <input id="form-delivery-longitude" name="longitude" type="number" />
 
                     <button id="btn-register-delivery" type="submit">Register delivery</button>
                 </form>
