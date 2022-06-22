@@ -50,6 +50,31 @@ services:
       - ./volumes/rabbitmq/:/etc/rabbitmq/
     command: [sh, -c, "rabbitmq-plugins enable rabbitmq_web_stomp rabbitmq_prometheus rabbitmq_management && rabbitmq-server"]
 
+  node-exporter:
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - 9100
+    # https://hub.docker.com/r/prom/node-exporter/tags
+    image: prom/node-exporter:v1.2.0
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+  cadvisor:
+    expose:
+      - 8080
+    # https://hub.docker.com/r/google/cadvisor/tags
+    image: google/cadvisor:v0.33.0
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
   qourier_app:
     depends_on:
       - mysqldb
