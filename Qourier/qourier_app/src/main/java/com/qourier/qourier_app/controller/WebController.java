@@ -249,18 +249,21 @@ public class WebController {
     }
 
     @PostMapping("/delivery_management/delivery")
-    public String deliveryManagementRegister(@ModelAttribute DeliveryRegistration deliveryRegistration, Model model, HttpServletRequest request) {
+    public String deliveryManagementRegister(
+            @ModelAttribute DeliveryRegistration deliveryRegistration,
+            Model model,
+            HttpServletRequest request) {
         if (!verifyCookie(request, CUSTOMER)) return REDIRECT_LOGIN;
 
         String customerId = getIdFromCookie(request);
 
-        deliveriesManager.createDelivery(new Delivery(
-                customerId,
-                deliveryRegistration.getLatitude(),
-                deliveryRegistration.getLongitude(),
-                deliveryRegistration.getDestination(),
-                deliveryRegistration.getOrigin()
-        ));
+        deliveriesManager.createDelivery(
+                new Delivery(
+                        customerId,
+                        deliveryRegistration.getLatitude(),
+                        deliveryRegistration.getLongitude(),
+                        deliveryRegistration.getDestination(),
+                        deliveryRegistration.getOrigin()));
 
         return deliveryManagement(model, request);
     }

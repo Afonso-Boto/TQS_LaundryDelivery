@@ -368,10 +368,11 @@ public class CucumberSteps {
         WebElement registerDeliveryButton = driver.findElement(By.id("btn-register-delivery"));
         assertThat(registerDeliveryButton.isDisplayed()).isTrue();
         registerDeliveryButton.click();
-        focusedDeliveryId = deliveriesManager.getAllDeliveries()
-                .stream().max(Comparator.comparing(Delivery::getCreationTime))
-                .orElseThrow()
-                .getDeliveryId();
+        focusedDeliveryId =
+                deliveriesManager.getAllDeliveries().stream()
+                        .max(Comparator.comparing(Delivery::getCreationTime))
+                        .orElseThrow()
+                        .getDeliveryId();
     }
 
     @When("I indicate that I picked up the delivery")
@@ -541,12 +542,14 @@ public class CucumberSteps {
 
     @Then("the delivery registration form is empty")
     public void assertDeliveryRegistrationFormEmpty() {
-        List<WebElement> formElements = Stream.of(
-                "form-delivery-origin",
-                "form-delivery-destination",
-                "form-delivery-latitude",
-                "form-delivery-longitude"
-        ).map(id -> driver.findElement(By.id(id))).toList();
+        List<WebElement> formElements =
+                Stream.of(
+                                "form-delivery-origin",
+                                "form-delivery-destination",
+                                "form-delivery-latitude",
+                                "form-delivery-longitude")
+                        .map(id -> driver.findElement(By.id(id)))
+                        .toList();
 
         for (WebElement formElement : formElements) {
             assertThat(formElement.isDisplayed()).isTrue();
