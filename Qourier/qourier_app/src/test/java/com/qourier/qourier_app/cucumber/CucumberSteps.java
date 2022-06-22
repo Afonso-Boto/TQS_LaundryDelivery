@@ -622,27 +622,25 @@ public class CucumberSteps {
 
     @Then("I can see the profile of {string} with all details inputted in their registration")
     public void validProfileShown(String profileEmail) {
-        Account account = accountRepository.findById(profileEmail)
-                .orElseThrow();
+        Account account = accountRepository.findById(profileEmail).orElseThrow();
 
         WebElement detailsEmail = driver.findElement(By.id("details-email"));
         assertThat(detailsEmail.getText()).isEqualTo(account.getEmail());
         WebElement detailsName = driver.findElement(By.id("details-name"));
         assertThat(detailsName.getText()).isEqualTo(account.getName());
         WebElement detailsRegistrationTime = driver.findElement(By.id("details-registration-time"));
-        assertThat(detailsRegistrationTime.getText()).isEqualTo(account.getRegistrationTime().toString());
+        assertThat(detailsRegistrationTime.getText())
+                .isEqualTo(account.getRegistrationTime().toString());
 
         switch (account.getRole()) {
             case RIDER -> {
-                Rider rider = riderRepository.findById(account.getEmail())
-                        .orElseThrow();
+                Rider rider = riderRepository.findById(account.getEmail()).orElseThrow();
 
                 WebElement detailsCitizenId = driver.findElement(By.id("details-citizen-id"));
                 assertThat(detailsCitizenId.getText()).isEqualTo(rider.getCitizenId());
             }
             case CUSTOMER -> {
-                Customer customer = customerRepository.findById(account.getEmail())
-                        .orElseThrow();
+                Customer customer = customerRepository.findById(account.getEmail()).orElseThrow();
 
                 WebElement detailsServiceType = driver.findElement(By.id("details-service-type"));
                 assertThat(detailsServiceType.getText()).isEqualTo(customer.getServType());
