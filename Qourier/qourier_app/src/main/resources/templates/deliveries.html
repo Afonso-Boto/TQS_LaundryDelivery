@@ -31,7 +31,7 @@
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
                 <div id="permitted-content" th:if="${permitted}" class="container">
-                    <div id="info-delivery-available">
+                    <div id="info-delivery-available" th:style="${alreadyDelivering} ? 'display: none' : ''">
                         <h2>Deliveries to be processed</h2>
                         <p>Progress for each delivery:</p>
                         <div class="row">
@@ -62,26 +62,31 @@
                         </div>
                     </div>
 
-                    <div id="info-delivery-assigned" style="display: none">
+                    <div id="info-delivery-assigned" style="display: none" th:style="${alreadyDelivering} ? '' : 'display: none'">
                         <h2>A delivery has already been assigned</h2>
 
-                        <p>Customer: <span id="assigned-delivery-customer"></span></p>
-                        <p>Origin: <span id="assigned-delivery-origin"></span></p>
+                        <p>Customer: <span id="assigned-delivery-customer" th:text="${deliveryCustomer} ?: '?'"></span></p>
+                        <p>Origin: <span id="assigned-delivery-origin" th:text="${deliveryOrigin} ?: '?'"></span></p>
                         <ul>
-                            <li>Latitude: <span id="assigned-delivery-latitude"></span></li>
-                            <li>Longitude: <span id="assigned-delivery-longitude"></span></li>
+                            <li>Latitude: <span id="assigned-delivery-latitude" th:text="${deliveryLatitude} ?: '?'"></span></li>
+                            <li>Longitude: <span id="assigned-delivery-longitude" th:text="${deliveryLongitude} ?: '?'"></span></li>
                         </ul>
                         <p></p>
-                        <p>Destination: <span id="assigned-delivery-destination"></span></p>
+                        <p>Destination: <span id="assigned-delivery-destination" th:text="${deliveryDestination} ?: '?'"></span></p>
 
-                        <p>State: <span id="assigned-delivery-state"></span></p>
+                        <p>State: <span id="assigned-delivery-state" th:text="${deliveryState} ?: '?'"></span></p>
 
-                        <button id="pickup-delivery">
-                            Pick up
-                        </button>
-                        <button id="confirm-delivery">
-                            Mark as finished
-                        </button>
+                        <form method="POST" action="/deliveries/progress" th:action="@{/deliveries/progress}">
+                            <input id="form-update-delivery-rider" name="riderId" type="hidden" th:value="${riderId}"/>
+                            <input id="form-update-delivery-id" name="deliveryId" type="hidden" th:value="${deliveryId}" />
+
+                            <button id="pickup-delivery" type="submit" class="btn btn-primary" th:unless="${deliveryState != null && deliveryState.name() == 'SHIPPED'}">
+                                Pick up
+                            </button>
+                            <button id="confirm-delivery" type="submit" class="btn btn-primary" th:if="${deliveryState != null && deliveryState.name() == 'SHIPPED'}">
+                                Mark as finished
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

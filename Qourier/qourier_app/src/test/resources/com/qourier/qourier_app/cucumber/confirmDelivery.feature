@@ -16,7 +16,7 @@ Feature: Confirm a delivery job
     Then I can bid for another delivery
     And the delivery job is registered as done
 
-  Scenario: Confirm a delivery job as a Rider
+  Scenario: Mark a delivery job as being shipped a Rider
     Given the following deliveries are up:
       | customer | latitude | longitude | rider | state |
       | customer@gmail.com | 40 | 40 | rider1@hotmail.com | fetching |

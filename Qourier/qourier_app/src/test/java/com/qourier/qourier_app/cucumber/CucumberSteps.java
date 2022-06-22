@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -190,6 +193,8 @@ public class CucumberSteps {
                     riderRepository.save(assignedRider);
                 }
             }
+
+            focusedDeliveryId = delivery.getDeliveryId();
         }
     }
 
@@ -416,9 +421,12 @@ public class CucumberSteps {
         Delivery delivery = deliveriesManager.getDelivery(focusedDeliveryId);
         assertThat(delivery.getDeliveryState()).isEqualTo(state);
 
-        WebElement detailsState = driver.findElement(By.id("assigned-delivery-state"));
-        assertThat(detailsState.isDisplayed()).isTrue();
-        assertThat(detailsState.getText()).isEqualTo(state.toString());
+        if (state == DeliveryState.FETCHING || state == DeliveryState.SHIPPED) {
+            WebElement detailsState = driver.findElement(By.id("assigned-delivery-state"));
+            assertThat(detailsState.isDisplayed()).isTrue();
+            assertThat(detailsState.getText()).isEqualTo(state.toString());
+        }
+
     }
 
     @Then("the delivery job is not up for bidding")
