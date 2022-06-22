@@ -20,11 +20,8 @@ import io.cucumber.java.en.When;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 
