@@ -29,7 +29,7 @@ Feature: Manage accounts of Riders/Customers
     Then the status of 'kustomer@kustom.com' on the profile is active
     And I can suspend their account
 
-  Scenario: Check Customer profile
+  Scenario: Check Customer profile and stats
     When I go to the Accounts section
     * I filter for active accounts
     * I filter for Customer accounts
@@ -38,7 +38,7 @@ Feature: Manage accounts of Riders/Customers
     Then I can see the profile of 'another.customer@mail.com' with all details inputted in their registration
     And I can see statistics about the number of deliveries requested
 
-  Scenario: Check Rider profile
+  Scenario: Check Rider profile and stats
     When I go to the Accounts section
     And I go to the 'another.rider@gmail.com' profile
     Then I can see the profile of 'another.rider@gmail.com' with all details inputted in their registration

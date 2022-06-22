@@ -367,13 +367,16 @@ public class WebController {
         if (account.getRole() == RIDER) {
             profileView = "profile_rider";
             model.addAttribute("rider", accountManager.getRiderAccount(id));
+            model.addAttribute("statsNumberDeliveriesDone", deliveriesManager.statsRiderNumberDeliveriesDone(id));
         } else if (account.getRole() == CUSTOMER) {
             profileView = "profile_customer";
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
+            model.addAttribute("statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(id));
         }
 
         model.addAttribute("role", role);
         model.addAttribute("active", account.getState() == AccountState.ACTIVE);
+        model.addAttribute("accepted", true);
         return profileView;
     }
 
@@ -391,14 +394,16 @@ public class WebController {
 
         AccountRole cookieRole = getRoleFromCookie(request);
         if (cookieRole == RIDER) {
+            profileView = "profile_rider";
             RiderDTO riderProfile = accountManager.getRiderAccount(email);
             model.addAttribute("rider", riderProfile);
-            profileView = "profile_rider";
+            model.addAttribute("statsNumberDeliveriesDone", deliveriesManager.statsRiderNumberDeliveriesDone(email));
             account = riderProfile.getAccount();
         } else if (cookieRole == CUSTOMER) {
+            profileView = "profile_customer";
             CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
             model.addAttribute("customer", customerProfile);
-            profileView = "profile_customer";
+            model.addAttribute("statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(email));
             account = customerProfile.getAccount();
         } else return REDIRECT_INDEX;
 
