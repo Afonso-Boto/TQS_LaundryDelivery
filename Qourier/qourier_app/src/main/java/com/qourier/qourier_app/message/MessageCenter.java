@@ -1,18 +1,16 @@
 package com.qourier.qourier_app.message;
 
+import static com.qourier.qourier_app.Utils.GSON;
+
+import com.qourier.qourier_app.data.DeliveryState;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-
-import com.qourier.qourier_app.data.Delivery;
-import com.qourier.qourier_app.data.DeliveryState;
 import lombok.Data;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static com.qourier.qourier_app.Utils.GSON;
 
 @Component
 @EnableRabbit
