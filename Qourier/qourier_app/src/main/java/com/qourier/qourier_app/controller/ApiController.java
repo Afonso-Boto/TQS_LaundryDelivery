@@ -52,7 +52,7 @@ public class ApiController {
         String customerId = newDelivery.getCustomerId();
 
         // Check if auth is right
-        if (basicAuth.equals(Base64.getEncoder().encodeToString(customerId.getBytes()))) {
+        if (basicAuth.equals(apiToken(customerId))) {
             Delivery delivery = deliveriesManager.createDelivery(Delivery.fromDto(newDelivery));
             return new ResponseEntity<>(delivery, HttpStatus.CREATED);
         }
@@ -73,7 +73,7 @@ public class ApiController {
         String basicAuth = data.get(2);
 
         // Check if auth is right
-        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes()))) {
+        if (basicAuth.equals(apiToken(riderId))) {
             deliveriesManager.setDeliveryState(Long.valueOf(deliveryId), riderId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -87,7 +87,7 @@ public class ApiController {
         String riderId = newBid.getRidersId();
 
         // Check if auth is right
-        if (basicAuth.equals(Base64.getEncoder().encodeToString(riderId.getBytes()))
+        if (basicAuth.equals(apiToken(riderId))
                 && accountManager.getRiderAccount(riderId).getCurrentDelivery() == null) {
             Bid bid = deliveriesManager.createBid(Bid.fromDto(newBid));
             return new ResponseEntity<>(bid, HttpStatus.CREATED);
@@ -102,18 +102,14 @@ public class ApiController {
         if (result.equals(LoginResult.WRONG_CREDENTIALS)
                 || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        return new ResponseEntity<String>(
-                Base64.getEncoder().encodeToString(request.getEmail().getBytes()),
-                HttpStatus.ACCEPTED);
+        return new ResponseEntity<String>(apiToken(request.getEmail()), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/accounts/register/rider")
     public ResponseEntity<String> accountsRegisterRiderPost(
             @RequestBody RiderRegisterRequest request) {
         if (accountManager.registerRider(request))
-            return new ResponseEntity<String>(
-                    Base64.getEncoder().encodeToString(request.getEmail().getBytes()),
-                    HttpStatus.CREATED);
+            return new ResponseEntity<String>(apiToken(request.getEmail()), HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
@@ -122,9 +118,7 @@ public class ApiController {
     public ResponseEntity<String> accountsRegisterCustomerPost(
             @RequestBody CustomerRegisterRequest request) {
         if (accountManager.registerCustomer(request))
-            return new ResponseEntity<String>(
-                    Base64.getEncoder().encodeToString(request.getEmail().getBytes()),
-                    HttpStatus.CREATED);
+            return new ResponseEntity<String>(apiToken(request.getEmail()), HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
@@ -137,5 +131,8 @@ public class ApiController {
     @GetMapping("/stats/done")
     public Long statsDoneGet() {
         return deliveriesManager.statsDeliveriesDone();
+        
+    public String apiToken(String email) {
+        return Base64.getEncoder().encodeToString(email.getBytes());
     }
 }

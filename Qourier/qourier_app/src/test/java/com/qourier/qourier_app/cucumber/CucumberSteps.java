@@ -2,6 +2,7 @@ package com.qourier.qourier_app.cucumber;
 
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import com.qourier.qourier_app.TestUtils;
 import com.qourier.qourier_app.bids.DeliveriesManager;
+import com.qourier.qourier_app.controller.ApiController;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.message.MessageCenter;
@@ -37,6 +39,7 @@ public class CucumberSteps {
     private final DeliveriesManager deliveriesManager;
     private final BidsRepository bidsRepository;
     private final DeliveryRepository deliveryRepository;
+    private final ApiController apiController;
     private final int auctionSpan;
 
     @Autowired private MessageCenter messageCenter;
@@ -53,7 +56,8 @@ public class CucumberSteps {
             AccountRepository accountRepository,
             DeliveriesManager deliveriesManager,
             BidsRepository bidsRepository,
-            DeliveryRepository deliveryRepository) {
+            DeliveryRepository deliveryRepository,
+            ApiController apiController) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
@@ -61,6 +65,7 @@ public class CucumberSteps {
         this.deliveriesManager = deliveriesManager;
         this.bidsRepository = bidsRepository;
         this.deliveryRepository = deliveryRepository;
+        this.apiController = apiController;
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
@@ -666,6 +671,18 @@ public class CucumberSteps {
         assertThat(statsDeliveryRequestRate.isDisplayed()).isTrue();
         assertThat(Double.parseDouble(statsDeliveryRequestRate.getText()))
                 .isEqualTo(deliveriesManager.statsCustomerDeliveryRate(focusedAccountId));
+    }
+
+    @Then("I can {not}check the API key")
+    public void checkApiKey(boolean not) {
+        String apiKeyId = "api-key";
+        if (not) assertThatThrownBy(() -> driver.findElement(By.id(apiKeyId)));
+        else {
+            driver.findElement(By.id(apiKeyId + "-btn")).click();
+            WebElement apiKey = driver.findElement(By.id(apiKeyId));
+            assertThat(apiKey.getText())
+                    .isEqualTo(apiController.apiToken(currentAccount.getEmail()));
+        }
     }
 
     @And("I wait {int} seconds for the auction to end")

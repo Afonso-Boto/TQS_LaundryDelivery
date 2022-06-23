@@ -44,6 +44,7 @@ public class WebController {
     private final AccountManager accountManager;
     private final DeliveriesManager deliveriesManager;
     private final MessageCenter messageCenter;
+    private final ApiController apiController;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
@@ -55,10 +56,12 @@ public class WebController {
     public WebController(
             AccountManager accountManager,
             DeliveriesManager deliveriesManager,
-            MessageCenter messageCenter) {
+            MessageCenter messageCenter,
+            ApiController apiController) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
         this.messageCenter = messageCenter;
+        this.apiController = apiController;
     }
 
     @PostMapping("/login")
@@ -375,6 +378,7 @@ public class WebController {
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
             model.addAttribute(
                     "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(id));
+            model.addAttribute("apiKey", apiController.apiToken(account.getEmail()));
         }
 
         model.addAttribute("role", role);
@@ -410,6 +414,7 @@ public class WebController {
             model.addAttribute("customer", customerProfile);
             model.addAttribute(
                     "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(email));
+            model.addAttribute("apiKey", apiController.apiToken(email));
             account = customerProfile.getAccount();
         } else return REDIRECT_INDEX;
 

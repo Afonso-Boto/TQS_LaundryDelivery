@@ -45,12 +45,12 @@
                 </th:block>
 
                 <th:block id="customer-space" th:if="${role.name() == 'CUSTOMER'}">
-                    <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#api-key-spoiler" aria-expanded="false" aria-controls="api-key-spoiler">
+                    <button id="api-key-btn" class="btn btn-success" type="button" data-toggle="collapse" data-target="#api-key-spoiler" aria-expanded="false" aria-controls="api-key-spoiler">
                         API Key
                     </button>
                     <div class="collapse" id="api-key-spoiler">
                         <div class="card card-body">
-                            <span id="api-key" th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
+                            <span id="api-key" th:text="${apiKey}">mvm8934mv934hg0v9h23029m2378gr</span>
                         </div>
                     </div>
                 </th:block>
