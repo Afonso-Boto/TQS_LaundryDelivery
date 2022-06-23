@@ -1,7 +1,13 @@
 package tqs.project.laundryplatform.controller;
 
+import static tqs.project.laundryplatform.controller.OrderController.ordersUncompleted;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -19,13 +25,6 @@ import tqs.project.laundryplatform.qourier.QourierLoginRequest;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.repository.UserRepository;
 import tqs.project.laundryplatform.service.OrderService;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Objects;
-
-import static tqs.project.laundryplatform.controller.OrderController.ordersUncompleted;
 
 @Controller
 @RequestMapping("/mobile")
