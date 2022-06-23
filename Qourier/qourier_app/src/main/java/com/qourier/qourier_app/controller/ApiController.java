@@ -131,7 +131,8 @@ public class ApiController {
     @GetMapping("/stats/done")
     public Long statsDoneGet() {
         return deliveriesManager.statsDeliveriesDone();
-        
+    }
+    
     public String apiToken(String email) {
         return Base64.getEncoder().encodeToString(email.getBytes());
     }
