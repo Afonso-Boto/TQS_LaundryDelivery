@@ -52,44 +52,6 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET Request Login mobile")
-    @Disabled
-    void getLoginMobile() throws Exception {
-        JSONObject json = new JSONObject();
-        json.put("username", "test2");
-        json.put("password", "123");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-        String param = objectMapper.writeValueAsString(json);
-
-        mvc.perform(post("/auth/login-mobile").param("username", "test2").param("password", "123"))
-                .andExpect(status().isOk())
-                .andExpect(cookie().exists("id"));
-    }
-
-    @Test
-    @DisplayName("GET Request invalid Login mobile")
-    @Disabled
-    void getLoginMobileInvalid() throws Exception {
-        JSONObject json = new JSONObject();
-        json.put("username", "dsadasdas");
-        json.put("password", "1qeweqw23");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
-        String param = objectMapper.writeValueAsString(json);
-
-        mvc.perform(
-                        post("/auth/login-mobile")
-                                .param("username", "dsadasdas")
-                                .param("password", "1qeweqw23"))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     @DisplayName("GET Request invalid Login")
     void getInvalidLogin() throws Exception {
         mvc.perform(
@@ -127,44 +89,4 @@ public class AuthControllerIntegrationTest {
                 .andExpect(cookie().doesNotExist("id"));
     }
 
-    @Test
-    @DisplayName("GET Request register mobile")
-    @Disabled
-    void getRegisterMobile() throws Exception {
-        JSONObject json = new JSONObject();
-        json.put("username", "test2");
-        json.put("email", "test2@ua.pt");
-        json.put("password", "123");
-        json.put("fullName", "test2");
-        json.put("phone", "123");
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        String param = objectMapper.writeValueAsString(json);
-
-        mvc.perform(
-                        post("/auth/register-mobile")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(param))
-                .andExpect(status().isFound());
-    }
-
-    @Test
-    @DisplayName("GET Request invalid register mobile")
-    void getInvalidRegisterMobile() throws Exception {
-        mvc.perform(
-                        post("/auth/register-mobile")
-                                .param("username", "test")
-                                .param("email", "test@ua.pt")
-                                .param("password", "123")
-                                .param("fullName", "test")
-                                .param("phone", "123"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @DisplayName("GET Request logout mobile")
-    void getLogoutMobile() throws Exception {
-        mvc.perform(get("/auth/logout-mobile")).andExpect(status().isOk());
-    }
 }

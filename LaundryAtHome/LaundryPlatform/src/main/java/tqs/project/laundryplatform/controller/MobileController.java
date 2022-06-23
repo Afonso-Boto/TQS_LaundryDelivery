@@ -5,10 +5,12 @@ import static tqs.project.laundryplatform.controller.OrderController.ordersUncom
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -55,7 +57,7 @@ public class MobileController {
                         json.getInt("phoneNumber"));
 
         if (!accountManager.register(request))
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
 
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
@@ -98,6 +100,8 @@ public class MobileController {
         }
         System.err.println(ordersString.toString());
 
+        if (ordersString.length() == 0) return new ResponseEntity<>("", HttpStatus.OK);
+
         ordersString = new StringBuilder(ordersString.substring(0, ordersString.length() - 1));
 
         System.err.println(ordersString);
@@ -109,9 +113,8 @@ public class MobileController {
     public ResponseEntity<String> trackingMobile(
             Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
         return ResponseEntity.ok(
-                Objects.requireNonNull(
-                                orderRepository.findById(Long.parseLong(orderId)).orElse(null))
-                        .toString());
+                orderRepository.findById(Long.parseLong(orderId)).orElse(null)
+                        != null ? orderRepository.findById(Long.parseLong(orderId)).toString() : null);
     }
 
     @PostMapping("/order/cancelOrder/{id}")

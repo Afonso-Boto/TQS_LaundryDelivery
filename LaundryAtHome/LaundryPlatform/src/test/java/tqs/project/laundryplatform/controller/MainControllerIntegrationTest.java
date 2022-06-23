@@ -79,13 +79,6 @@ public class MainControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("GET Request orders mobile")
-    void getOrdersMobile() throws Exception {
-        mvc.perform(get("/orders-mobile"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     @DisplayName("GET Request service")
     void getService() throws Exception {
         mvc.perform(get("/service")).andExpect(status().isOk());
@@ -95,22 +88,6 @@ public class MainControllerIntegrationTest {
     @DisplayName("GET Request ok")
     void getOk() throws Exception {
         mvc.perform(get("/ok")).andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("GET Request tracking")
-    void getTracking() throws Exception {
-        mvc.perform(get("/tracking").param("orderId", "1"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("order"))
-                .andExpect(view().name("tracking"));
-    }
-
-    @Test
-    @DisplayName("GET Request tracking mobile")
-    void getTrackingMobile() throws Exception {
-        mvc.perform(get("/tracking-mobile").param("orderId", "1"))
-                .andExpect(status().isOk());
     }
 
     @Test
