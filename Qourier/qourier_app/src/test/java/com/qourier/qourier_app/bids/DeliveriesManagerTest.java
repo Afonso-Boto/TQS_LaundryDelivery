@@ -215,8 +215,7 @@ public class DeliveriesManagerTest {
                         "test99@email.com", 99.99, 99.99, "test address", "test origin address");
         deliveryManager.createDelivery(deliveryToDo);
 
-        assertThat(deliveryManager.statsDeliveriesCreated())
-                .isEqualTo(2);
+        assertThat(deliveryManager.statsDeliveriesCreated()).isEqualTo(2);
     }
 
     @Test
@@ -234,7 +233,6 @@ public class DeliveriesManagerTest {
         deliveryManager.createDelivery(deliveryToDo);
 
         // Wait until auction is finished
-        assertThat(deliveryManager.statsDeliveriesDone())
-                .isEqualTo(1);
+        assertThat(deliveryManager.statsDeliveriesDone()).isEqualTo(1);
     }
 }

@@ -15,8 +15,12 @@ public class QourierApp {
     public static void main(String[] args) {
         SpringApplication.run(QourierApp.class, args);
     }
+
     @Bean
     public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.basePackage("com.qourier.qourier_app")).build();
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.qourier.qourier_app"))
+                .build();
     }
 }

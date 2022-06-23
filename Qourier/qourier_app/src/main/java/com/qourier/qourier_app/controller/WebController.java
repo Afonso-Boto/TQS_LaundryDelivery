@@ -495,6 +495,7 @@ public class WebController {
         model.addAttribute("role", role);
         return "monitor";
     }
+
     @Bean
     SmartInitializingSingleton smartInitializingSingleton(ApplicationContext context) {
         return () -> {
