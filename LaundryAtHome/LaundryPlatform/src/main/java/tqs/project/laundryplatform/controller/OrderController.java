@@ -8,7 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import lombok.Data;
 import org.json.JSONObject;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -17,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.qourier.Delivery;
+import tqs.project.laundryplatform.qourier.DeliveryCreation;
+import tqs.project.laundryplatform.qourier.DeliveryUpdate;
 import tqs.project.laundryplatform.qourier.QourierLoginRequest;
 import tqs.project.laundryplatform.repository.OrderRepository;
 import tqs.project.laundryplatform.service.OrderService;
@@ -26,9 +36,14 @@ import tqs.project.laundryplatform.service.OrderService;
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired OrderService orderService;
-    @Autowired MainController mainController;
-    @Autowired OrderRepository orderRepository;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    MainController mainController;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    RabbitAdmin rabbitAdmin;
 
     private static final String REDIRECT_NEW_ORDER = "redirect:/new_order";
     private static final String REDIRECT_ORDERS = "redirect:/orders";
@@ -125,8 +140,30 @@ public class OrderController {
                                     "Universidade de Aveiro, 3810-193 Aveiro"));
 
             request1 = new HttpEntity<>(json, httpHeaders);
-            String x = restTemplate.postForObject(uri, request1, String.class);
-            System.out.println(x);
+            String response = restTemplate.postForObject(uri, request1, String.class);
+            System.out.println(response);
+
+            Gson gson = new GsonBuilder().create();
+            DeliveryCreation deliveryCreation = gson.fromJson(response, DeliveryCreation.class);
+            System.out.println(deliveryCreation);
+
+            // RabbitMQ Logic
+            Queue queue = new Queue("", false, true, true);
+            TopicExchange topicExchange = new TopicExchange("spring-boot-exchange");
+            String queueName = rabbitAdmin.declareQueue(queue);
+            Binding subscription = BindingBuilder.bind(queue).to(topicExchange).with("delivery.updates." + deliveryCreation.getDeliveryId());
+            rabbitAdmin.declareBinding(subscription);
+            SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+            container.setConnectionFactory(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
+            container.setQueueNames(queueName);
+            container.setMessageListener(message -> {
+                DeliveryUpdate update = gson.fromJson(Arrays.toString(message.getBody()), DeliveryUpdate.class);
+                System.out.println(update);
+
+                long orderIdForUpdate = orderRepository.findByDeliveryId(update.getDeliveryId()).getId();
+                orderService.updateOrder(orderIdForUpdate, update);
+            });
+            container.start();
 
             return "redirect:/ok";
         }
@@ -135,7 +172,7 @@ public class OrderController {
     }
 
     @PostMapping("/make-order-mobile/{cookieId}")
-    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject,@PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
+    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject, @PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
             throws JsonProcessingException {
         System.out.println(formObject);
         formObject = formObject.substring(1, formObject.length() - 1);
@@ -181,6 +218,8 @@ public class OrderController {
 
             request1 = new HttpEntity<>(json, httpHeaders);
             String x = restTemplate.postForObject(uri, request1, String.class);
+
+
             System.out.println(x);
 
             return new ResponseEntity<>(true, HttpStatus.OK);

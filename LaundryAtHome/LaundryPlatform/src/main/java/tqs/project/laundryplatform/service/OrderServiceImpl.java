@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.project.laundryplatform.model.*;
+import tqs.project.laundryplatform.qourier.DeliveryUpdate;
 import tqs.project.laundryplatform.repository.*;
 
 @Service
@@ -155,6 +156,23 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) return false;
 
         orderRepository.delete(order);
+        return true;
+    }
+
+    @Override
+    public boolean updateOrder(long orderId, DeliveryUpdate update) {
+        if (orderId == -1 || update == null) return false;
+
+        if (update.getState() == null) return false;
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+
+        if (order == null) return false;
+
+        order.setStatus(update.getState());
+
+        orderRepository.save(order);
+
         return true;
     }
 }

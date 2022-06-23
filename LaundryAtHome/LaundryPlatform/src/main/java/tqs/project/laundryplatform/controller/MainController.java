@@ -127,11 +127,6 @@ public class MainController {
         return "service";
     }
 
-    @GetMapping("/pricing")
-    public String pricing(Model model, HttpServletRequest request) {
-        return "pricing";
-    }
-
     @GetMapping("/ok")
     public String ok(Model model, HttpServletRequest request) {
         System.out.println("ok");

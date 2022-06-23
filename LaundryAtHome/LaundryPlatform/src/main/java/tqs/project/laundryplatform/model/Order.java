@@ -4,8 +4,6 @@ import java.sql.Date;
 import java.util.Set;
 import javax.persistence.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,11 +17,17 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "delivery_id")
+    private long deliveryId;
+
     @Column(name = "date")
     private Date date;
 
     @Column(name = "is_completed")
     private boolean isCompleted;
+
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "delivery_location")
     private String deliveryLocation;
@@ -72,9 +76,11 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
-    public Order(Long id, Date date, boolean isCompleted, double totalPrice, String deliveryLocation) {
+    public Order(Long id, int deliveryId, Date date, boolean isCompleted, String status, double totalPrice, String deliveryLocation) {
         this.id = id;
+        this.deliveryId = deliveryId;
         this.date = date;
+        this.status = status;
         this.isCompleted = isCompleted;
         this.totalPrice = totalPrice;
         this.deliveryLocation = deliveryLocation;
