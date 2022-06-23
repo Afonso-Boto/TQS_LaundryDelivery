@@ -44,7 +44,7 @@ public class OrderController {
     private static final String REDIRECT_ERROR = "redirect:/error";
     private static final String REDIRECT_LOGIN = "redirect:/login";
 
-    private HashMap<String, Long> ordersUncompleted = new HashMap<>();
+    static HashMap<String, Long> ordersUncompleted = new HashMap<>();
 
     @PostMapping("/cancelOrder/{id}")
     public String cancelOrder(@PathVariable("id") Long id, HttpServletRequest request) {
@@ -72,20 +72,6 @@ public class OrderController {
         }
 
         return REDIRECT_ERROR;
-    }
-
-    @PostMapping("/complaint-mobile")
-    public ResponseEntity<Boolean> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
-        System.out.println("complaint-mobile");
-        System.out.println(body);
-        JSONObject json = new JSONObject(body);
-
-
-        if (orderService.complaint(json))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-
-
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/make-order")
@@ -173,63 +159,6 @@ public class OrderController {
         return "redirect:/error";
     }
 
-    @PostMapping("/make-order-mobile/{cookieId}")
-    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject, @PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
-            throws JsonProcessingException {
-        System.out.println(formObject);
-        formObject = formObject.substring(1, formObject.length() - 1);
-        JSONObject orderInfo = new JSONObject(formObject);
-        long orderId;
-
-
-        orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
-
-        if (orderId == -1L) return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-
-        if (orderService.makeOrder(orderId, orderInfo)) {
-            System.out.println("Order made");
-            ordersUncompleted.remove(cookieId);
-
-            // Qourier API Calls
-            String uri = "http://51.142.110.251:80/api/v1/accounts/login";
-            RestTemplate restTemplate = new RestTemplate();
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-            ObjectMapper objectMapper = new ObjectMapper();
-            String json;
-            HttpEntity<String> request1;
-
-            json =
-                    objectMapper.writeValueAsString(
-                            new QourierLoginRequest("laundryathome@ua.pt", "123"));
-            request1 = new HttpEntity<>(json, httpHeaders);
-            String basicAuth = restTemplate.postForObject(uri, request1, String.class);
-
-            uri = "http://51.142.110.251:80/api/v1/deliveries?basicAuth=" + basicAuth;
-            Order order = orderRepository.findById(orderId).orElse(null);
-            json =
-                    objectMapper.writeValueAsString(
-                            new Delivery(
-                                    "laundryathome@ua.pt",
-                                    40.631230465638644,
-                                    -8.657472830474786,
-                                    order.getDeliveryLocation() != null
-                                            ? order.getDeliveryLocation()
-                                            : "Universidade de Aveiro, 3810-193 Aveiro",
-                                    "Universidade de Aveiro, 3810-193 Aveiro"));
-
-            request1 = new HttpEntity<>(json, httpHeaders);
-            String x = restTemplate.postForObject(uri, request1, String.class);
-
-
-            System.out.println(x);
-
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-    }
-
     @GetMapping("/init-order")
     public String initOrder(
             Model model,
@@ -251,24 +180,5 @@ public class OrderController {
         ordersUncompleted.put(cookieID, orderID);
 
         return REDIRECT_NEW_ORDER;
-    }
-
-    @GetMapping("/init-order-mobile/{orderTypeId}/{cookieID}")
-    public ResponseEntity<Boolean> initOrderMobile(
-            Model model,
-            HttpServletRequest request,
-            @PathVariable("orderTypeId") long orderTypeId, @PathVariable("cookieID") String cookieID) {
-
-        System.err.println(cookieID);
-        long orderID = orderService.initOrder(orderTypeId, cookieID);
-
-        if (orderID == -1) {
-            System.err.println("SERA AQUI?????");
-            return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-        }
-
-        ordersUncompleted.put(cookieID, orderID);
-
-        return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
