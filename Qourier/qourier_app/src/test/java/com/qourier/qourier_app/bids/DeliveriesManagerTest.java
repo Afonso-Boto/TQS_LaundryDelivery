@@ -200,4 +200,22 @@ public class DeliveriesManagerTest {
         assertThat(deliveryManager.getToDoDeliveries().get(0).getCustomerId())
                 .isEqualTo(deliveryToDo.getCustomerId());
     }
+
+    @Test
+    void whenGetStatsDeliveriesDone_ReturnsDeliveriesDone() {
+        // Deliveries
+        Delivery deliveryDone =
+                new Delivery(
+                        "test98@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryDone.setDeliveryState(DeliveryState.DELIVERED);
+        deliveryManager.createDelivery(deliveryDone);
+
+        Delivery deliveryToDo =
+                new Delivery(
+                        "test99@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryManager.createDelivery(deliveryToDo);
+
+        // Wait until auction is finished
+        assertThat(deliveryManager.statsDeliveriesDone()).isEqualTo(1);
+    }
 }

@@ -489,4 +489,17 @@ class ApiControllerTest {
                         .andExpect(status().isForbidden())
                         .andReturn();
     }
+
+    @Test
+    @DisplayName("Try to get stats on deliveries done")
+    void whenGettingDeliveriesStatsDone_thenDeliveriesDoneShouldBeReturned() throws Exception {
+        when(deliveriesManager.statsDeliveriesDone()).thenReturn(101L);
+
+        MvcResult result =
+                mvc.perform(get("/api/v1/stats/done")).andExpect(status().isOk()).andReturn();
+
+        String resultString = result.getResponse().getContentAsString();
+        String expectedResult = "101";
+        assertEquals(expectedResult, resultString);
+    }
 }

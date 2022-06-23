@@ -765,4 +765,43 @@ public class CucumberSteps {
                 .findFirst()
                 .orElseThrow();
     }
+
+    @Then("graphs of the current metrics is shown")
+    public void assertMetricsGraphs() {
+        WebElement panel0 = driver.findElement(By.id("panel0"));
+        assertThat(panel0.isDisplayed()).isTrue();
+
+        WebElement panel1 = driver.findElement(By.id("panel1"));
+        assertThat(panel1.isDisplayed()).isTrue();
+
+        WebElement panel2 = driver.findElement(By.id("panel2"));
+        assertThat(panel2.isDisplayed()).isTrue();
+
+        WebElement panel3 = driver.findElement(By.id("panel3"));
+        assertThat(panel3.isDisplayed()).isTrue();
+
+        WebElement panel4 = driver.findElement(By.id("panel4"));
+        assertThat(panel4.isDisplayed()).isTrue();
+
+        WebElement panel5 = driver.findElement(By.id("panel5"));
+        assertThat(panel5.isDisplayed()).isTrue();
+
+        WebElement panel6 = driver.findElement(By.id("panel6"));
+        assertThat(panel6.isDisplayed()).isTrue();
+
+        WebElement panel7 = driver.findElement(By.id("panel7"));
+        assertThat(panel7.isDisplayed()).isTrue();
+
+        WebElement panel8 = driver.findElement(By.id("panel8"));
+        assertThat(panel8.isDisplayed()).isTrue();
+
+        WebElement panel9 = driver.findElement(By.id("panel9"));
+        assertThat(panel9.isDisplayed()).isTrue();
+
+        WebElement panel10 = driver.findElement(By.id("panel10"));
+        assertThat(panel10.isDisplayed()).isTrue();
+
+        WebElement panel11 = driver.findElement(By.id("panel11"));
+        assertThat(panel11.isDisplayed()).isTrue();
+    }
 }
