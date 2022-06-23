@@ -1,6 +1,7 @@
 package tqs.project.laundryplatform.model;
 
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +30,8 @@ public class Complaint {
         this.description = description;
     }
 
-    public Complaint() {}
+    public Complaint() {
+    }
 
     public Complaint(String title, String description, Order order) {
         this.title = title;

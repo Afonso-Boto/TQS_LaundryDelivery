@@ -2,6 +2,7 @@ package tqs.project.laundryplatform.model;
 
 import java.util.Set;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +30,8 @@ public class OrderType {
         this.basePrice = basePrice;
     }
 
-    public OrderType() {}
+    public OrderType() {
+    }
 
     @Override
     public boolean equals(Object o) {

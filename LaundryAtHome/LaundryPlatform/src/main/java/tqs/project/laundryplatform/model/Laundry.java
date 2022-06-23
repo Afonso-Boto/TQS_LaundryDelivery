@@ -2,6 +2,7 @@ package tqs.project.laundryplatform.model;
 
 import java.util.Set;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,7 +29,8 @@ public class Laundry {
         this.location = location;
     }
 
-    public Laundry() {}
+    public Laundry() {
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -28,11 +28,14 @@ import tqs.project.laundryplatform.repository.UserRepository;
 @AutoConfigureMockMvc
 public class AuthControllerIntegrationTest {
 
-    @LocalServerPort int randomServerPort;
+    @LocalServerPort
+    int randomServerPort;
 
-    @Autowired private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-    @Autowired UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {

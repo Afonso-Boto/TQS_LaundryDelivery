@@ -2,6 +2,7 @@ package tqs.project.laundryplatform.model;
 
 import java.util.Set;
 import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,7 +47,8 @@ public class User {
         this.password = password;
     }
 
-    public User() {}
+    public User() {
+    }
 
     @Override
     public boolean equals(Object o) {

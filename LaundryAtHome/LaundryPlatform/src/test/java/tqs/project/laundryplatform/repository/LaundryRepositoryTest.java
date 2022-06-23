@@ -29,7 +29,8 @@ public class LaundryRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private LaundryRepository laundryRepository;
+    @Autowired
+    private LaundryRepository laundryRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

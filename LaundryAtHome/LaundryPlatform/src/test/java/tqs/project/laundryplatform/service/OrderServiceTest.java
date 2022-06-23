@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Date;
 import java.util.Optional;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,8 @@ import tqs.project.laundryplatform.repository.*;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-    @InjectMocks private OrderServiceImpl service;
+    @InjectMocks
+    private OrderServiceImpl service;
 
     @Mock(lenient = true)
     private ComplaintRepository complaintRepository;

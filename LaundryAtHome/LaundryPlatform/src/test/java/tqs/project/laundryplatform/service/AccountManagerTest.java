@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,12 +22,15 @@ import tqs.project.laundryplatform.repository.UserRepository;
 @ExtendWith(MockitoExtension.class)
 class AccountManagerTest {
 
-    @Mock private UserRepository userRepository;
+    @Mock
+    private UserRepository userRepository;
 
-    @InjectMocks private AccountManager accountManager;
+    @InjectMocks
+    private AccountManager accountManager;
 
     @BeforeEach
-    public void setUp() {}
+    public void setUp() {
+    }
 
     @Test
     void whenLoginExistent_thenEmptyResult() {

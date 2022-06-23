@@ -31,9 +31,12 @@ public class ItemRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private ItemRepository itemRepository;
-    @Autowired private OrderRepository orderRepository;
-    @Autowired private ItemTypeRepository itemTypeRepository;
+    @Autowired
+    private ItemRepository itemRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private ItemTypeRepository itemTypeRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

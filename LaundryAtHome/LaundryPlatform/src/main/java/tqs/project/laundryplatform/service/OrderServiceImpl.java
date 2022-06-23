@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,13 +20,20 @@ import tqs.project.laundryplatform.repository.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired LaundryRepository laundryRepository;
-    @Autowired OrderTypeRepository orderTypeRepository;
-    @Autowired OrderRepository orderRepository;
-    @Autowired ItemTypeRepository itemTypeRepository;
-    @Autowired ItemRepository itemRepository;
-    @Autowired UserRepository userRepository;
-    @Autowired ComplaintRepository complaintRepository;
+    @Autowired
+    LaundryRepository laundryRepository;
+    @Autowired
+    OrderTypeRepository orderTypeRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    ItemTypeRepository itemTypeRepository;
+    @Autowired
+    ItemRepository itemRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    ComplaintRepository complaintRepository;
 
     @Override
     public List<Order> getOrder(int userID) {

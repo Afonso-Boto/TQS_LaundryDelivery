@@ -68,7 +68,8 @@ public class Order {
         this.laundry = laundry;
     }
 
-    public Order() {}
+    public Order() {
+    }
 
     public Order(Long id, Date date, double totalPrice) {
         this.id = id;
