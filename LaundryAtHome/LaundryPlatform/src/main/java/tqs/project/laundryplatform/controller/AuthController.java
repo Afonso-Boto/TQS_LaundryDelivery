@@ -85,26 +85,6 @@ public class AuthController {
         return "redirect:/index";
     }
 
-    @PostMapping("/register-mobile")
-    public ResponseEntity<Boolean> signUpMobile(@RequestBody String requestBody, HttpServletResponse response) {
-        JSONObject json = new JSONObject(requestBody);
-        RegisterRequest request =
-                new RegisterRequest(
-                        json.getString("username"),
-                        json.getString("email"),
-                        json.getString("password"),
-                        json.getString("fullName"),
-                        json.getInt("phoneNumber"));
-
-        if (!accountManager.register(request))
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-
-        // Set cookie for customer
-        setCookie(response, request.getUsername());
-
-        return new ResponseEntity<>(true, HttpStatus.OK);
-    }
-
     @PostMapping("/login")
     public String loginPost(LoginRequest user, HttpServletResponse response) {
         LoginResult result = accountManager.login(user);
@@ -119,30 +99,5 @@ public class AuthController {
         setCookie(response, user.getUsername());
 
         return "redirect:/index";
-    }
-
-    @PostMapping("/login-mobile")
-    public ResponseEntity<Boolean> loginMobile(@RequestBody String requestBody, HttpServletResponse response) {
-        JSONObject json = new JSONObject(requestBody);
-        LoginRequest user = new LoginRequest(json.getString("username"), json.getString("password"));
-
-        LoginResult result = accountManager.login(user);
-        System.err.println("Login result: " + result);
-
-        if (result.equals(LoginResult.WRONG_CREDENTIALS)
-                || result.equals(LoginResult.NON_EXISTENT_ACCOUNT)) {
-            return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
-        }
-
-        // Set cookie for customer
-        setCookie(response, user.getUsername());
-
-        return new ResponseEntity<>(true, HttpStatus.OK);
-    }
-
-    @GetMapping("/logout-mobile")
-    public ResponseEntity<String> logoutMobile(HttpServletResponse response) {
-        removeCookie(response);
-        return new ResponseEntity<>("success", HttpStatus.OK);
     }
 }

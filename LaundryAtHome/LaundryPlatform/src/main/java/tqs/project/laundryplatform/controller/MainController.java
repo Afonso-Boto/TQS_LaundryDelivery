@@ -99,30 +99,6 @@ public class MainController {
         return modelAndView;
     }
 
-    @GetMapping("/orders-mobile")
-    public ResponseEntity<String> ordersMobile(Model model, HttpServletRequest request, @RequestParam("username") String username) {
-        System.err.println("orders");
-        List<Order> orders;
-
-        if (username.equals("admin"))
-            orders = orderRepository.findAll();
-        else
-            orders = orderRepository.findAllByUser(userRepository.findByUsername(username).orElse(null));
-
-        StringBuilder ordersString = new StringBuilder();
-        for (Order order : orders) {
-            System.err.println(order.toString());
-            ordersString.append(order.toString());
-        }
-        System.err.println(ordersString.toString());
-
-        ordersString = new StringBuilder(ordersString.substring(0, ordersString.length() - 1));
-
-        System.err.println(ordersString);
-
-        return new ResponseEntity<>(ordersString.toString(), HttpStatus.OK);
-    }
-
     @GetMapping("/service")
     public String service(Model model, HttpServletRequest request) {
         return "service";
@@ -169,14 +145,5 @@ public class MainController {
         mav.addObject("order", order);
 
         return mav;
-    }
-
-    @GetMapping("/tracking-mobile")
-    public ResponseEntity<String> trackingMobile(
-            Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
-        return ResponseEntity.ok(
-                Objects.requireNonNull(
-                                orderRepository.findById(Long.parseLong(orderId)).orElse(null))
-                        .toString());
     }
 }
