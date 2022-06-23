@@ -2,22 +2,34 @@ package tqs.project.laundryplatform.controller;
 
 import static tqs.project.laundryplatform.controller.AuthController.*;
 
+import java.sql.Date;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 import tqs.project.laundryplatform.account.LoginRequest;
 import tqs.project.laundryplatform.account.RegisterRequest;
+import tqs.project.laundryplatform.model.Order;
+import tqs.project.laundryplatform.repository.OrderRepository;
+import tqs.project.laundryplatform.repository.UserRepository;
 
 @Controller
+@RequestMapping("/")
+@CrossOrigin(origins = "*")
 @Log4j2
 public class MainController {
 
     private static final String REDIRECT_REGISTER = "redirect:/register";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
+    @Autowired OrderRepository orderRepository;
+    @Autowired UserRepository userRepository;
 
     @GetMapping("/")
     public String mainPage() {
@@ -33,8 +45,6 @@ public class MainController {
             return REDIRECT_LOGIN;
         }
 
-        System.err.println("cookie verified");
-        System.err.println(getIdFromCookie(request));
         return "index";
     }
 
@@ -74,8 +84,14 @@ public class MainController {
     }
 
     @GetMapping("/orders")
-    public String orders(Model model, HttpServletRequest request) {
-        return "orders";
+    public ModelAndView orders(Model model, HttpServletRequest request) {
+        System.err.println("orders");
+        ModelAndView modelAndView = new ModelAndView("orders");
+        modelAndView.addObject(
+                "orders",
+                orderRepository.findAllByUser(
+                        userRepository.findByUsername(getIdFromCookie(request)).orElse(null)));
+        return modelAndView;
     }
 
     @GetMapping("/service")
@@ -83,8 +99,46 @@ public class MainController {
         return "service";
     }
 
-    @GetMapping("/pricing")
-    public String pricing(Model model, HttpServletRequest request) {
-        return "pricing";
+    @GetMapping("/ok")
+    public String ok(Model model, HttpServletRequest request) {
+        System.out.println("ok");
+        return "ok_page";
+    }
+
+    @GetMapping("/error")
+    public String error(Model model, HttpServletRequest request) {
+        return "error";
+    }
+
+    @GetMapping("/tracking")
+    public ModelAndView tracking(
+            Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
+
+        Order order = orderRepository.findById(Long.parseLong(orderId)).orElse(null);
+
+        if (order == null || Objects.isNull(order.getDeliveryId())) {
+            return new ModelAndView("error");
+        }
+
+        String uri = "http://51.142.110.251:80/api/v1/deliveries/progress/" + order.getDeliveryId();
+        RestTemplate restTemplate = new RestTemplate();
+
+        String result = restTemplate.getForObject(uri, String.class);
+        result = result.substring(1, result.length() - 1);
+
+        order.setStatus(result);
+
+        if (Objects.equals(Objects.requireNonNull(result), "DELIVERED")) {
+            order.setCompleted(true);
+            java.util.Date date = new java.util.Date();
+            order.setDeliveryDate(new Date(date.getTime()));
+        }
+
+        orderRepository.save(order);
+
+        ModelAndView mav = new ModelAndView("tracking");
+        mav.addObject("order", order);
+
+        return mav;
     }
 }

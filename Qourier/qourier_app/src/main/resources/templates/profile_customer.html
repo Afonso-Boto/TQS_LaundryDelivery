@@ -19,6 +19,7 @@
 
                 <p>State: <span id="details-state" th:text="${customer.account.state.name().toLowerCase()}">active</span></p>
                 <p>Email: <span id="details-email" th:text="${customer.account.email}">cristina@mail.com</span></p>
+                <p>Registration time: <span id="details-registration-time" th:text="${customer.account.registrationTime}"></span></p>
                 <p>Service type: <span id="details-service-type" th:text="${customer.servType}">Laundry</span></p>
             </div>
         </div>
@@ -26,11 +27,9 @@
             <div class="col-12">
                 <h3>Statistics</h3>
 
-                <h5 id="statistics-delivery-request-rate">Rate of delivery requests</h5>
-                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for request rate" />
-
-                <h5 id="statistics-delivery-average-time">Average time until delivery</h5>
-                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for time until delivery" />
+                <h5 id="statistics-delivery-request-rate">Rate of delivery requests (per hour):
+                    <span id="stat-delivery-request-rate" th:text="${statsDeliveryRequestRate}"></span>
+                </h5>
             </div>
         </div>
         <div class="row">
@@ -46,12 +45,12 @@
                 </th:block>
 
                 <th:block id="customer-space" th:if="${role.name() == 'CUSTOMER'}">
-                    <button class="btn btn-success" type="button" data-toggle="collapse" data-target="#api-key-spoiler" aria-expanded="false" aria-controls="api-key-spoiler">
+                    <button id="api-key-btn" class="btn btn-success" type="button" data-toggle="collapse" data-target="#api-key-spoiler" aria-expanded="false" aria-controls="api-key-spoiler">
                         API Key
                     </button>
                     <div class="collapse" id="api-key-spoiler">
                         <div class="card card-body">
-                            <span id="api-key" th:text="apiKey">mvm8934mv934hg0v9h23029m2378gr</span>
+                            <span id="api-key" th:text="${apiKey}">mvm8934mv934hg0v9h23029m2378gr</span>
                         </div>
                     </div>
                 </th:block>

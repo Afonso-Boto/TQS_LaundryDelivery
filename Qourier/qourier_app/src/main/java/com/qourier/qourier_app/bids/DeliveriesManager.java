@@ -6,8 +6,11 @@ import com.qourier.qourier_app.account.AccountManager;
 import com.qourier.qourier_app.data.Bid;
 import com.qourier.qourier_app.data.Delivery;
 import com.qourier.qourier_app.data.DeliveryState;
+import com.qourier.qourier_app.message.MessageCenter;
 import com.qourier.qourier_app.repository.BidsRepository;
 import com.qourier.qourier_app.repository.DeliveryRepository;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,17 +23,19 @@ public class DeliveriesManager {
     private final BidsRepository bidsRepository;
     private final DeliveryRepository deliveryRepository;
     private final AccountManager accountManager;
+    private final MessageCenter messageCenter;
     private long auctionSpan;
 
-    @SuppressWarnings("checkstyle:Indentation")
     @Autowired
     public DeliveriesManager(
             BidsRepository bidsrepository,
             DeliveryRepository deliveryRepository,
-            AccountManager accountManager) {
+            AccountManager accountManager,
+            MessageCenter messageCenter) {
         this.bidsRepository = bidsrepository;
         this.deliveryRepository = deliveryRepository;
         this.accountManager = accountManager;
+        this.messageCenter = messageCenter;
         this.auctionSpan = 600000;
     }
 
@@ -38,7 +43,6 @@ public class DeliveriesManager {
         deliveryRepository.save(newDelivery);
 
         createAuction(newDelivery);
-        newDelivery.setDeliveryState(DeliveryState.DELIVERED);
 
         return newDelivery;
     }
@@ -64,6 +68,9 @@ public class DeliveriesManager {
                                     delivery.setRiderId(winnerId);
                                     delivery.setDeliveryState(FETCHING);
                                     deliveryRepository.save(delivery);
+
+                                    messageCenter.notifyRiderAssignment(
+                                            delivery.getRiderId(), delivery.getDeliveryId());
                                 } else {
                                     deliveryRepository.delete(delivery);
                                 }
@@ -86,11 +93,12 @@ public class DeliveriesManager {
     }
 
     public DeliveryState setDeliveryState(Long deliveryId, String riderId) {
-        DeliveryState previousState = deliveryRepository.findByDeliveryId(deliveryId).getDeliveryState();
+        DeliveryState previousState =
+                deliveryRepository.findByDeliveryId(deliveryId).getDeliveryState();
         Delivery delivery = deliveryRepository.findByDeliveryId(deliveryId);
 
         // Iterate states if rider id is right
-        if(delivery.getRiderId().equals(riderId)){
+        if (delivery.getRiderId().equals(riderId)) {
             switch (previousState) {
                 case BID_CHECK -> delivery.setDeliveryState(FETCHING);
                 case FETCHING -> delivery.setDeliveryState(SHIPPED);
@@ -99,6 +107,9 @@ public class DeliveriesManager {
             }
         }
         deliveryRepository.save(delivery);
+
+        // If delivery is finished -> rider is free for other deliveries
+        if (delivery.getDeliveryState() == DELIVERED) accountManager.assignWork(riderId, null);
 
         return delivery.getDeliveryState();
     }
@@ -113,6 +124,10 @@ public class DeliveriesManager {
         return null;
     }
 
+    public List<Bid> getBids(Long deliveryId) {
+        return bidsRepository.findByDeliveryId(deliveryId);
+    }
+
     public Delivery getDelivery(Long deliveryId) {
         return deliveryRepository.findByDeliveryId(deliveryId);
     }
@@ -121,8 +136,11 @@ public class DeliveriesManager {
         return deliveryRepository.findAll();
     }
 
-    public List<Delivery> getToDoDeliveries() { return deliveryRepository.findAll().stream()
-            .filter( delivery -> delivery.getDeliveryState() == DeliveryState.BID_CHECK).toList(); }
+    public List<Delivery> getToDoDeliveries() {
+        return deliveryRepository.findAll().stream()
+                .filter(delivery -> delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                .toList();
+    }
 
     public List<Delivery> getDeliveriesFromCustomer(String customerId) {
         return deliveryRepository.findByCustomerId(customerId);
@@ -130,5 +148,43 @@ public class DeliveriesManager {
 
     public void deleteAll() {
         deliveryRepository.deleteAll(deliveryRepository.findAll());
+    }
+
+    public long statsRiderNumberDeliveriesDone(String riderId) {
+        return deliveryRepository.findByRiderId(riderId).stream()
+                .filter(delivery -> delivery.getDeliveryState() == DELIVERED)
+                .count();
+    }
+
+    public double statsCustomerDeliveryRate(String customerId) {
+        List<Delivery> customerDeliveries = deliveryRepository.findByCustomerId(customerId);
+
+        LocalDateTime minCreationTime =
+                customerDeliveries.stream()
+                        .map(Delivery::getCreationTime)
+                        .min(LocalDateTime::compareTo)
+                        .orElse(null);
+        LocalDateTime maxCreationTime =
+                customerDeliveries.stream()
+                        .map(Delivery::getCreationTime)
+                        .max(LocalDateTime::compareTo)
+                        .orElse(null);
+
+        if (minCreationTime == null || maxCreationTime == null) return -1;
+
+        long totalDeliveries = customerDeliveries.size();
+        int secondsInHour = 60 * 60;
+        ZoneOffset offset = ZoneOffset.UTC;
+        return secondsInHour
+                * totalDeliveries
+                / (double)
+                        (maxCreationTime.toEpochSecond(offset)
+                                - minCreationTime.toEpochSecond(offset));
+    }
+
+    public long statsDeliveriesDone() {
+        return deliveryRepository.findAll().stream()
+                .filter(delivery -> delivery.getDeliveryState() == DELIVERED)
+                .count();
     }
 }

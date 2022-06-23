@@ -27,14 +27,16 @@ jobs:
       uses: axel-op/googlejavaformat-action@v3.6.0
       with:
         files: "Qourier/qourier_app/**/*.java"
-        commitMessage: Google Java Format formatting without imports
-        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports"
+        #skipCommit: true
+        commitMessage: Google Java Format formatting, without imports (QOURIER)
+        args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --replace"
+        #args: "--aosp --skip-sorting-imports --skip-removing-unused-imports --dry-run --set-exit-if-changed"
     - name: Google Java Format import structure fixer
       uses: axel-op/googlejavaformat-action@v3
-      if: always()
+      #if: always()
       with:
         files: "Qourier/qourier_app/**/*.java"
-        commitMessage: Google Java Format import ordering
+        commitMessage: Google Java Format import ordering (QOURIER)
         args: "--fix-imports-only --replace"
     - name: Cache SonarCloud packages
       uses: actions/cache@v1
@@ -48,6 +50,8 @@ jobs:
         path: ~/.m2
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
+    - name: Setup RabbitMQ for integration testing
+      run: cd .. && docker-compose --env-file .env.dummy up -d rabbitmq
     - name: Build and analyze
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}     # Needed to get PR information, if any

@@ -42,9 +42,6 @@ public class AuthController {
 
     // Verify cookie presence
     public static boolean hasCookie(HttpServletRequest request) {
-        System.err.println();
-        System.err.println(request.getCookies());
-
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return false;
         for (Cookie cookie : cookies)

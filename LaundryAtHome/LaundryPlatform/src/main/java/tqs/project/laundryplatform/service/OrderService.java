@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.model.OrderType;
+import tqs.project.laundryplatform.qourier.DeliveryUpdate;
 
 public interface OrderService {
     List<Order> getOrder(int userID);
@@ -18,4 +19,10 @@ public interface OrderService {
     boolean makeOrder(long orderID, JSONObject items);
 
     long initOrder(long orderTypeId, String cookieID);
+
+    boolean complaint(JSONObject json);
+
+    boolean cancelOrder(long orderId);
+
+    boolean updateOrder(long orderId, DeliveryUpdate update);
 }

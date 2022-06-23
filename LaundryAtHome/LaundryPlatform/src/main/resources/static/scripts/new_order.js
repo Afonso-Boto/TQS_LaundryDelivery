@@ -8,14 +8,28 @@ function submitOrder() {
         url: "http://" + location.hostname + ":81/order/make-order",
         contentType: "application/json",
         data: JSON.stringify(items),
-        dataType: 'json',
+        async: false,
         success: function (data) {
             console.log('success', data);
+            alert("Order submitted successfully!");
+
+            window.location.href = "http://" + location.hostname + ":81/orders";
         },
+        error: function (data) {
+            console.log('error', data);
+            alert("Error submitting order!");
+
+            window.location.href = "http://" + location.hostname + ":81/error";
+        }
     });
 }
 
 function addItem() {
+    if (document.getElementById("address").value === "") {
+        alert("Please enter an address!");
+        return;
+    }
+
     if (document.getElementById("type").value === "" || document.getElementById("color").value === "" || document.getElementById("number").value === "") {
         alert("Please select a type, color and a number!");
         return;
@@ -26,7 +40,9 @@ function addItem() {
     obj['itemType'] = document.getElementById("type").value;
     obj['isDark'] = document.getElementById("color").value;
     obj['number'] = document.getElementById("number").value;
+    obj['address'] = document.getElementById("address").value;
     items.its.push(obj);
+    console.log(JSON.stringify(items));
 
 
     // Add to HTML Table
@@ -43,6 +59,6 @@ function addItem() {
 
     // Clear inputs
     document.getElementById("type").value = "";
-    document.getElementById("number").value = "1";
+    document.getElementById("number").value = "";
     document.getElementById("color").value = "";
 }

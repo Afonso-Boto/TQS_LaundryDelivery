@@ -13,11 +13,32 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
+import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @TestPropertySource("/application-test.properties")
+@Testcontainers
 public class DeliveriesManagerTest {
+    @Container
+    public static RabbitMQContainer container =
+            new RabbitMQContainer("rabbitmq:management")
+                    .withExposedPorts(5672, 15672, 15674)
+                    .withVhost("/")
+                    .withUser("guest", "guest")
+                    .withPermission("/", "admin", ".*", ".*", ".*");
+
+    @DynamicPropertySource
+    static void properties(DynamicPropertyRegistry registry) {
+        registry.add("spring.rabbitmq.host", container::getContainerIpAddress);
+        registry.add("spring.rabbitmq.port", container::getAmqpPort);
+        registry.add("spring.rabbitmq.username", container::getAdminUsername);
+        registry.add("spring.rabbitmq.password", container::getAdminPassword);
+    }
 
     private final int AuctionSpan = 2;
     @Autowired private DeliveriesManager deliveryManager;
@@ -46,7 +67,7 @@ public class DeliveriesManagerTest {
                 .untilAsserted(
                         () ->
                                 assertThat(deliveryManager.getDelivery(delivery.getDeliveryId()))
-                                        .isEqualTo(null));
+                                        .isNull());
     }
 
     @Test
@@ -178,5 +199,23 @@ public class DeliveriesManagerTest {
         // Wait until auction is finished
         assertThat(deliveryManager.getToDoDeliveries().get(0).getCustomerId())
                 .isEqualTo(deliveryToDo.getCustomerId());
+    }
+
+    @Test
+    void whenGetStatsDeliveriesDone_ReturnsDeliveriesDone() {
+        // Deliveries
+        Delivery deliveryDone =
+                new Delivery(
+                        "test98@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryDone.setDeliveryState(DeliveryState.DELIVERED);
+        deliveryManager.createDelivery(deliveryDone);
+
+        Delivery deliveryToDo =
+                new Delivery(
+                        "test99@email.com", 99.99, 99.99, "test address", "test origin address");
+        deliveryManager.createDelivery(deliveryToDo);
+
+        // Wait until auction is finished
+        assertThat(deliveryManager.statsDeliveriesDone()).isEqualTo(1);
     }
 }
