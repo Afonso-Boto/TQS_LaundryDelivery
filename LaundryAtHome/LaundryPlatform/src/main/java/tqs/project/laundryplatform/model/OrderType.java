@@ -29,8 +29,7 @@ public class OrderType {
         this.basePrice = basePrice;
     }
 
-    public OrderType() {
-    }
+    public OrderType() {}
 
     @Override
     public boolean equals(Object o) {

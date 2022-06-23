@@ -19,8 +19,7 @@ import tqs.project.laundryplatform.repository.*;
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceTest {
 
-    @InjectMocks
-    private OrderServiceImpl service;
+    @InjectMocks private OrderServiceImpl service;
 
     @Mock(lenient = true)
     private ComplaintRepository complaintRepository;

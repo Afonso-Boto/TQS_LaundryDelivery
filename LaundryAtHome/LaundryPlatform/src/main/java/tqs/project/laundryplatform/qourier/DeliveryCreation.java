@@ -13,10 +13,18 @@ public class DeliveryCreation {
     private int deliveryId;
     private String creationTime;
 
-    public DeliveryCreation() {
-    }
+    public DeliveryCreation() {}
 
-    public DeliveryCreation(String customerId, String deliveryAddr, String originAddr, String riderId, String deliveryState, double latitude, double longitude, int deliveryId, String creationTime) {
+    public DeliveryCreation(
+            String customerId,
+            String deliveryAddr,
+            String originAddr,
+            String riderId,
+            String deliveryState,
+            double latitude,
+            double longitude,
+            int deliveryId,
+            String creationTime) {
         this.customerId = customerId;
         this.deliveryAddr = deliveryAddr;
         this.originAddr = originAddr;
@@ -27,5 +35,4 @@ public class DeliveryCreation {
         this.deliveryId = deliveryId;
         this.creationTime = creationTime;
     }
-
 }

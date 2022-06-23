@@ -22,8 +22,7 @@ public class OrderTypeRepositoryTest {
 
     OrderType orderType;
 
-    @Autowired
-    private OrderTypeRepository orderTypeRepository;
+    @Autowired private OrderTypeRepository orderTypeRepository;
 
     @Container
     public static MySQLContainer container =

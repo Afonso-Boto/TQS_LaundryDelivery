@@ -25,13 +25,10 @@ import tqs.project.laundryplatform.repository.OrderRepository;
 @AutoConfigureMockMvc
 public class MainControllerIntegrationTest {
 
-    @LocalServerPort
-    int randomServerPort;
+    @LocalServerPort int randomServerPort;
 
-    @Autowired
-    private MockMvc mvc;
-    @Autowired
-    private OrderRepository orderRepository;
+    @Autowired private MockMvc mvc;
+    @Autowired private OrderRepository orderRepository;
 
     @BeforeEach
     public void setUp() throws Exception {

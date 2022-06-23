@@ -33,20 +33,17 @@ import tqs.project.laundryplatform.service.OrderService;
 @RequestMapping("/mobile")
 public class MobileController {
 
-    @Autowired
-    AccountManager accountManager;
+    @Autowired AccountManager accountManager;
 
-    @Autowired
-    OrderRepository orderRepository;
+    @Autowired OrderRepository orderRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
-    @Autowired
-    OrderService orderService;
+    @Autowired OrderService orderService;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<Boolean> signUpMobile(@RequestBody String requestBody, HttpServletResponse response) {
+    public ResponseEntity<Boolean> signUpMobile(
+            @RequestBody String requestBody, HttpServletResponse response) {
         JSONObject json = new JSONObject(requestBody);
         RegisterRequest request =
                 new RegisterRequest(
@@ -63,9 +60,11 @@ public class MobileController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<Boolean> loginMobile(@RequestBody String requestBody, HttpServletResponse response) {
+    public ResponseEntity<Boolean> loginMobile(
+            @RequestBody String requestBody, HttpServletResponse response) {
         JSONObject json = new JSONObject(requestBody);
-        LoginRequest user = new LoginRequest(json.getString("username"), json.getString("password"));
+        LoginRequest user =
+                new LoginRequest(json.getString("username"), json.getString("password"));
 
         LoginResult result = accountManager.login(user);
         System.err.println("Login result: " + result);
@@ -84,14 +83,16 @@ public class MobileController {
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<String> ordersMobile(Model model, HttpServletRequest request, @RequestParam("username") String username) {
+    public ResponseEntity<String> ordersMobile(
+            Model model, HttpServletRequest request, @RequestParam("username") String username) {
         System.err.println("orders");
         List<Order> orders;
 
-        if (username.equals("admin"))
-            orders = orderRepository.findAll();
+        if (username.equals("admin")) orders = orderRepository.findAll();
         else
-            orders = orderRepository.findAllByUser(userRepository.findByUsername(username).orElse(null));
+            orders =
+                    orderRepository.findAllByUser(
+                            userRepository.findByUsername(username).orElse(null));
 
         StringBuilder ordersString = new StringBuilder();
         for (Order order : orders) {
@@ -113,12 +114,14 @@ public class MobileController {
     public ResponseEntity<String> trackingMobile(
             Model model, HttpServletRequest request, @RequestParam("orderId") String orderId) {
         return ResponseEntity.ok(
-                orderRepository.findById(Long.parseLong(orderId)).orElse(null)
-                        != null ? orderRepository.findById(Long.parseLong(orderId)).toString() : null);
+                orderRepository.findById(Long.parseLong(orderId)).orElse(null) != null
+                        ? orderRepository.findById(Long.parseLong(orderId)).toString()
+                        : null);
     }
 
     @PostMapping("/order/cancelOrder/{id}")
-    public ResponseEntity<String> cancelOrderMobile(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<String> cancelOrderMobile(
+            @PathVariable("id") Long id, HttpServletRequest request) {
         if (!hasCookie(request)) return ResponseEntity.status(401).body("unauthorized");
 
         orderService.cancelOrder(id);
@@ -126,15 +129,13 @@ public class MobileController {
     }
 
     @PostMapping("/order/complaint")
-    public ResponseEntity<Boolean> complaintMobile(@RequestBody String body, HttpServletRequest request, Model model) {
+    public ResponseEntity<Boolean> complaintMobile(
+            @RequestBody String body, HttpServletRequest request, Model model) {
         System.out.println("complaint-mobile");
         System.out.println(body);
         JSONObject json = new JSONObject(body);
 
-
-        if (orderService.complaint(json))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-
+        if (orderService.complaint(json)) return new ResponseEntity<>(true, HttpStatus.OK);
 
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
@@ -143,7 +144,8 @@ public class MobileController {
     public ResponseEntity<Boolean> initOrderMobile(
             Model model,
             HttpServletRequest request,
-            @PathVariable("orderTypeId") long orderTypeId, @PathVariable("cookieID") String cookieID) {
+            @PathVariable("orderTypeId") long orderTypeId,
+            @PathVariable("cookieID") String cookieID) {
 
         System.err.println(cookieID);
         long orderID = orderService.initOrder(orderTypeId, cookieID);
@@ -159,13 +161,16 @@ public class MobileController {
     }
 
     @PostMapping("/order/make-order/{cookieId}")
-    public ResponseEntity<Boolean> newOrderMobile(@RequestBody String formObject, @PathVariable("cookieId") String cookieId, Model model, HttpServletRequest request)
+    public ResponseEntity<Boolean> newOrderMobile(
+            @RequestBody String formObject,
+            @PathVariable("cookieId") String cookieId,
+            Model model,
+            HttpServletRequest request)
             throws JsonProcessingException {
         System.out.println(formObject);
         formObject = formObject.substring(1, formObject.length() - 1);
         JSONObject orderInfo = new JSONObject(formObject);
         long orderId;
-
 
         orderId = ordersUncompleted.getOrDefault(cookieId, -1L);
 
@@ -206,7 +211,6 @@ public class MobileController {
             request1 = new HttpEntity<>(json, httpHeaders);
             String x = restTemplate.postForObject(uri, request1, String.class);
 
-
             System.out.println(x);
 
             return new ResponseEntity<>(true, HttpStatus.OK);
@@ -214,6 +218,4 @@ public class MobileController {
 
         return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
     }
-
-
 }

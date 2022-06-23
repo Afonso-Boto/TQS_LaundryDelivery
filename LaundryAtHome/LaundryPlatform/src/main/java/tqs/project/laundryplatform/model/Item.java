@@ -35,8 +35,7 @@ public class Item {
         this.item_type = item_type;
     }
 
-    public Item() {
-    }
+    public Item() {}
 
     @Override
     public boolean equals(Object o) {

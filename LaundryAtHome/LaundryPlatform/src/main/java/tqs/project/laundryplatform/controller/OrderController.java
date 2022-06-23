@@ -30,14 +30,10 @@ import tqs.project.laundryplatform.service.OrderService;
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired
-    OrderService orderService;
-    @Autowired
-    MainController mainController;
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    RabbitAdmin rabbitAdmin;
+    @Autowired OrderService orderService;
+    @Autowired MainController mainController;
+    @Autowired OrderRepository orderRepository;
+    @Autowired RabbitAdmin rabbitAdmin;
 
     private static final String REDIRECT_NEW_ORDER = "redirect:/new_order";
     private static final String REDIRECT_ORDERS = "redirect:/orders";
@@ -128,22 +124,28 @@ public class OrderController {
             System.out.println(deliveryCreation);
 
             // RabbitMQ Logic
-//            Queue queue = new Queue("", false, true, true);
-//            TopicExchange topicExchange = new TopicExchange("spring-boot-exchange");
-//            String queueName = rabbitAdmin.declareQueue(queue);
-//            Binding subscription = BindingBuilder.bind(queue).to(topicExchange).with("delivery.updates." + deliveryCreation.getDeliveryId());
-//            rabbitAdmin.declareBinding(subscription);
-//            SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-//            container.setConnectionFactory(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
-//            container.setQueueNames(queueName);
-//            container.setMessageListener(message -> {
-//                DeliveryUpdate update = gson.fromJson(Arrays.toString(message.getBody()), DeliveryUpdate.class);
-//                System.out.println(update);
-//
-//                long orderIdForUpdate = orderRepository.findByDeliveryId(update.getDeliveryId()).getId();
-//                orderService.updateOrder(orderIdForUpdate, update);
-//            });
-//            container.start();
+            //            Queue queue = new Queue("", false, true, true);
+            //            TopicExchange topicExchange = new TopicExchange("spring-boot-exchange");
+            //            String queueName = rabbitAdmin.declareQueue(queue);
+            //            Binding subscription =
+            // BindingBuilder.bind(queue).to(topicExchange).with("delivery.updates." +
+            // deliveryCreation.getDeliveryId());
+            //            rabbitAdmin.declareBinding(subscription);
+            //            SimpleMessageListenerContainer container = new
+            // SimpleMessageListenerContainer();
+            //
+            // container.setConnectionFactory(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
+            //            container.setQueueNames(queueName);
+            //            container.setMessageListener(message -> {
+            //                DeliveryUpdate update =
+            // gson.fromJson(Arrays.toString(message.getBody()), DeliveryUpdate.class);
+            //                System.out.println(update);
+            //
+            //                long orderIdForUpdate =
+            // orderRepository.findByDeliveryId(update.getDeliveryId()).getId();
+            //                orderService.updateOrder(orderIdForUpdate, update);
+            //            });
+            //            container.start();
 
             return "redirect:/ok";
         }

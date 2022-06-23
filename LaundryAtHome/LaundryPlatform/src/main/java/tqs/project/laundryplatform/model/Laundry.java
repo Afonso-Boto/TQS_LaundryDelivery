@@ -28,8 +28,7 @@ public class Laundry {
         this.location = location;
     }
 
-    public Laundry() {
-    }
+    public Laundry() {}
 
     @Override
     public boolean equals(Object o) {

@@ -28,10 +28,8 @@ public class MainController {
     private static final String REDIRECT_REGISTER = "redirect:/register";
     private static final String REDIRECT_LOGIN = "redirect:/login";
     private static final String REDIRECT_INDEX = "redirect:/index";
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    UserRepository userRepository;
+    @Autowired OrderRepository orderRepository;
+    @Autowired UserRepository userRepository;
 
     @GetMapping("/")
     public String mainPage() {

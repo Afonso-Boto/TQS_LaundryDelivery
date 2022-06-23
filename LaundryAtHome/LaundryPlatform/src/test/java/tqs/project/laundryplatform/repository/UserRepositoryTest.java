@@ -28,8 +28,7 @@ public class UserRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired
-    private UserRepository repository;
+    @Autowired private UserRepository repository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

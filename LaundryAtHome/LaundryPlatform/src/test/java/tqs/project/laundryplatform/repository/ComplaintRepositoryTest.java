@@ -20,8 +20,7 @@ import tqs.project.laundryplatform.model.Complaint;
 @SpringBootTest
 public class ComplaintRepositoryTest {
 
-    @Autowired
-    private ComplaintRepository complaintRepository;
+    @Autowired private ComplaintRepository complaintRepository;
 
     Complaint complaint;
 

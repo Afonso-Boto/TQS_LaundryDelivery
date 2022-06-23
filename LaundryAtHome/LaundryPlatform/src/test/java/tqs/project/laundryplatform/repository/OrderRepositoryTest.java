@@ -21,14 +21,10 @@ public class OrderRepositoryTest {
 
     Order order;
 
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderTypeRepository orderTypeRepository;
-    @Autowired
-    private LaundryRepository laundryRepository;
-    @Autowired
-    private UserRepository userRepository;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private OrderTypeRepository orderTypeRepository;
+    @Autowired private LaundryRepository laundryRepository;
+    @Autowired private UserRepository userRepository;
 
     @Container
     public static MySQLContainer container =

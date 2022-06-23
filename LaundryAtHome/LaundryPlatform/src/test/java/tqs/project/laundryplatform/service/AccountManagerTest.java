@@ -21,15 +21,12 @@ import tqs.project.laundryplatform.repository.UserRepository;
 @ExtendWith(MockitoExtension.class)
 class AccountManagerTest {
 
-    @Mock
-    private UserRepository userRepository;
+    @Mock private UserRepository userRepository;
 
-    @InjectMocks
-    private AccountManager accountManager;
+    @InjectMocks private AccountManager accountManager;
 
     @BeforeEach
-    public void setUp() {
-    }
+    public void setUp() {}
 
     @Test
     void whenLoginExistent_thenEmptyResult() {

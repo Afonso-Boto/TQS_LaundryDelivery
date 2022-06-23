@@ -31,20 +31,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class MobileControllerIntegrationTest {
 
-    @LocalServerPort
-    int randomServerPort;
+    @LocalServerPort int randomServerPort;
 
-    @Autowired
-    private MockMvc mvc;
+    @Autowired private MockMvc mvc;
 
-    @Autowired
-    AccountManager accountManager;
+    @Autowired AccountManager accountManager;
 
-    @Autowired
-    OrderRepository orderRepository;
+    @Autowired OrderRepository orderRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    @Autowired UserRepository userRepository;
 
     @BeforeEach
     public void setUp() {
@@ -69,7 +64,6 @@ public class MobileControllerIntegrationTest {
         json.put("fullName", "test2");
         json.put("phoneNumber", "123");
 
-
         mvc.perform(
                         post("/mobile/auth/register")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +80,6 @@ public class MobileControllerIntegrationTest {
         json.put("password", "123");
         json.put("fullName", "test2");
         json.put("phoneNumber", "123");
-
 
         mvc.perform(
                         post("/mobile/auth/register")
@@ -126,46 +119,35 @@ public class MobileControllerIntegrationTest {
     @Test
     @DisplayName("logout")
     public void logout() throws Exception {
-        mvc.perform(
-                        get("/mobile/auth/logout"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/mobile/auth/logout")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("orders admin")
     public void ordersAdmin() throws Exception {
-        mvc.perform(
-                        get("/mobile/orders?username=admin"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/mobile/orders?username=admin")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("orders test")
     public void ordersTest() throws Exception {
-        mvc.perform(
-                        get("/mobile/orders?username=test"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/mobile/orders?username=test")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("orders tracking")
     public void ordersTracking() throws Exception {
-        mvc.perform(
-                        get("/mobile/tracking?orderId=1"))
-                .andExpect(status().isOk());
+        mvc.perform(get("/mobile/tracking?orderId=1")).andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("orders tracking invalid")
     public void ordersTrackingInvalid() throws Exception {
-        MvcResult mvcResult = mvc.perform(
-                        get("/mobile/tracking?orderId=2"))
-                .andExpect(status().isOk())
-                .andReturn();
+        MvcResult mvcResult =
+                mvc.perform(get("/mobile/tracking?orderId=2"))
+                        .andExpect(status().isOk())
+                        .andReturn();
 
         assertThat(mvcResult.getResponse().getContentAsString()).isEqualTo("");
     }
-
-
-
 }

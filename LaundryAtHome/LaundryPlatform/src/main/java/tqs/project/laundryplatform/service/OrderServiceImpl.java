@@ -16,20 +16,13 @@ import tqs.project.laundryplatform.repository.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired
-    LaundryRepository laundryRepository;
-    @Autowired
-    OrderTypeRepository orderTypeRepository;
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    ItemTypeRepository itemTypeRepository;
-    @Autowired
-    ItemRepository itemRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    ComplaintRepository complaintRepository;
+    @Autowired LaundryRepository laundryRepository;
+    @Autowired OrderTypeRepository orderTypeRepository;
+    @Autowired OrderRepository orderRepository;
+    @Autowired ItemTypeRepository itemTypeRepository;
+    @Autowired ItemRepository itemRepository;
+    @Autowired UserRepository userRepository;
+    @Autowired ComplaintRepository complaintRepository;
 
     @Override
     public List<Order> getOrder(int userID) {
@@ -96,7 +89,8 @@ public class OrderServiceImpl implements OrderService {
             item = new Item(number, isDark, newOrder, itemType);
             items.add(item);
 
-            newOrder.setTotalPrice(newOrder.getTotalPrice() + item.getItem_type().getPrice() * number);
+            newOrder.setTotalPrice(
+                    newOrder.getTotalPrice() + item.getItem_type().getPrice() * number);
 
             itemRepository.save(item);
 
