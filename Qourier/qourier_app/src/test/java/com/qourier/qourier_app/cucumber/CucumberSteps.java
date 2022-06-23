@@ -680,7 +680,8 @@ public class CucumberSteps {
         else {
             driver.findElement(By.id(apiKeyId + "-btn")).click();
             WebElement apiKey = driver.findElement(By.id(apiKeyId));
-            assertThat(apiKey.getText()).isEqualTo(apiController.apiToken(currentAccount.getEmail()));
+            assertThat(apiKey.getText())
+                    .isEqualTo(apiController.apiToken(currentAccount.getEmail()));
         }
     }
 

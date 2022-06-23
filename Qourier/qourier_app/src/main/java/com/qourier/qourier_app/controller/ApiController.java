@@ -102,18 +102,14 @@ public class ApiController {
         if (result.equals(LoginResult.WRONG_CREDENTIALS)
                 || result.equals(LoginResult.NON_EXISTENT_ACCOUNT))
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-        return new ResponseEntity<String>(
-                apiToken(request.getEmail()),
-                HttpStatus.ACCEPTED);
+        return new ResponseEntity<String>(apiToken(request.getEmail()), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/accounts/register/rider")
     public ResponseEntity<String> accountsRegisterRiderPost(
             @RequestBody RiderRegisterRequest request) {
         if (accountManager.registerRider(request))
-            return new ResponseEntity<String>(
-                    apiToken(request.getEmail()),
-                    HttpStatus.CREATED);
+            return new ResponseEntity<String>(apiToken(request.getEmail()), HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
@@ -122,9 +118,7 @@ public class ApiController {
     public ResponseEntity<String> accountsRegisterCustomerPost(
             @RequestBody CustomerRegisterRequest request) {
         if (accountManager.registerCustomer(request))
-            return new ResponseEntity<String>(
-                    apiToken(request.getEmail()),
-                    HttpStatus.CREATED);
+            return new ResponseEntity<String>(apiToken(request.getEmail()), HttpStatus.CREATED);
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
