@@ -2,6 +2,7 @@ package com.qourier.qourier_app.cucumber;
 
 import static com.qourier.qourier_app.TestUtils.SampleAccountBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,7 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import com.qourier.qourier_app.TestUtils;
 import com.qourier.qourier_app.bids.DeliveriesManager;
+import com.qourier.qourier_app.controller.ApiController;
 import com.qourier.qourier_app.controller.WebController;
 import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.message.MessageCenter;
@@ -37,6 +39,7 @@ public class CucumberSteps {
     private final DeliveriesManager deliveriesManager;
     private final BidsRepository bidsRepository;
     private final DeliveryRepository deliveryRepository;
+    private final ApiController apiController;
     private final int auctionSpan;
 
     @Autowired private MessageCenter messageCenter;
@@ -44,6 +47,7 @@ public class CucumberSteps {
     private Account currentAccount;
     private long focusedDeliveryId;
     private AccountRole focusedRole;
+    private String focusedAccountId;
 
     public CucumberSteps(
             RiderRepository riderRepository,
@@ -52,7 +56,8 @@ public class CucumberSteps {
             AccountRepository accountRepository,
             DeliveriesManager deliveriesManager,
             BidsRepository bidsRepository,
-            DeliveryRepository deliveryRepository) {
+            DeliveryRepository deliveryRepository,
+            ApiController apiController) {
         this.riderRepository = riderRepository;
         this.customerRepository = customerRepository;
         this.adminRepository = adminRepository;
@@ -60,6 +65,7 @@ public class CucumberSteps {
         this.deliveriesManager = deliveriesManager;
         this.bidsRepository = bidsRepository;
         this.deliveryRepository = deliveryRepository;
+        this.apiController = apiController;
 
         sampleRider = new SampleAccountBuilder("riderino@gmail.com").buildRider();
         sampleCustomer = new SampleAccountBuilder("customerino@gmail.com").buildCustomer();
@@ -643,6 +649,40 @@ public class CucumberSteps {
                 assertThat(detailsServiceType.getText()).isEqualTo(customer.getServType());
             }
         }
+
+        focusedAccountId = profileEmail;
+    }
+
+    @Then("I can see statistics about the number of deliveries done")
+    public void iCanSeeRiderStatistics() {
+        WebElement statsNumberOfDeliveriesDone =
+                driver.findElement(By.id("stat-number-deliveries-done"));
+
+        assertThat(statsNumberOfDeliveriesDone.isDisplayed()).isTrue();
+        assertThat(Integer.parseInt(statsNumberOfDeliveriesDone.getText()))
+                .isEqualTo(deliveriesManager.statsRiderNumberDeliveriesDone(focusedAccountId));
+    }
+
+    @Then("I can see statistics about the number of deliveries requested")
+    public void iCanSeeCustomerStatistics() {
+        WebElement statsDeliveryRequestRate =
+                driver.findElement(By.id("stat-delivery-request-rate"));
+
+        assertThat(statsDeliveryRequestRate.isDisplayed()).isTrue();
+        assertThat(Double.parseDouble(statsDeliveryRequestRate.getText()))
+                .isEqualTo(deliveriesManager.statsCustomerDeliveryRate(focusedAccountId));
+    }
+
+    @Then("I can {not}check the API key")
+    public void checkApiKey(boolean not) {
+        String apiKeyId = "api-key";
+        if (not) assertThatThrownBy(() -> driver.findElement(By.id(apiKeyId)));
+        else {
+            driver.findElement(By.id(apiKeyId + "-btn")).click();
+            WebElement apiKey = driver.findElement(By.id(apiKeyId));
+            assertThat(apiKey.getText())
+                    .isEqualTo(apiController.apiToken(currentAccount.getEmail()));
+        }
     }
 
     @And("I wait {int} seconds for the auction to end")
@@ -724,5 +764,44 @@ public class CucumberSteps {
                                         && delivery.getLongitude() == longitude)
                 .findFirst()
                 .orElseThrow();
+    }
+
+    @Then("graphs of the current metrics is shown")
+    public void assertMetricsGraphs() {
+        WebElement panel0 = driver.findElement(By.id("panel0"));
+        assertThat(panel0.isDisplayed()).isTrue();
+
+        WebElement panel1 = driver.findElement(By.id("panel1"));
+        assertThat(panel1.isDisplayed()).isTrue();
+
+        WebElement panel2 = driver.findElement(By.id("panel2"));
+        assertThat(panel2.isDisplayed()).isTrue();
+
+        WebElement panel3 = driver.findElement(By.id("panel3"));
+        assertThat(panel3.isDisplayed()).isTrue();
+
+        WebElement panel4 = driver.findElement(By.id("panel4"));
+        assertThat(panel4.isDisplayed()).isTrue();
+
+        WebElement panel5 = driver.findElement(By.id("panel5"));
+        assertThat(panel5.isDisplayed()).isTrue();
+
+        WebElement panel6 = driver.findElement(By.id("panel6"));
+        assertThat(panel6.isDisplayed()).isTrue();
+
+        WebElement panel7 = driver.findElement(By.id("panel7"));
+        assertThat(panel7.isDisplayed()).isTrue();
+
+        WebElement panel8 = driver.findElement(By.id("panel8"));
+        assertThat(panel8.isDisplayed()).isTrue();
+
+        WebElement panel9 = driver.findElement(By.id("panel9"));
+        assertThat(panel9.isDisplayed()).isTrue();
+
+        WebElement panel10 = driver.findElement(By.id("panel10"));
+        assertThat(panel10.isDisplayed()).isTrue();
+
+        WebElement panel11 = driver.findElement(By.id("panel11"));
+        assertThat(panel11.isDisplayed()).isTrue();
     }
 }

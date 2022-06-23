@@ -25,11 +25,9 @@
             <div class="col-12">
                 <h3>Statistics</h3>
 
-                <h5 id="statistics-deliveries-over-time">Deliveries done over time</h5>
-                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for deliveries done over time" />
-
-                <h5 id="statistics-average-time-spent">Average time spent on each delivery</h5>
-                <img src="../static/images/grafana_placeholder.png" alt="Grafana placeholder for average time spent" />
+                <h5 id="statistics-number-deliveries-done">Number of deliveries done:
+                    <span id="stat-number-deliveries-done" th:text="${statsNumberDeliveriesDone}"></span>
+                </h5>
             </div>
         </div>
         <div id="admin-space" class="row" th:if="${role.name() == 'ADMIN'}">

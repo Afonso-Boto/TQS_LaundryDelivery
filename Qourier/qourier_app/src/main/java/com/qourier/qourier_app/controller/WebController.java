@@ -44,6 +44,7 @@ public class WebController {
     private final AccountManager accountManager;
     private final DeliveriesManager deliveriesManager;
     private final MessageCenter messageCenter;
+    private final ApiController apiController;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
@@ -55,10 +56,12 @@ public class WebController {
     public WebController(
             AccountManager accountManager,
             DeliveriesManager deliveriesManager,
-            MessageCenter messageCenter) {
+            MessageCenter messageCenter,
+            ApiController apiController) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
         this.messageCenter = messageCenter;
+        this.apiController = apiController;
     }
 
     @PostMapping("/login")
@@ -367,13 +370,20 @@ public class WebController {
         if (account.getRole() == RIDER) {
             profileView = "profile_rider";
             model.addAttribute("rider", accountManager.getRiderAccount(id));
+            model.addAttribute(
+                    "statsNumberDeliveriesDone",
+                    deliveriesManager.statsRiderNumberDeliveriesDone(id));
         } else if (account.getRole() == CUSTOMER) {
             profileView = "profile_customer";
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
+            model.addAttribute(
+                    "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(id));
+            model.addAttribute("apiKey", apiController.apiToken(account.getEmail()));
         }
 
         model.addAttribute("role", role);
         model.addAttribute("active", account.getState() == AccountState.ACTIVE);
+        model.addAttribute("accepted", true);
         return profileView;
     }
 
@@ -391,14 +401,20 @@ public class WebController {
 
         AccountRole cookieRole = getRoleFromCookie(request);
         if (cookieRole == RIDER) {
+            profileView = "profile_rider";
             RiderDTO riderProfile = accountManager.getRiderAccount(email);
             model.addAttribute("rider", riderProfile);
-            profileView = "profile_rider";
+            model.addAttribute(
+                    "statsNumberDeliveriesDone",
+                    deliveriesManager.statsRiderNumberDeliveriesDone(email));
             account = riderProfile.getAccount();
         } else if (cookieRole == CUSTOMER) {
+            profileView = "profile_customer";
             CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
             model.addAttribute("customer", customerProfile);
-            profileView = "profile_customer";
+            model.addAttribute(
+                    "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(email));
+            model.addAttribute("apiKey", apiController.apiToken(email));
             account = customerProfile.getAccount();
         } else return REDIRECT_INDEX;
 
@@ -462,7 +478,8 @@ public class WebController {
         deliveries.forEach(
                 delivery -> {
                     List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
-                    delivery.setRiderId(allBids.size() + " bids");
+                    if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                        delivery.setRiderId(allBids.size() + " bids");
                 });
 
         model.addAttribute("role", role);
@@ -472,6 +489,17 @@ public class WebController {
                         .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
                         .toList());
         return "progress";
+    }
+
+    @GetMapping("/monitor")
+    public String monitor(Model model, HttpServletRequest request) {
+        AccountRole role = ADMIN;
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        model.addAttribute("role", role);
+        return "monitor";
     }
 
     @Bean
