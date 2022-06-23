@@ -34,7 +34,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           script: |
                   cd TQS_LaundryDelivery/Qourier/
-                  sudo docker-compose up --build
-                  
-          
+                  sudo docker-compose up --build -d
           

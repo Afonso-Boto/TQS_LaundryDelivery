@@ -21,10 +21,6 @@ public class Bid {
     private Double distance;
 
     public static Bid fromDto(BidDTO bidDTO) {
-        return new Bid(
-                bidDTO.getRidersId(),
-                bidDTO.getDeliveryId(),
-                bidDTO.getDistance()
-        );
+        return new Bid(bidDTO.getRidersId(), bidDTO.getDeliveryId(), bidDTO.getDistance());
     }
 }

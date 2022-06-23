@@ -9,4 +9,6 @@ import tqs.project.laundryplatform.model.OrderType;
 public interface OrderTypeRepository extends JpaRepository<OrderType, Long> {
 
     Optional<OrderType> findById(long id);
+
+    Optional<OrderType> findByName(String name);
 }

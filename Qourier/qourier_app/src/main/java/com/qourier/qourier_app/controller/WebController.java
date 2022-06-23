@@ -9,19 +9,19 @@ import com.qourier.qourier_app.account.register.AdminRegisterRequest;
 import com.qourier.qourier_app.account.register.CustomerRegisterRequest;
 import com.qourier.qourier_app.account.register.RiderRegisterRequest;
 import com.qourier.qourier_app.bids.DeliveriesManager;
-import com.qourier.qourier_app.data.AccountRole;
-import com.qourier.qourier_app.data.AccountState;
+import com.qourier.qourier_app.data.*;
 import com.qourier.qourier_app.data.dto.AccountDTO;
 import com.qourier.qourier_app.data.dto.CustomerDTO;
 import com.qourier.qourier_app.data.dto.RiderDTO;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import com.qourier.qourier_app.message.MessageCenter;
+import java.util.*;
+import java.util.function.Function;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.Data;
 import lombok.extern.java.Log;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +43,8 @@ public class WebController {
 
     private final AccountManager accountManager;
     private final DeliveriesManager deliveriesManager;
+    private final MessageCenter messageCenter;
+    private final ApiController apiController;
 
     @Value("${spring.datasource.adminemail}")
     private String adminEmail;
@@ -51,9 +53,15 @@ public class WebController {
     private String adminPass;
 
     @Autowired
-    public WebController(AccountManager accountManager, DeliveriesManager deliveriesManager) {
+    public WebController(
+            AccountManager accountManager,
+            DeliveriesManager deliveriesManager,
+            MessageCenter messageCenter,
+            ApiController apiController) {
         this.accountManager = accountManager;
         this.deliveriesManager = deliveriesManager;
+        this.messageCenter = messageCenter;
+        this.apiController = apiController;
     }
 
     @PostMapping("/login")
@@ -69,24 +77,6 @@ public class WebController {
         setCookie(response, user.getEmail());
 
         return REDIRECT_INDEX;
-    }
-
-    @GetMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // See if we are logged in or not
-        if (hasCookie(request)) {
-            Cookie jwtTokenCookie = new Cookie(COOKIE_ID, "null");
-
-            jwtTokenCookie.setMaxAge(0);
-            jwtTokenCookie.setSecure(false);
-            jwtTokenCookie.setHttpOnly(true);
-
-            // Set cookie onto user
-            response.addCookie(jwtTokenCookie);
-            return REDIRECT_LOGIN;
-        } else {
-            return "error";
-        }
     }
 
     @PostMapping("/register_customer")
@@ -109,6 +99,24 @@ public class WebController {
         setCookie(response, request.getEmail());
 
         return REDIRECT_INDEX;
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // See if we are logged in or not
+        if (hasCookie(request)) {
+            Cookie jwtTokenCookie = new Cookie(COOKIE_ID, "null");
+
+            jwtTokenCookie.setMaxAge(0);
+            jwtTokenCookie.setSecure(false);
+            jwtTokenCookie.setHttpOnly(true);
+
+            // Set cookie onto user
+            response.addCookie(jwtTokenCookie);
+            return REDIRECT_LOGIN;
+        } else {
+            return "error";
+        }
     }
 
     @GetMapping("/")
@@ -145,7 +153,6 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        // TODO pass right message to show
         AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
 
         switch (state) {
@@ -163,13 +170,47 @@ public class WebController {
             default:
                 model.addAttribute("msg", "An error has occurred");
         }
+        String riderId = getIdFromCookie(request);
         model.addAttribute("role", role);
-        model.addAttribute("riderId", getIdFromCookie(request));
+        model.addAttribute("riderId", riderId);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+        model.addAttribute(
+                "notificationTopic", MessageCenter.generateRiderAssignmentTopic(riderId));
+
+        RiderDTO rider = accountManager.getRiderAccount(riderId);
+
+        Delivery currentDelivery = deliveriesManager.getDelivery(rider.getCurrentDelivery());
+        boolean alreadyDelivering = currentDelivery != null;
+        model.addAttribute("alreadyDelivering", alreadyDelivering);
+        if (alreadyDelivering) {
+            model.addAttribute("deliveryCustomer", currentDelivery.getCustomerId());
+            model.addAttribute("deliveryOrigin", currentDelivery.getOriginAddr());
+            model.addAttribute("deliveryLatitude", currentDelivery.getLatitude());
+            model.addAttribute("deliveryLongitude", currentDelivery.getLongitude());
+            model.addAttribute("deliveryDestination", currentDelivery.getDeliveryAddr());
+            model.addAttribute("deliveryState", currentDelivery.getDeliveryState());
+            model.addAttribute("deliveryId", currentDelivery.getDeliveryId());
+        }
 
         // Add Deliveries
         model.addAttribute("deliveries", deliveriesManager.getToDoDeliveries());
         return "deliveries";
+    }
+
+    @Data
+    private static class FormDeliveriesProgress {
+        private String riderId;
+        private Long deliveryId;
+    }
+
+    @PostMapping(value = "/deliveries/progress")
+    public String deliveryProgressUpdate(
+            @ModelAttribute FormDeliveriesProgress form, Model model, HttpServletRequest request) {
+        if (!verifyCookie(request, RIDER)) return REDIRECT_LOGIN;
+
+        deliveriesManager.setDeliveryState(form.getDeliveryId(), form.getRiderId());
+
+        return deliveries(model, request);
     }
 
     @GetMapping("/delivery_management")
@@ -179,8 +220,8 @@ public class WebController {
         // Verify if cookie role is right or not
         if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
 
-        // TODO pass right message to show
-        AccountState state = accountManager.getAccount(getIdFromCookie(request)).getState();
+        String customerEmail = getIdFromCookie(request);
+        AccountState state = accountManager.getAccount(customerEmail).getState();
 
         switch (state) {
             case PENDING:
@@ -200,7 +241,48 @@ public class WebController {
 
         model.addAttribute("role", role);
         model.addAttribute("permitted", state.equals(AccountState.ACTIVE));
+
+        List<Delivery> deliveries = deliveriesManager.getDeliveriesFromCustomer(customerEmail);
+        deliveries.forEach(
+                delivery -> {
+                    List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
+                    delivery.setRiderId(allBids.size() + " bids");
+                });
+        model.addAttribute(
+                "deliveries",
+                deliveries.stream()
+                        .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
+                        .toList());
+
         return "delivery_management";
+    }
+
+    @Data
+    private static class DeliveryRegistration {
+        private String origin;
+        private String destination;
+        private long latitude;
+        private long longitude;
+    }
+
+    @PostMapping("/delivery_management/delivery")
+    public String deliveryManagementRegister(
+            @ModelAttribute DeliveryRegistration deliveryRegistration,
+            Model model,
+            HttpServletRequest request) {
+        if (!verifyCookie(request, CUSTOMER)) return REDIRECT_LOGIN;
+
+        String customerId = getIdFromCookie(request);
+
+        deliveriesManager.createDelivery(
+                new Delivery(
+                        customerId,
+                        deliveryRegistration.getLatitude(),
+                        deliveryRegistration.getLongitude(),
+                        deliveryRegistration.getDestination(),
+                        deliveryRegistration.getOrigin()));
+
+        return deliveryManagement(model, request);
     }
 
     @GetMapping("/register_rider")
@@ -243,6 +325,34 @@ public class WebController {
         return "accounts";
     }
 
+    @GetMapping("/applications")
+    public String applications(
+            Model model,
+            HttpServletRequest request,
+            @RequestParam(required = false, defaultValue = "0", name = "page") Integer pageNumber,
+            @RequestParam(required = false, defaultValue = "rider", name = "type")
+                    AccountRole accountRole,
+            @RequestParam(required = false, defaultValue = "false", name = "pending")
+                    boolean pending) {
+        AccountRole role = ADMIN;
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        fillModelWithRiderCustomerQueries(
+                model,
+                pageNumber,
+                accountRole,
+                pending ? List.of(AccountState.PENDING) : List.of(AccountState.REFUSED));
+
+        model.addAllAttributes(
+                Map.of(
+                        "role", role,
+                        "filterPending", pending,
+                        "hasher", (Function<String, String>) DigestUtils::sha256Hex));
+        return "applications";
+    }
+
     @GetMapping("/profile/id/{id}")
     public String profileById(Model model, HttpServletRequest request, @PathVariable String id) {
 
@@ -260,13 +370,20 @@ public class WebController {
         if (account.getRole() == RIDER) {
             profileView = "profile_rider";
             model.addAttribute("rider", accountManager.getRiderAccount(id));
+            model.addAttribute(
+                    "statsNumberDeliveriesDone",
+                    deliveriesManager.statsRiderNumberDeliveriesDone(id));
         } else if (account.getRole() == CUSTOMER) {
             profileView = "profile_customer";
             model.addAttribute("customer", accountManager.getCustomerAccount(id));
+            model.addAttribute(
+                    "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(id));
+            model.addAttribute("apiKey", apiController.apiToken(account.getEmail()));
         }
 
         model.addAttribute("role", role);
         model.addAttribute("active", account.getState() == AccountState.ACTIVE);
+        model.addAttribute("accepted", true);
         return profileView;
     }
 
@@ -284,14 +401,20 @@ public class WebController {
 
         AccountRole cookieRole = getRoleFromCookie(request);
         if (cookieRole == RIDER) {
+            profileView = "profile_rider";
             RiderDTO riderProfile = accountManager.getRiderAccount(email);
             model.addAttribute("rider", riderProfile);
-            profileView = "profile_rider";
+            model.addAttribute(
+                    "statsNumberDeliveriesDone",
+                    deliveriesManager.statsRiderNumberDeliveriesDone(email));
             account = riderProfile.getAccount();
         } else if (cookieRole == CUSTOMER) {
+            profileView = "profile_customer";
             CustomerDTO customerProfile = accountManager.getCustomerAccount(email);
             model.addAttribute("customer", customerProfile);
-            profileView = "profile_customer";
+            model.addAttribute(
+                    "statsDeliveryRequestRate", deliveriesManager.statsCustomerDeliveryRate(email));
+            model.addAttribute("apiKey", apiController.apiToken(email));
             account = customerProfile.getAccount();
         } else return REDIRECT_INDEX;
 
@@ -307,6 +430,8 @@ public class WebController {
     public String profileActivateById(
             Model model, HttpServletRequest request, @PathVariable String id) {
 
+        if (!verifyCookie(request, ADMIN)) return REDIRECT_INDEX;
+
         accountManager.activateAccount(id);
 
         return profileById(model, request, id);
@@ -316,9 +441,65 @@ public class WebController {
     public String profileSuspendById(
             Model model, HttpServletRequest request, @PathVariable String id) {
 
+        if (!verifyCookie(request, ADMIN)) return REDIRECT_INDEX;
+
         accountManager.suspendAccount(id);
 
         return profileById(model, request, id);
+    }
+
+    @PostMapping("/applications/{action}/{id}")
+    public String actionOnApplication(
+            Model model,
+            HttpServletRequest request,
+            @PathVariable String action,
+            @PathVariable String id) {
+
+        if (!verifyCookie(request, ADMIN)) return REDIRECT_INDEX;
+
+        switch (action) {
+            case "accept" -> accountManager.acceptApplication(id);
+            case "refuse" -> accountManager.refuseApplication(id);
+            case "reconsider" -> accountManager.reconsiderApplication(id);
+        }
+
+        AccountDTO account = accountManager.getAccount(id);
+
+        return applications(model, request, 0, account.getRole(), true);
+    }
+
+    @GetMapping("/progress")
+    public String progress(Model model, HttpServletRequest request) {
+        AccountRole role = ADMIN;
+
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        List<Delivery> deliveries = deliveriesManager.getAllDeliveries();
+        deliveries.forEach(
+                delivery -> {
+                    List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
+                    if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                        delivery.setRiderId(allBids.size() + " bids");
+                });
+
+        model.addAttribute("role", role);
+        model.addAttribute(
+                "deliveries",
+                deliveries.stream()
+                        .sorted(Comparator.comparingInt(d -> d.getDeliveryState().getOrder()))
+                        .toList());
+        return "progress";
+    }
+
+    @GetMapping("/monitor")
+    public String monitor(Model model, HttpServletRequest request) {
+        AccountRole role = ADMIN;
+
+        // Verify if cookie role is right or not
+        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
+
+        model.addAttribute("role", role);
+        return "monitor";
     }
 
     @Bean

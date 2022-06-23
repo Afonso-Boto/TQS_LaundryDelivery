@@ -20,12 +20,9 @@
 
     <nav th:replace="base :: navbar"></nav>
 
-    <div style="position: absolute; z-index: 1; width: 100%;">
-        <ul id="alert-list" style="padding: 0">
-        </ul>
-    </div>
-
-
+<!--    <div id="delivery-notification" class="delivery-notification" style="display: none">-->
+<!--        Your delivery bid has been accepted!-->
+<!--    </div>-->
 
     <div class="container">
         <div class="row">
@@ -34,33 +31,62 @@
                     <p id="non-permitted-message" th:text="${msg}">Account permission to access resource pending</p>
                 </div>
                 <div id="permitted-content" th:if="${permitted}" class="container">
-                    <h2>Deliveries to be processed</h2>
-                    <p>Progress for each delivery:</p> 
-                    <div class="row">
-                        <div class="col-12">
-                            <table class="table">
-                                <thead class="thead-dark">
-                                  <tr>
-                                    <th scope="col">Id</th>
-                                    <th scope="col">From</th>
-                                    <th scope="col">To</th>
-                                    <th scope="col">Interested</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="delivery : ${deliveries}">
-                                        <td th:text="${delivery.deliveryId}"></td>
-                                        <td th:text="${delivery.originAddr}"></td>
-                                        <td th:text="${delivery.deliveryAddr}"></td>
-                                        <td>
-                                            <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-                                                <i class="fa fa-duotone fa-check"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div id="info-delivery-available" th:style="${alreadyDelivering} ? 'display: none' : ''">
+                        <h2>Deliveries to be processed</h2>
+                        <p>Progress for each delivery:</p>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">From</th>
+                                        <th scope="col">To</th>
+                                        <th scope="col">Interested</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="delivery : ${deliveries}">
+                                            <td th:text="${delivery.deliveryId}"></td>
+                                            <td th:text="${delivery.originAddr}"></td>
+                                            <td th:text="${delivery.deliveryAddr}"></td>
+                                            <td>
+                                                <button id="btn-delivery-4" th:id="'btn-delivery-' + ${delivery.deliveryId}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                                                    <i class="fa fa-duotone fa-check"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    </div>
+
+                    <div id="info-delivery-assigned" style="display: none" th:style="${alreadyDelivering} ? '' : 'display: none'">
+                        <h2>A delivery has already been assigned</h2>
+
+                        <p>Customer: <span id="assigned-delivery-customer" th:text="${deliveryCustomer} ?: '?'"></span></p>
+                        <p>Origin: <span id="assigned-delivery-origin" th:text="${deliveryOrigin} ?: '?'"></span></p>
+                        <ul>
+                            <li>Latitude: <span id="assigned-delivery-latitude" th:text="${deliveryLatitude} ?: '?'"></span></li>
+                            <li>Longitude: <span id="assigned-delivery-longitude" th:text="${deliveryLongitude} ?: '?'"></span></li>
+                        </ul>
+                        <p></p>
+                        <p>Destination: <span id="assigned-delivery-destination" th:text="${deliveryDestination} ?: '?'"></span></p>
+
+                        <p>State: <span id="assigned-delivery-state" th:text="${deliveryState} ?: '?'"></span></p>
+
+                        <form method="POST" action="/deliveries/progress" th:action="@{/deliveries/progress}">
+                            <input id="form-update-delivery-rider" name="riderId" type="hidden" th:value="${riderId}"/>
+                            <input id="form-update-delivery-id" name="deliveryId" type="hidden" th:value="${deliveryId}" />
+
+                            <button id="pickup-delivery" type="submit" class="btn btn-primary" th:unless="${deliveryState != null && deliveryState.name() == 'SHIPPED'}">
+                                Pick up
+                            </button>
+                            <button id="confirm-delivery" type="submit" class="btn btn-primary" th:if="${deliveryState != null && deliveryState.name() == 'SHIPPED'}">
+                                Mark as finished
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -68,6 +94,7 @@
     </div>
 
     <input id="rider-id" type="hidden" th:value="${riderId}" />
+    <input id="notification-topic" type="hidden" th:value="${notificationTopic}" />
 
     <!-- Modal -->
     <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -95,8 +122,60 @@
 
     <th:block th:include="base :: scripts"></th:block>
     <script th:src="@{/scripts/base.js}" src="../static/scripts/base.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@5.0.0/bundles/stomp.umd.min.js"></script>
 
     <script>
+        const riderId = $('#rider-id').val();
+        const notificationTopic = $('#notification-topic').val();
+        let lastReceivedNotification;
+        let lastReceivedData;
+
+        const ws = new WebSocket('ws://' + window.location.hostname + ':15674/ws');
+        const client = StompJs.Stomp.over(ws);
+
+        const on_message = function(msg) {
+            console.log('received: ' + msg);
+            lastReceivedNotification = msg;
+            let deliveryId = lastReceivedNotification.body;
+
+            if (deliveryId.length === 0)
+                return;
+
+            $('#info-delivery-available').hide();
+            $('#info-delivery-assigned').show();
+
+            $.ajax({
+                type: "GET",
+                url: "/api/v1/deliveries",
+                data: {
+                    id: deliveryId
+                },
+                contentType: "application/json; charset=utf-8",
+                success: function(data, textStatus, jqXHR) {
+                    data = data[0]
+                    lastReceivedData = data
+                    $('#assigned-delivery-customer').text(data['customerId']);
+                    $('#assigned-delivery-origin').text(data['originAddr']);
+                    $('#assigned-delivery-destination').text(data['deliveryAddr']);
+                    $('#assigned-delivery-latitude').text(data['latitude']);
+                    $('#assigned-delivery-longitude').text(data['longitude']);
+                    $('#assigned-delivery-state').text(data['deliveryState']);
+                }
+            });
+        };
+
+        const on_connect = function() {
+            console.log('connected');
+            client.subscribe('/exchange/spring-boot-exchange/' + notificationTopic, on_message);
+        };
+
+        const on_error = function() {
+            console.log('error');
+        };
+
+        client.connect('guest', 'guest', on_connect, on_error);
+
         // Update modal with info from clicked row
         $('td > button').click(function (event) {
             let clickedButton = event.delegateTarget;
@@ -110,9 +189,9 @@
             let url = $('#modal-attrs-url').val();
             $.ajax({
                 type: "POST",
-                url: url,
+                url: url + "?basicAuth=" + btoa(riderId),
                 data: JSON.stringify({
-                    ridersId: $('#rider-id').val(),
+                    ridersId: riderId,
                     deliveryId: $('#modal-attrs-delivery').val(),
                     distance: null
                 }),
@@ -120,26 +199,6 @@
                 contentType: "application/json; charset=utf-8"
             });
         });
-
-        // function sleep(ms) {
-        //     return new Promise(resolve => setTimeout(resolve, ms));
-        // }
-        //
-        // async function demo() {
-        //     await sleep(5);
-        //     const alertList = document.getElementById('alert-list');
-        //     let alert = document.createElement('li');
-        //     alert.textContent = 'A job is ready for you ';
-        //     alert.className = 'alert';
-        //     let x = document.createElement('span');
-        //     x.className = 'btn btn-outline-dark';
-        //     x.onclick = function (event) {
-        //         this.parentElement.style.display='none';
-        //     }
-        //     x.innerHTML = '&times';
-        //     alert.appendChild(x);
-        //     alertList.appendChild(alert);
-        // }
     </script>
 
 </body>

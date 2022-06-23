@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <th:block th:include="base :: head"></th:block>
+</head>
+
+<body>
+
+<!-- Topbar Start -->
+<div class="container-fluid bg-primary py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+            <div class="col-md-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Topbar End -->
+
+
+<!-- Navbar Start -->
+
+<nav th:replace="base :: navbar"></nav>
+
+<!-- Navbar End -->
+
+<!-- Page Header Start -->
+<div class="page-header container-fluid bg-secondary pt-2 pt-lg-5 pb-2 mb-5">
+    <div class="container py-5">
+        <div class="row align-items-center py-4">
+            <div class="col-md-6 text-center text-md-left">
+                <h1 class="mb-4 mb-md-0 text-white">Tracking order</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Page Header Start -->
+
+<div th:if="${order!=null}">
+    <div class="container" style="margin-bottom: 50px;">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Order details</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="order_id">Order ID</label>
+                            <label for="order_id" id="order_id" th:text="${order.getId()}"></label>
+                        </div>
+                        <div class="form-group">
+                            <label for="order_date">Date</label>
+                            <label for="order_date" id="order_date" th:text="${order.getDate().toString()}"></label>
+                        </div>
+                        <div class="form-group">
+                            <div th:if="${order.getStatus() == null}">
+                                <label for="order_status">State</label>
+                                <label for="order_status_not_found" id="order_status_not_found">RIDER NOT FOUND</label>
+                            </div>
+                            <div th:if="${order.getStatus() != null}">
+                                <label for="order_status">State</label>
+                                <label for="order_status" id="order_status" th:text="${order.getStatus()}"></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="order_delivery_location">Delivery Location</label>
+                            <label for="order_delivery_location" id="order_delivery_location"
+                                   th:text="${order.getDeliveryLocation()}"></label>
+                        </div>
+                        <div class="form-group">
+                            <label for="order_total_cost">Order total cost</label>
+                            <label for="order_total_cost" id="order_total_cost"
+                                   th:text="${order.getTotalPrice() + '€'}"></label>
+                        </div>
+                        <div th:if="${order.isCompleted()}">
+                            <div class="form-group">
+                                <label for="order_delivery_date">Delivery date</label>
+                                <label for="order_delivery_date" id="order_delivery_date"
+                                       th:text="${order.getDeliveryDate().toString()}"></label>
+                            </div>
+                        </div>
+                        <div th:unless="${order.isCompleted()}">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-primary" value="Add complaint" data-toggle="modal"
+                                       data-target="#exampleModal">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Complaint -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Complaint</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="complaint_name">Title:</label>
+                <input type="text" name="complaint_name" id="complaint_name" class="form-control">
+
+                <label for="complaint_description">Description:</label>
+                <input type="text" name="complaint_description" id="complaint_description" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnAdd" onclick="makeComplaint()">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/scripts/owlcarousel/owl.carousel.min.js}"></script>
+
+
+<!-- Template Javascript -->
+<script th:src="@{/scripts/main.js}"></script>
+<script th:src="@{/scripts/tracking.js}"></script>
+
+</body>
+</html>

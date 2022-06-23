@@ -1,6 +1,8 @@
 package com.qourier.qourier_app.data;
 
 import com.qourier.qourier_app.data.dto.DeliveryDTO;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,13 +12,19 @@ import lombok.Setter;
 @Setter
 @Table(name = "delivery")
 public class Delivery {
-    private String customerId, deliveryAddr, originAddr, riderId;
-    private double latitude, longitude;
+    private String customerId;
+    private String deliveryAddr;
+    private String originAddr;
+    private String riderId;
+    private double latitude;
+    private double longitude;
     private DeliveryState deliveryState;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long deliveryId;
+
+    private LocalDateTime creationTime;
 
     public Delivery(
             String customerId,
@@ -24,6 +32,7 @@ public class Delivery {
             double longitude,
             String deliveryAddr,
             String originAddr) {
+        this();
         this.customerId = customerId;
         this.riderId = null;
         this.latitude = latitude;
@@ -33,7 +42,9 @@ public class Delivery {
         this.deliveryState = DeliveryState.BID_CHECK;
     }
 
-    public Delivery() {}
+    public Delivery() {
+        creationTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
 
     public static Delivery fromDto(DeliveryDTO deliveryDTO) {
         return new Delivery(
@@ -41,7 +52,6 @@ public class Delivery {
                 deliveryDTO.getLatitude(),
                 deliveryDTO.getLongitude(),
                 deliveryDTO.getDeliveryAddr(),
-                deliveryDTO.getOriginAddr()
-        );
+                deliveryDTO.getOriginAddr());
     }
 }
