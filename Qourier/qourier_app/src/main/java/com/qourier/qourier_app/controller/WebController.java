@@ -478,7 +478,8 @@ public class WebController {
         deliveries.forEach(
                 delivery -> {
                     List<Bid> allBids = deliveriesManager.getBids(delivery.getDeliveryId());
-                    delivery.setRiderId(allBids.size() + " bids");
+                    if (delivery.getDeliveryState() == DeliveryState.BID_CHECK)
+                        delivery.setRiderId(allBids.size() + " bids");
                 });
 
         model.addAttribute("role", role);
