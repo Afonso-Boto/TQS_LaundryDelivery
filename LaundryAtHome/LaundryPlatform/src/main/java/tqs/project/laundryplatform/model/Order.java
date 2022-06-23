@@ -3,7 +3,6 @@ package tqs.project.laundryplatform.model;
 import java.sql.Date;
 import java.util.Set;
 import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
 

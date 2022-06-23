@@ -1,7 +1,6 @@
 package tqs.project.laundryplatform.service;
 
 import java.util.List;
-
 import org.json.JSONObject;
 import tqs.project.laundryplatform.model.Item;
 import tqs.project.laundryplatform.model.Order;
