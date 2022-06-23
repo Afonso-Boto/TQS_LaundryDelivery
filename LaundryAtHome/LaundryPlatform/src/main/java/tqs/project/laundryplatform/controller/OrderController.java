@@ -145,25 +145,33 @@ public class OrderController {
 
             Gson gson = new GsonBuilder().create();
             DeliveryCreation deliveryCreation = gson.fromJson(response, DeliveryCreation.class);
+
+            Order orderToUpdate = orderRepository.findById(orderId).orElse(null);
+            if (orderToUpdate != null) {
+                orderToUpdate.setDeliveryId(deliveryCreation.getDeliveryId());
+                orderToUpdate.setStatus(deliveryCreation.getDeliveryState());
+                orderRepository.save(orderToUpdate);
+            }
+
             System.out.println(deliveryCreation);
 
             // RabbitMQ Logic
-            Queue queue = new Queue("", false, true, true);
-            TopicExchange topicExchange = new TopicExchange("spring-boot-exchange");
-            String queueName = rabbitAdmin.declareQueue(queue);
-            Binding subscription = BindingBuilder.bind(queue).to(topicExchange).with("delivery.updates." + deliveryCreation.getDeliveryId());
-            rabbitAdmin.declareBinding(subscription);
-            SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-            container.setConnectionFactory(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
-            container.setQueueNames(queueName);
-            container.setMessageListener(message -> {
-                DeliveryUpdate update = gson.fromJson(Arrays.toString(message.getBody()), DeliveryUpdate.class);
-                System.out.println(update);
-
-                long orderIdForUpdate = orderRepository.findByDeliveryId(update.getDeliveryId()).getId();
-                orderService.updateOrder(orderIdForUpdate, update);
-            });
-            container.start();
+//            Queue queue = new Queue("", false, true, true);
+//            TopicExchange topicExchange = new TopicExchange("spring-boot-exchange");
+//            String queueName = rabbitAdmin.declareQueue(queue);
+//            Binding subscription = BindingBuilder.bind(queue).to(topicExchange).with("delivery.updates." + deliveryCreation.getDeliveryId());
+//            rabbitAdmin.declareBinding(subscription);
+//            SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+//            container.setConnectionFactory(rabbitAdmin.getRabbitTemplate().getConnectionFactory());
+//            container.setQueueNames(queueName);
+//            container.setMessageListener(message -> {
+//                DeliveryUpdate update = gson.fromJson(Arrays.toString(message.getBody()), DeliveryUpdate.class);
+//                System.out.println(update);
+//
+//                long orderIdForUpdate = orderRepository.findByDeliveryId(update.getDeliveryId()).getId();
+//                orderService.updateOrder(orderIdForUpdate, update);
+//            });
+//            container.start();
 
             return "redirect:/ok";
         }

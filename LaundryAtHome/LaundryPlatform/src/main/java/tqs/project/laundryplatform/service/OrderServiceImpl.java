@@ -101,8 +101,10 @@ public class OrderServiceImpl implements OrderService {
 
         newOrder.setItems(items);
         newOrder.setDeliveryLocation(address);
+
         java.util.Date date = new java.util.Date();
         newOrder.setDate(new Date(date.getTime()));
+
         orderRepository.save(newOrder);
 
         return true;
@@ -170,6 +172,12 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) return false;
 
         order.setStatus(update.getState());
+
+        if (update.getState().equals("delivered")) {
+            java.util.Date date = new java.util.Date();
+            order.setDeliveryDate(new Date(date.getTime()));
+            order.setCompleted(true);
+        }
 
         orderRepository.save(order);
 
