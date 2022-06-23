@@ -38,6 +38,4 @@ scrape_configs:
     scrape_interval: 60s
     scrape_timeout: 59s
     static_configs:
-      - targets:
-          # docker-compose-dist-tls.yml
-          - 'rabbitmq-exporter:9090'
+      - targets: ['rabbitmq-exporter:9090']

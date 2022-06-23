@@ -52,3 +52,10 @@ Feature: Check profile and stats (Rider and Customer)
       | role |
       | Rider |
       | Customer |
+
+  Scenario: See my API key as an active Customer
+    Given I am logged in as a Customer
+    * I have already been accepted to the platform
+    * my account is not suspended
+    When I go to the Profile section
+    Then I can check the API key

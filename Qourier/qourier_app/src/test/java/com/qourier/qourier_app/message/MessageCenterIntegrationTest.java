@@ -111,7 +111,7 @@ class MessageCenterIntegrationTest {
         public Binding bindingAdmin() {
             return BindingBuilder.bind(stompQueueAdmin())
                     .to(topic())
-                    .with(RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY);
+                    .with(RabbitConfiguration.DELIVERY_UPDATES_ROUTING_KEY + ".#");
         }
 
         @Bean
