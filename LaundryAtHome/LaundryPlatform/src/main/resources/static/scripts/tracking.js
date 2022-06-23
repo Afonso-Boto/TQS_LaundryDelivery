@@ -24,7 +24,7 @@ function makeComplaint() {
         },
         error: function (data) {
             console.log('error', data);
-            alert("Error submitting complaint!");
+            alert("You have already made a complaint!");
         }
     });
 }
