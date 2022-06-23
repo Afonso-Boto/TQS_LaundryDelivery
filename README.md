@@ -1,8 +1,8 @@
 # TQS_LaundryDelivery
 
 ![Main Workflow](https://github.com/Afonso-Boto/TQS_LaundryDelivery/actions/workflows/main-check.yml/badge.svg)
-![Qourier Workflow](https://github.com/Afonso-Boto/TQS_LaundryDelivery/actions/workflows/qourier.yml/badge.svg?branch=qourier_dev)
-![LaundryAtHome Workflow](https://github.com/Afonso-Boto/TQS_LaundryDelivery/actions/workflows/laundryathome.yml/badge.svg?branch=laundryathome_dev)
+![Qourier Workflow](https://github.com/Afonso-Boto/TQS_LaundryDelivery/actions/workflows/qourier.yml/badge.svg)
+![LaundryAtHome Workflow](https://github.com/Afonso-Boto/TQS_LaundryDelivery/actions/workflows/laundryathome.yml/badge.svg)
 
 ## Authors
 | NMec | Name | Role |
