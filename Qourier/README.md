@@ -33,11 +33,13 @@ The goal of our application is to provide a delivery service for medium to small
 
 Jira board: https://ies-project.atlassian.net/jira/software/projects/TQS/boards/2/backlog
 
-Project Specification Report: https://github.com/Afonso-Boto/TQS_LaundryDelivery/blob/main/docs/Product___specification_(Draft).pdf
+Project Specification Report: https://github.com/Afonso-Boto/TQS_LaundryDelivery/blob/main/docs/Product_specification.pdf
 
 QA Manual: https://github.com/Afonso-Boto/TQS_LaundryDelivery/blob/main/docs/qa_manual.pdf
 
 Qourier Complementary Android App: https://github.com/Pengrey/ICM/tree/main/Android/Project
+
+LaundryAtHome Complementary Android App: https://github.com/Afonso-Boto/LaundryAtHomeMobile
 
 ## Deployments
 Qourier
