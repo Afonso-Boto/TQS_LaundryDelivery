@@ -37,6 +37,7 @@ Feature: Manage accounts of Riders/Customers
     * I go to the 'another.customer@mail.com' profile
     Then I can see the profile of 'another.customer@mail.com' with all details inputted in their registration
     And I can see statistics about the number of deliveries requested
+    And I can not check the API key
 
   Scenario: Check Rider profile and stats
     When I go to the Accounts section
