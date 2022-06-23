@@ -6,7 +6,7 @@
 
 ## Abstract
 
-#### Digital marketplace for last-mile deliveries
+#### Delivery platform
 * Web app for management by Riders and Customers (delivery businesses)
 * Approval-based registration system managed by the administrators
 * Account lifecycle that supports suspension of accounts, managed by the administrators
