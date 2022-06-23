@@ -202,23 +202,6 @@ public class DeliveriesManagerTest {
     }
 
     @Test
-    void whenGetStatsDeliveriesCreated_ReturnsDeliveriesCreated() {
-        // Deliveries
-        Delivery deliveryDone =
-                new Delivery(
-                        "test98@email.com", 99.99, 99.99, "test address", "test origin address");
-        deliveryDone.setDeliveryState(DeliveryState.DELIVERED);
-        deliveryManager.createDelivery(deliveryDone);
-
-        Delivery deliveryToDo =
-                new Delivery(
-                        "test99@email.com", 99.99, 99.99, "test address", "test origin address");
-        deliveryManager.createDelivery(deliveryToDo);
-
-        assertThat(deliveryManager.statsDeliveriesCreated()).isEqualTo(2);
-    }
-
-    @Test
     void whenGetStatsDeliveriesDone_ReturnsDeliveriesDone() {
         // Deliveries
         Delivery deliveryDone =

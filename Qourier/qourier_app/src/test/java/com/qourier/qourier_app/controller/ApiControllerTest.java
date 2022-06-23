@@ -491,20 +491,6 @@ class ApiControllerTest {
     }
 
     @Test
-    @DisplayName("Try to get stats on deliveries created")
-    void whenGettingDeliveriesStatsCreated_thenDeliveriesCreatedShouldBeReturned()
-            throws Exception {
-        when(deliveriesManager.statsDeliveriesCreated()).thenReturn(100L);
-
-        MvcResult result =
-                mvc.perform(get("/api/v1/stats/created")).andExpect(status().isOk()).andReturn();
-
-        String resultString = result.getResponse().getContentAsString();
-        String expectedResult = "100";
-        assertEquals(expectedResult, resultString);
-    }
-
-    @Test
     @DisplayName("Try to get stats on deliveries done")
     void whenGettingDeliveriesStatsDone_thenDeliveriesDoneShouldBeReturned() throws Exception {
         when(deliveriesManager.statsDeliveriesDone()).thenReturn(101L);

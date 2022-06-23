@@ -182,10 +182,6 @@ public class DeliveriesManager {
                                 - minCreationTime.toEpochSecond(offset));
     }
 
-    public long statsDeliveriesCreated() {
-        return deliveryRepository.findAll().size();
-    }
-
     public long statsDeliveriesDone() {
         return deliveryRepository.findAll().stream()
                 .filter(delivery -> delivery.getDeliveryState() == DELIVERED)
