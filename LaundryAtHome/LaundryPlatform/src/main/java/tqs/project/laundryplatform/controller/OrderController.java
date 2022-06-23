@@ -54,14 +54,6 @@ public class OrderController {
         return REDIRECT_ORDERS;
     }
 
-    @PostMapping("cancelOrder-mobilde/{id}")
-    public ResponseEntity<String> cancelOrderMobile(@PathVariable("id") Long id, HttpServletRequest request) {
-        if (!hasCookie(request)) return ResponseEntity.status(401).body("unauthorized");
-
-        orderService.cancelOrder(id);
-        return ResponseEntity.status(200).body("ok");
-    }
-
     @PostMapping("/complaint")
     public String complaint(@RequestBody String body, HttpServletRequest request, Model model) {
         JSONObject json = new JSONObject(body);

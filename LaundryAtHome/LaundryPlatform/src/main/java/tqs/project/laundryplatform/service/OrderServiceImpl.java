@@ -95,6 +95,9 @@ public class OrderServiceImpl implements OrderService {
 
             item = new Item(number, isDark, newOrder, itemType);
             items.add(item);
+
+            newOrder.setTotalPrice(newOrder.getTotalPrice() + item.getItem_type().getPrice() * number);
+
             itemRepository.save(item);
 
             if (itemObject.get("address") != JSONObject.NULL) {
@@ -124,7 +127,7 @@ public class OrderServiceImpl implements OrderService {
         if (type == null || user == null || laundry == null) return -1;
 
         Order newOrder = new Order(type, user, laundry);
-
+        newOrder.setTotalPrice(type.getBasePrice());
         orderRepository.save(newOrder);
         return newOrder.getId();
     }

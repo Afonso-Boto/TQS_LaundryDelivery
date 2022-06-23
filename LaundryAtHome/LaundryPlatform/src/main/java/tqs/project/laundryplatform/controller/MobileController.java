@@ -1,5 +1,6 @@
 package tqs.project.laundryplatform.controller;
 
+import static tqs.project.laundryplatform.controller.AuthController.hasCookie;
 import static tqs.project.laundryplatform.controller.OrderController.ordersUncompleted;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -111,6 +112,14 @@ public class MobileController {
                 Objects.requireNonNull(
                                 orderRepository.findById(Long.parseLong(orderId)).orElse(null))
                         .toString());
+    }
+
+    @PostMapping("/order/cancelOrder/{id}")
+    public ResponseEntity<String> cancelOrderMobile(@PathVariable("id") Long id, HttpServletRequest request) {
+        if (!hasCookie(request)) return ResponseEntity.status(401).body("unauthorized");
+
+        orderService.cancelOrder(id);
+        return ResponseEntity.status(200).body("ok");
     }
 
     @PostMapping("/order/complaint")
