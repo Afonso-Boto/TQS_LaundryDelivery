@@ -57,23 +57,43 @@
                             <label for="order_id" id="order_id" th:text="${order.getId()}"></label>
                         </div>
                         <div class="form-group">
-                            <label for="order_date">Order date</label>
+                            <label for="order_date">Date</label>
                             <label for="order_date" id="order_date" th:text="${order.getDate().toString()}"></label>
                         </div>
                         <div class="form-group">
-                            <label for="order_status">Order status</label>
-                            <label for="order_status" id="order_status"></label>
+                            <div th:if="${order.getStatus() == null}">
+                                <label for="order_status">State</label>
+                                <label for="order_status_not_found" id="order_status_not_found">RIDER NOT FOUND</label>
+                            </div>
+                            <div th:if="${order.getStatus() != null}">
+                                <label for="order_status">State</label>
+                                <label for="order_status" id="order_status" th:text="${order.getStatus()}"></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="order_delivery_location">Delivery Location</label>
+                            <label for="order_delivery_location" id="order_delivery_location"
+                                   th:text="${order.getDeliveryLocation()}"></label>
                         </div>
                         <div class="form-group">
                             <label for="order_total_cost">Order total cost</label>
                             <label for="order_total_cost" id="order_total_cost"
                                    th:text="${order.getTotalPrice() + '€'}"></label>
                         </div>
-                        <div class="form-group">
-                            <input type="button" class="btn btn-primary" value="Add complaint" data-toggle="modal"
-                                   data-target="#exampleModal">
-                            <input type="button" class="btn btn-danger" value="Cancel order"
-                                   onclick="cancelOrder()">
+                        <div th:if="${order.isCompleted()}">
+                            <div class="form-group">
+                                <label for="order_delivery_date">Delivery date</label>
+                                <label for="order_delivery_date" id="order_delivery_date"
+                                       th:text="${order.getDeliveryDate().toString()}"></label>
+                            </div>
+                        </div>
+                        <div th:unless="${order.isCompleted()}">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-primary" value="Add complaint" data-toggle="modal"
+                                       data-target="#exampleModal">
+                                <input type="button" class="btn btn-danger" value="Cancel order"
+                                       onclick="cancelOrder()">
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.sql.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,17 +18,18 @@ import org.springframework.test.web.servlet.MvcResult;
 import tqs.project.laundryplatform.model.Order;
 import tqs.project.laundryplatform.repository.OrderRepository;
 
-import java.sql.Date;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "/application-test.properties")
 @AutoConfigureMockMvc
 public class MainControllerIntegrationTest {
 
-    @LocalServerPort int randomServerPort;
+    @LocalServerPort
+    int randomServerPort;
 
-    @Autowired private MockMvc mvc;
-    @Autowired private OrderRepository orderRepository;
+    @Autowired
+    private MockMvc mvc;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @BeforeEach
     public void setUp() throws Exception {

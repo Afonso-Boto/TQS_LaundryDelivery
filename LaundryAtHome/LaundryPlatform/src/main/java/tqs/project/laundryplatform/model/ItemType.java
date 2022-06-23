@@ -29,7 +29,8 @@ public class ItemType {
         this.price = price;
     }
 
-    public ItemType() {}
+    public ItemType() {
+    }
 
     @Override
     public boolean equals(Object o) {

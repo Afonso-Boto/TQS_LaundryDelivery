@@ -29,7 +29,8 @@ public class Complaint {
         this.description = description;
     }
 
-    public Complaint() {}
+    public Complaint() {
+    }
 
     public Complaint(String title, String description, Order order) {
         this.title = title;

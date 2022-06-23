@@ -8,7 +8,8 @@ import tqs.project.laundryplatform.repository.UserRepository;
 
 @Service
 public class AccountManager {
-    @Autowired private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public LoginResult login(LoginRequest request) {
         Optional<User> user = userRepository.findByUsername(request.getUsername());

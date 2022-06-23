@@ -29,7 +29,8 @@ public class ItemTypeRepositoryTest {
                     .withUsername("test_user")
                     .withPassword("123456");
 
-    @Autowired private ItemTypeRepository itemTypeRepository;
+    @Autowired
+    private ItemTypeRepository itemTypeRepository;
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry) {

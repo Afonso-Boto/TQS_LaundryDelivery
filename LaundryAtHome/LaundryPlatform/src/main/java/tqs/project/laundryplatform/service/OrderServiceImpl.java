@@ -1,9 +1,6 @@
 package tqs.project.laundryplatform.service;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,18 +10,26 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tqs.project.laundryplatform.model.*;
+import tqs.project.laundryplatform.qourier.DeliveryUpdate;
 import tqs.project.laundryplatform.repository.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    @Autowired LaundryRepository laundryRepository;
-    @Autowired OrderTypeRepository orderTypeRepository;
-    @Autowired OrderRepository orderRepository;
-    @Autowired ItemTypeRepository itemTypeRepository;
-    @Autowired ItemRepository itemRepository;
-    @Autowired UserRepository userRepository;
-    @Autowired ComplaintRepository complaintRepository;
+    @Autowired
+    LaundryRepository laundryRepository;
+    @Autowired
+    OrderTypeRepository orderTypeRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    ItemTypeRepository itemTypeRepository;
+    @Autowired
+    ItemRepository itemRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    ComplaintRepository complaintRepository;
 
     @Override
     public List<Order> getOrder(int userID) {
@@ -100,8 +105,10 @@ public class OrderServiceImpl implements OrderService {
 
         newOrder.setItems(items);
         newOrder.setDeliveryLocation(address);
+
         java.util.Date date = new java.util.Date();
         newOrder.setDate(new Date(date.getTime()));
+
         orderRepository.save(newOrder);
 
         return true;
@@ -155,6 +162,29 @@ public class OrderServiceImpl implements OrderService {
         if (order == null) return false;
 
         orderRepository.delete(order);
+        return true;
+    }
+
+    @Override
+    public boolean updateOrder(long orderId, DeliveryUpdate update) {
+        if (orderId == -1 || update == null) return false;
+
+        if (update.getState() == null) return false;
+
+        Order order = orderRepository.findById(orderId).orElse(null);
+
+        if (order == null) return false;
+
+        order.setStatus(update.getState());
+
+        if (update.getState().equals("delivered")) {
+            java.util.Date date = new java.util.Date();
+            order.setDeliveryDate(new Date(date.getTime()));
+            order.setCompleted(true);
+        }
+
+        orderRepository.save(order);
+
         return true;
     }
 }
