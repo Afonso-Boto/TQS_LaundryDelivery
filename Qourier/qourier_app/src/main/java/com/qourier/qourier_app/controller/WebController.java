@@ -495,18 +495,6 @@ public class WebController {
         model.addAttribute("role", role);
         return "monitor";
     }
-
-    @GetMapping("/business")
-    public String business(Model model, HttpServletRequest request) {
-        AccountRole role = ADMIN;
-
-        // Verify if cookie role is right or not
-        if (!verifyCookie(request, role)) return REDIRECT_LOGIN;
-
-        model.addAttribute("role", role);
-        return "business";
-    }
-
     @Bean
     SmartInitializingSingleton smartInitializingSingleton(ApplicationContext context) {
         return () -> {
