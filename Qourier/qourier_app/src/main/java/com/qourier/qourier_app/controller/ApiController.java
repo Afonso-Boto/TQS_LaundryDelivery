@@ -128,4 +128,14 @@ public class ApiController {
 
         return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
+
+    @GetMapping("/stats/created")
+    public Long statsCreatedGet() {
+        return deliveriesManager.statsDeliveriesCreated();
+    }
+
+    @GetMapping("/stats/done")
+    public Long statsDoneGet() {
+        return deliveriesManager.statsDeliveriesDone();
+    }
 }
