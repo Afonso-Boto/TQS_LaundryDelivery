@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.sql.Date;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,11 @@ public class MainControllerIntegrationTest {
     public void setUp() throws Exception {
         assertThat(mvc).isNotNull();
         orderRepository.save(new Order(1L, new Date(2022, 12, 12), 20.99));
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        orderRepository.deleteAll();
     }
 
     @Test
