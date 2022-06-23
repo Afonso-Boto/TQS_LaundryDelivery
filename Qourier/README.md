@@ -35,7 +35,7 @@ Jira board: https://ies-project.atlassian.net/jira/software/projects/TQS/boards/
 
 Project Specification Report: https://github.com/Afonso-Boto/TQS_LaundryDelivery/blob/main/docs/Product___specification_(Draft).pdf
 
-QA Manual (Overleaf): https://github.com/Afonso-Boto/TQS_LaundryDelivery/blob/main/docs/qa_manual.pdf
+QA Manual: https://github.com/Afonso-Boto/TQS_LaundryDelivery/blob/main/docs/qa_manual.pdf
 
 Qourier Complementary Android App: https://github.com/Pengrey/ICM/tree/main/Android/Project
 
@@ -45,7 +45,7 @@ Qourier
   - Grafana: http://51.142.110.251:3000
 
 LaundryAtHome
-  - Webpage: TODO
+  - Webpage: http://51.142.78.179
 
 ## Credentials
 
