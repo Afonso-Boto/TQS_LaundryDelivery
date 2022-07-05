@@ -1,8 +1,6 @@
 name: Auto release
 
-on:
-  schedule:
-    - cron: '0 0 * * 2'
+on: workflow_dispatch
   
 jobs:
   update-release:
